@@ -22,3 +22,11 @@ class QuizUser(models.Model):
         """Evaluate user result."""
         all_answers = self.good_answers + self.bad_answers
         return self.good_answers / all_answers
+
+
+class QuestionUser(models.Model):
+    """Model for question answered by user."""
+    question = models.ForeignKey('quiz.Question', on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    answer = models.CharField(max_length=255)
+    is_correct = models.BooleanField(default=False)
