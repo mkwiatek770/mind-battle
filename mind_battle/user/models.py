@@ -35,8 +35,9 @@ class QuestionUser(models.Model):
     """Model for question answered by user."""
     question = models.ForeignKey('quiz.Question', on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    answer = models.CharField(max_length=255)
-    is_correct = models.BooleanField(default=False)
+    answer = models.ForeignKey(
+        'quiz.QuestionAnswer', on_delete=models.SET_NULL,
+        related_name='answers', null=True)
 
     class Meta:
         verbose_name = "QuestionUser"
@@ -44,3 +45,12 @@ class QuestionUser(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user.username}  --  {self.question}"
+
+    def is_correct(self) -> bool:
+        """Check if user answer is correct.
+
+        If user skip this question, return False.
+        """
+        if not self.answer:
+            return False
+        return self.answer.is_correct
