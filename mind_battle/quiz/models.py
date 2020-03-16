@@ -54,6 +54,21 @@ class Question(models.Model):
         return f"{self.question[:20]}..." if len(self.question) > 18 else self.question
 
 
+class QuestionAnswer(models.Model):
+    question = models.ForeignKey(
+        'quiz.Question', on_delete=models.CASCADE, related_name='answers')
+    content = models.CharField(max_length=255)
+    is_correct = models.BooleanField(default=False)
+    # counter = models.PositiveIntegerField(default=0
+
+    class Meta:
+        verbose_name = "QuestionAnswer"
+        verbose_name_plural = "QuestionAnswers"
+
+    def __str__(self) -> str:
+        return f"Answer: {self.content} for question: {self.question}"
+
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
     # image = models.ImageField()
