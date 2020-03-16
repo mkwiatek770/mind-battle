@@ -26,7 +26,8 @@ class Quiz(models.Model):
 
 
 class Question(models.Model):
-    quiz = models.ForeignKey('quiz.Quiz', on_delete=models.CASCADE)
+    quiz = models.ForeignKey(
+        'quiz.Quiz', on_delete=models.CASCADE, related_name="questions")
     question = models.TextField()
     # temporary solution
     good_answer = models.CharField(max_length=255)
