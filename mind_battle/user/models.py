@@ -14,6 +14,13 @@ class QuizUser(models.Model):
     good_answers = models.IntegerField(default=0)
     bad_answers = models.IntegerField(default=0)
 
+    class Meta:
+        verbose_name = "QuizUser"
+        verbose_name_plural = "QuizUsers"
+
+    def __str__(self) -> str:
+        return f"{self.user.username}  --  {self.quiz}"
+
     def is_finished(self) -> bool:
         """Check if user finished solving quiz."""
         return True if self.date_finished else False
@@ -30,3 +37,10 @@ class QuestionUser(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     answer = models.CharField(max_length=255)
     is_correct = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "QuestionUser"
+        verbose_name_plural = "QuestionUsers"
+
+    def __str__(self) -> str:
+        return f"{self.user.username}  --  {self.question}"

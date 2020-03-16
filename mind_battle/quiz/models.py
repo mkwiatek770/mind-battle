@@ -14,6 +14,13 @@ class Quiz(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     # image = models.ImageField()
 
+    class Meta:
+        verbose_name = "Quiz"
+        verbose_name_plural = "Quizzes"
+
+    def __str__(self) -> str:
+        return self.name
+
     @property
     def is_published(self) -> bool:
         """Flag property to tell if quiz was published."""
@@ -39,7 +46,21 @@ class Question(models.Model):
     good_answers = models.IntegerField(default=0)
     bad_answers = models.IntegerField(default=0)
 
+    class Meta:
+        verbose_name = "Question"
+        verbose_name_plural = "Questions"
+
+    def __str__(self) -> str:
+        return f"{self.question[:20]}..." if len(self.question) > 18 else self.question
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
     # image = models.ImageField()
+
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+
+    def __str__(self) -> str:
+        return self.name
