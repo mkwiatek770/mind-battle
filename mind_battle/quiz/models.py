@@ -38,8 +38,8 @@ class Question(models.Model):
     question = models.TextField()
     explaination = models.TextField()
 
-    good_answers = models.IntegerField(default=0)
-    bad_answers = models.IntegerField(default=0)
+    good_answers = models.PositiveIntegerField(default=0)
+    bad_answers = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name = "Question"

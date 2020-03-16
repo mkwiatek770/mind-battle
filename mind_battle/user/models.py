@@ -11,8 +11,8 @@ class QuizUser(models.Model):
     date_started = models.DateTimeField(auto_now_add=True)
     date_finished = models.DateTimeField(null=True, blank=True)
 
-    good_answers = models.IntegerField(default=0)
-    bad_answers = models.IntegerField(default=0)
+    good_answers = models.PositiveIntegerField(default=0)
+    bad_answers = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name = "QuizUser"
