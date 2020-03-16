@@ -1,3 +1,9 @@
 from django.contrib import admin
+from user.models import (
+    QuizUser,
+    QuestionUser,
+)
 
-# Register your models here.
+
+admin.site.register(QuizUser)
+admin.site.register(QuestionUser)
