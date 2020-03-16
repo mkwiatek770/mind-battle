@@ -9,7 +9,7 @@ class QuizUser(models.Model):
     user = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, related_name='quiz_attempts')
     date_started = models.DateTimeField(auto_now_add=True)
-    date_finished = models.DateTimeField(null=True)
+    date_finished = models.DateTimeField(null=True, blank=True)
 
     good_answers = models.IntegerField(default=0)
     bad_answers = models.IntegerField(default=0)

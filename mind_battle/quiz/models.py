@@ -10,7 +10,7 @@ class Quiz(models.Model):
     creator = models.ForeignKey(
         get_user_model(), related_name='quizzes', null=True, on_delete=models.SET_NULL)
     date_created = models.DateTimeField(auto_now_add=True)
-    date_published = models.DateTimeField(null=True)
+    date_published = models.DateTimeField(null=True, blank=True)
     date_modified = models.DateTimeField(auto_now=True)
     # image = models.ImageField()
 
