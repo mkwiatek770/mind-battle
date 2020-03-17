@@ -32,10 +32,12 @@ class TestQuizUnauthenticated(TestCase):
         """Receive all quizzes by given category."""
         category_1 = Category.objects.create(name='python')
         category_2 = Category.objects.create(name='javascript')
-        quiz_1 = Quiz.objects.create(name='quiz 1', category=category_1)
+        quiz_1 = Quiz.objects.create(
+            name='quiz 1', category=category_1, date_published=timezone.now())
         quiz_2 = Quiz.objects.create(name='quiz 2', category=category_2)
 
-        response = self.client.get('/api/v1/quizzes?category=python/')
+        response = self.client.get(
+            '/api/v1/quizzes/', {'category': 'python'})
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(QuizSerializer(quiz_1).data, response.data)
