@@ -45,10 +45,10 @@ class TestQuizUnauthenticated(TestCase):
 
     def test_get_quiz_detail(self):
         """Receive detail info about specific quiz."""
-        quiz = Quiz.objects.create(name='name')
+        quiz = Quiz.objects.create(name='name', date_published=timezone.now())
         serialized_data = QuizSerializer(quiz).data
 
-        response = self.client.get(f'/api/v1/quizzes/{quiz.id}')
+        response = self.client.get(f'/api/v1/quizzes/{quiz.id}/')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, serialized_data)
