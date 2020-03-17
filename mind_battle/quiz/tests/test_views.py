@@ -53,6 +53,22 @@ class TestQuizUnauthenticated(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, serialized_data)
 
+    def test_get_quiz_detail_404_not_exist(self):
+        """404 not found status code is returned if quiz does not exist."""
+        response = self.client.get('/api/v1/quizzes/3123/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_quiz_detail_404_not_published(self):
+        """
+        404 not found status code is returned if is not published yet.
+        """
+        quiz = Quiz.objects.create(name='quiz 1')
+
+        response = self.client.get(f'/api/v1/quizzes/{quiz.id}/')
+
+        self.assertIsNone(quiz.date_published)
+        self.assertEqual(response.status_code, 404)
+
     def test_get_quiz_questions(self):
         """Receive list of questions for specific quiz."""
         quiz = Quiz.objects.create(name='name')
