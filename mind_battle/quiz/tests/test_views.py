@@ -2,8 +2,8 @@
 from rest_framework.test import APIClient
 from django.test import TestCase
 from django.utils import timezone
-from quiz.models import Quiz, Category
-from quiz.serializers import QuizSerializer, Question
+from quiz.models import Quiz, Category, Question
+from quiz.serializers import QuizSerializer, QuestionSerializer
 
 
 class TestQuizUnauthenticated(TestCase):
@@ -69,7 +69,7 @@ class TestQuizUnauthenticated(TestCase):
         self.assertIsNone(quiz.date_published)
         self.assertEqual(response.status_code, 404)
 
-    def test_get_quiz_questions(self):
+    def test_get_all_quiz_questions(self):
         """Receive list of questions for specific quiz."""
         quiz = Quiz.objects.create(name='name')
         question_1 = Question.objects.create(

@@ -1,5 +1,8 @@
-from rest_framework import routers
+from django.urls import path
 from quiz import views
+from quiz.router import NestedDefaultRouter
 
-router = routers.DefaultRouter()
-router.register(r'quizzes', views.QuizView, basename='quiz')
+router = NestedDefaultRouter()
+quizzes_router = router.register(r'quizzes', views.QuizView, basename='quiz')
+quizzes_router.register('questions', views.QuestionView,
+                        basename='question', parents_query_lookups=['quiz'])
