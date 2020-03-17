@@ -1,11 +1,9 @@
 from rest_framework import viewsets
-from quiz.models import Category
-from quiz.serializers import CategorySerializer
+from quiz.models import Quiz
+from quiz.serializers import QuizSerializer
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows categories to be viewed or edited.
-    """
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+class QuizView(viewsets.ModelViewSet):
+
+    serializer_class = QuizSerializer
+    queryset = Quiz.objects.filter(date_published__isnull=False)
