@@ -22,10 +22,18 @@ class QuizSerializer(serializers.ModelSerializer):
                   'date_created', 'date_published', 'date_modified')
 
 
+class QuestionAnswerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = QuestionAnswer
+        fields = ('id', 'content', 'is_correct')
+
+
 class QuestionSerializer(serializers.ModelSerializer):
     quiz = QuizSerializer()
+    answers = QuestionAnswerSerializer(many=True)
 
     class Meta:
         model = Question
-        fields = ('quiz', 'question', 'explaination',
+        fields = ('id', 'quiz', 'question', 'answers', 'explaination',
                   'good_answers', 'bad_answers')
