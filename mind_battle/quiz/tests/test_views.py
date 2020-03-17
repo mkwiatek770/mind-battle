@@ -2,8 +2,17 @@
 from rest_framework.test import APIClient
 from django.test import TestCase
 from django.utils import timezone
-from quiz.models import Quiz, Category, Question
-from quiz.serializers import QuizSerializer, QuestionSerializer
+from quiz.models import (
+    Quiz,
+    Category,
+    Question,
+    QuestionAnswer
+)
+from quiz.serializers import (
+    QuizSerializer,
+    QuestionSerializer,
+    QuestionAnswerSerializer
+)
 
 
 class TestQuizUnauthenticated(TestCase):
@@ -88,6 +97,31 @@ class TestQuizUnauthenticated(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, serialized_data)
+
+    def test_question_returns_all_answers(self):
+        """Check if answers to questions are returned."""
+        quiz = Quiz.objects.create(name='quiz', date_published=timezone.now())
+        question = Question.objects.create(
+            quiz=quiz,
+            question="What is your favourite color?",
+            explaination="Some explaination")
+        answer_1 = QuestionAnswer.objects.create(
+            question=question,
+            content='Answer 1',
+            is_correct=False
+        )
+        answer_2 = QuestionAnswer.objects.create(
+            question=question,
+            content='Answer 2',
+            is_correct=True
+        )
+
+        response = self.client.get(
+            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/')
+        answers = response.data['answers']
+
+        self.assertIn(QuestionAnswerSerializer(answer_1).data, answers)
+        self.assertIn(QuestionAnswerSerializer(answer_2).data, answers)
 
     def test_answer_to_question(self):
         """Submit answer to specific quiz question."""
