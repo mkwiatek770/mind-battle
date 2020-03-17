@@ -6,4 +6,12 @@ from quiz.serializers import QuizSerializer
 class QuizView(viewsets.ModelViewSet):
 
     serializer_class = QuizSerializer
-    queryset = Quiz.objects.filter(date_published__isnull=False)
+
+    def get_queryset(self):
+        published_quizzes = Quiz.objects.filter(date_published__isnull=False)
+        # category filtering
+        category = self.request.query_params.get('category')
+        if category:
+            return published_quizzes.filter(
+                category__name=category)
+        return published_quizzes
