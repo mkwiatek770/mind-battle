@@ -19,8 +19,11 @@ class TestQuizUnauthenticated(TestCase):
         quiz_not_published = Quiz.objects.create(name="quiz 2")
 
         response = self.client.get("/api/v1/quizzes/")
+        serialized_data = QuizSerializer(Quiz.objects.filter(
+            date_published__isnull=False), many=True).data
 
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, serialized_data)
         self.assertIn(QuizSerializer(quiz_published).data, response.data)
         self.assertNotIn(QuizSerializer(
             quiz_not_published).data, response.data)
