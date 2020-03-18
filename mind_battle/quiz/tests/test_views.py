@@ -28,8 +28,8 @@ class TestQuizUnauthenticated(TestCase):
         quiz_not_published = Quiz.objects.create(name="quiz 2")
 
         response = self.client.get("/api/v1/quizzes/")
-        serialized_data = QuizSerializer(Quiz.objects.filter(
-            date_published__isnull=False), many=True).data
+        serialized_data = QuizSerializer(
+            Quiz.objects.published(), many=True).data
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, serialized_data)
@@ -54,7 +54,8 @@ class TestQuizUnauthenticated(TestCase):
 
     def test_get_quiz_detail(self):
         """Receive detail info about specific quiz."""
-        quiz = Quiz.objects.create(name='name', date_published=timezone.now())
+        quiz = Quiz.objects.create(
+            name='name', date_published=timezone.now())
         serialized_data = QuizSerializer(quiz).data
 
         response = self.client.get(f'/api/v1/quizzes/{quiz.id}/')
@@ -100,7 +101,8 @@ class TestQuizUnauthenticated(TestCase):
 
     def test_question_returns_all_answers(self):
         """Check if answers to questions are returned."""
-        quiz = Quiz.objects.create(name='quiz', date_published=timezone.now())
+        quiz = Quiz.objects.create(
+            name='quiz', date_published=timezone.now())
         question = Question.objects.create(
             quiz=quiz,
             question="What is your favourite color?",

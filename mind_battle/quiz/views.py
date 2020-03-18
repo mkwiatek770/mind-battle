@@ -8,8 +8,8 @@ class QuizView(viewsets.ModelViewSet):
     serializer_class = QuizSerializer
 
     def get_queryset(self):
-        published_quizzes = Quiz.objects.filter(date_published__isnull=False)
-        # category filtering
+        published_quizzes = Quiz.objects.published()
+        # Filter by category.
         category = self.request.query_params.get('category')
         if category:
             return published_quizzes.filter(
@@ -23,4 +23,4 @@ class QuestionView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         quiz_id = self.kwargs.get('parent_lookup_quiz')
-        return Question.objects.filter(quiz__id=quiz_id)
+        return Quiz.objects.questions(quiz_id)
