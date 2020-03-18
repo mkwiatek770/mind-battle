@@ -37,8 +37,8 @@ class TestQuizUnauthenticated(TestCase):
         self.assertNotIn(QuizSerializer(
             quiz_not_published).data, response.data)
 
-    def test_get_quizes_of_category(self):
-        """Receive all quizzes by given category."""
+    def test_get_quizes_filtered_by_category(self):
+        """Receive all quizzes filtered by given category."""
         category_1 = Category.objects.create(name='python')
         category_2 = Category.objects.create(name='javascript')
         quiz_1 = Quiz.objects.create(name='quiz 1', category=category_1)
