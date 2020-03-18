@@ -4,7 +4,7 @@ from django.utils.text import slugify
 
 
 class Quiz(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
     category = models.ForeignKey(
         'quiz.Category', related_name='quizzes', null=True, on_delete=models.SET_NULL)
     creator = models.ForeignKey(
@@ -65,7 +65,7 @@ class QuestionAnswer(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     # image = models.ImageField()
 
     class Meta:
