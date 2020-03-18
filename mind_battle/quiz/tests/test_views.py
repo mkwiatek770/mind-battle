@@ -142,8 +142,8 @@ class TestUserQuestion(TestCase):
         pass
 
 
-class TestQuizAuthenticated(TestCase):
-    """Test for quiz related endpoints for unathenticated user."""
+class TestQuizCreator(TestCase):
+    """Test suite for quiz creator."""
 
     def setUp(self):
         self.client = APIClient()
@@ -174,4 +174,36 @@ class TestQuizAuthenticated(TestCase):
 
     def test_delete_question(self):
         """Test remove question."""
+        pass
+
+    def test_publish_quiz_by_creator(self):
+        """Assure quiz is published."""
+        pass
+
+    def test_publish_quiz_by_non_creator(self):
+        """Assure publishing quiz by non creator is forbiden."""
+        pass
+
+    def test_unpublish_quiz_by_creator(self):
+        """Assure quiz is unpublished"""
+        pass
+
+    def test_unpublish_quiz_by_non_creator(self):
+        """Assure unpublishing quiz by non creator is not possible."""
+        pass
+
+
+class TestQuizAvatar(TestCase):
+    """Test suite for avatar related actions for quiz."""
+
+    def test_uploading_avatar(self):
+        """Assert quiz avatar is uploaded."""
+        pass
+
+    def test_changing_avatar(self):
+        """Assert quiz avatar is changed."""
+        pass
+
+    def test_removing_avatar(self):
+        """Assert quiz avatar is removed."""
         pass
