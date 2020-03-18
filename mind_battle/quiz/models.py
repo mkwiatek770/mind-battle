@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
+from quiz.managers import QuizManager
 
 
 class Quiz(models.Model):
@@ -13,6 +14,9 @@ class Quiz(models.Model):
     date_published = models.DateTimeField(null=True, blank=True)
     date_modified = models.DateTimeField(auto_now=True)
     # image = models.ImageField()
+
+    # overwrite default manager
+    objects = QuizManager()
 
     class Meta:
         verbose_name = "Quiz"
