@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum, Count, Case, When, Value
 from django.conf import settings
 from django.utils.text import slugify
 from django.utils import timezone
@@ -54,15 +55,27 @@ class Question(models.Model):
     question = models.TextField()
     explaination = models.TextField()
 
-    good_answers = models.PositiveIntegerField(default=0)
-    bad_answers = models.PositiveIntegerField(default=0)
-
     class Meta:
         verbose_name = "Question"
         verbose_name_plural = "Questions"
 
     def __str__(self) -> str:
         return f"{self.question[:20]}..." if len(self.question) > 18 else self.question
+
+    @property
+    def good_answers(self) -> int:
+        result = self.answers.all().aggregate(total=Sum('is_correct'))
+        return result['total']
+
+    @property
+    def bad_answers(self) -> int:
+        # maybe there is easier way ...
+        result = self.answers.all().aggregate(
+            total=Count(
+                Case(When(is_correct=False, then=Value(1)))
+            )
+        )
+        return result['total']
 
 
 class QuestionAnswer(models.Model):
