@@ -23,8 +23,8 @@ class TestQuizUnauthenticated(TestCase):
 
     def test_get_all_published_quizzes(self):
         """Get all quizzes that was already published"""
-        quiz_published = Quiz.objects.create(
-            name="quiz 1", date_published=timezone.now())
+        quiz_published = Quiz.objects.create(name="quiz 1")
+        quiz_published.publish()
         quiz_not_published = Quiz.objects.create(name="quiz 2")
 
         response = self.client.get("/api/v1/quizzes/")
@@ -41,9 +41,10 @@ class TestQuizUnauthenticated(TestCase):
         """Receive all quizzes by given category."""
         category_1 = Category.objects.create(name='python')
         category_2 = Category.objects.create(name='javascript')
-        quiz_1 = Quiz.objects.create(
-            name='quiz 1', category=category_1, date_published=timezone.now())
+        quiz_1 = Quiz.objects.create(name='quiz 1', category=category_1)
         quiz_2 = Quiz.objects.create(name='quiz 2', category=category_2)
+        quiz_1.publish()
+        quiz_2.publish()
 
         response = self.client.get(
             '/api/v1/quizzes/', {'category': 'python'})
@@ -54,8 +55,8 @@ class TestQuizUnauthenticated(TestCase):
 
     def test_get_quiz_detail(self):
         """Receive detail info about specific quiz."""
-        quiz = Quiz.objects.create(
-            name='name', date_published=timezone.now())
+        quiz = Quiz.objects.create(name='name')
+        quiz.publish()
         serialized_data = QuizSerializer(quiz).data
 
         response = self.client.get(f'/api/v1/quizzes/{quiz.id}/')
@@ -76,7 +77,7 @@ class TestQuizUnauthenticated(TestCase):
 
         response = self.client.get(f'/api/v1/quizzes/{quiz.id}/')
 
-        self.assertIsNone(quiz.date_published)
+        self.assertFalse(quiz.is_published)
         self.assertEqual(response.status_code, 404)
 
     def test_get_all_quiz_questions(self):
@@ -101,8 +102,8 @@ class TestQuizUnauthenticated(TestCase):
 
     def test_question_returns_all_answers(self):
         """Check if answers to questions are returned."""
-        quiz = Quiz.objects.create(
-            name='quiz', date_published=timezone.now())
+        quiz = Quiz.objects.create(name='quiz')
+        quiz.publish()
         question = Question.objects.create(
             quiz=quiz,
             question="What is your favourite color?",

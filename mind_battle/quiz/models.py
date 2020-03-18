@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils.text import slugify
+from django.utils import timezone
 from quiz.managers import QuizManager
 
 
@@ -34,6 +35,17 @@ class Quiz(models.Model):
     def slug(self) -> str:
         """Return slugified version of quiz name."""
         return slugify(self.name)
+
+    def publish(self) -> None:
+        """Publish quiz if it hasn't been already published."""
+        if not self.is_published:
+            self.date_published = timezone.now()
+            self.save()
+
+    def unpublish(self) -> None:
+        """Unpublish quiz."""
+        self.date_published = None
+        self.save()
 
 
 class Question(models.Model):
