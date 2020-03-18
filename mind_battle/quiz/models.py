@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.utils.text import slugify
 from quiz.managers import QuizManager
 
@@ -9,7 +9,7 @@ class Quiz(models.Model):
     category = models.ForeignKey(
         'quiz.Category', related_name='quizzes', null=True, on_delete=models.SET_NULL)
     creator = models.ForeignKey(
-        get_user_model(), related_name='quizzes', null=True, on_delete=models.SET_NULL)
+        settings.AUTH_USER_MODEL, related_name='quizzes', null=True, on_delete=models.SET_NULL)
     date_created = models.DateTimeField(auto_now_add=True)
     date_published = models.DateTimeField(null=True, blank=True)
     date_modified = models.DateTimeField(auto_now=True)

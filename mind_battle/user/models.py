@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth import get_user_model
+from django.conf import settings
 
 
 class QuizUser(models.Model):
@@ -7,7 +7,7 @@ class QuizUser(models.Model):
     quiz = models.ForeignKey(
         'quiz.Quiz', on_delete=models.CASCADE, related_name='quiz_attempts')
     user = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE, related_name='quiz_attempts')
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='quiz_attempts')
     date_started = models.DateTimeField(auto_now_add=True)
     date_finished = models.DateTimeField(null=True, blank=True)
 
@@ -34,7 +34,8 @@ class QuizUser(models.Model):
 class QuestionUser(models.Model):
     """Model for question answered by user."""
     question = models.ForeignKey('quiz.Question', on_delete=models.CASCADE)
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
     answer = models.ForeignKey(
         'quiz.QuestionAnswer', on_delete=models.SET_NULL,
         related_name='answers', null=True)
