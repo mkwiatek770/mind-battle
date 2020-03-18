@@ -15,7 +15,7 @@ class Quiz(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_published = models.DateTimeField(null=True, blank=True)
     date_modified = models.DateTimeField(auto_now=True)
-    # image = models.ImageField()
+    image = models.ImageField(null=True, blank=True)
 
     # overwrite default manager
     objects = QuizManager()
@@ -95,7 +95,7 @@ class QuestionAnswer(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    # image = models.ImageField()
+    image = models.ImageField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Category"
