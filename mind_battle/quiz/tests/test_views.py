@@ -123,6 +123,13 @@ class TestQuizUnauthenticated(TestCase):
         self.assertIn(QuestionAnswerSerializer(answer_1).data, answers)
         self.assertIn(QuestionAnswerSerializer(answer_2).data, answers)
 
+
+class TestUserQuestion(TestCase):
+    """Test actions suite by user for question."""
+
+    def setUp(self):
+        self.client = APIClient()
+
     def test_answer_to_question(self):
         """Submit answer to specific quiz question."""
         pass
