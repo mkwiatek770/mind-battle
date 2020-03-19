@@ -1,5 +1,6 @@
 """"Test endpoints for API."""
 from rest_framework.test import APIClient
+from rest_framework.authtoken.models import Token
 from rest_framework.test import force_authenticate
 from django.test import TestCase
 from django.utils import timezone
@@ -157,7 +158,12 @@ class TestQuizCreator(TestCase):
             username='user2',
             password='password'
         )
-        self.client.login(username='user1', password='password')
+        # token = Token.objects.get(user__username='user1')
+        # self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+
+        # self.client.login(username='user1', password='password')
+
+        self.client.force_authenticate(user=self.user_1)
 
     def test_get_draft_quizzes_for_user(self):
         """Test getting all drafted quizzes for creator."""
