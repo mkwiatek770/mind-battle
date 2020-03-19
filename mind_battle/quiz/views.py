@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from quiz.models import Quiz, Question
 from quiz.serializers import QuizSerializer, QuestionSerializer
@@ -10,6 +10,7 @@ from quiz.serializers import QuizSerializer, QuestionSerializer
 class QuizView(viewsets.ModelViewSet):
 
     serializer_class = QuizSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
         published_quizzes = Quiz.objects.published()

@@ -18,7 +18,7 @@ class QuizSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(write_only=True)
     publish = serializers.BooleanField(write_only=True)
 
-    def validate_category_name(self, value):
+    def validate_category_name(self, value) -> str:
         """Check if category_name match with existing object in db."""
         if Category.objects.filter(name=value).exists():
             return value
