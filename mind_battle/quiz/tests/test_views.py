@@ -23,6 +23,10 @@ class TestQuizUnauthenticated(TestCase):
 
     def setUp(self):
         self.client = APIClient()
+        self.user = get_user_model().objects.create(
+            username='user1',
+            password='password'
+        )
 
     def test_get_all_published_quizzes(self):
         """Get all quizzes that was already published"""
@@ -49,12 +53,23 @@ class TestQuizUnauthenticated(TestCase):
         quiz_1.publish()
         quiz_2.publish()
 
-        response = self.client.get(
-            '/api/v1/quizzes/', {'category': 'python'})
+        response = self.client.get('/api/v1/quizzes/', {'category': 'python'})
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(QuizSerializer(quiz_1).data, response.data)
         self.assertNotIn(QuizSerializer(quiz_2).data, response.data)
+
+
+class TestQuizAuthenticated(TestCase):
+    """Test suite for authenticated user."""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create(
+            username="user",
+            password="password"
+        )
+        self.client.force_authenticate(user=self.user)
 
     def test_get_quiz_detail(self):
         """Receive detail info about specific quiz."""
@@ -70,6 +85,7 @@ class TestQuizUnauthenticated(TestCase):
     def test_get_quiz_detail_404_not_exist(self):
         """404 not found status code is returned if quiz does not exist."""
         response = self.client.get('/api/v1/quizzes/3123/')
+
         self.assertEqual(response.status_code, 404)
 
     def test_get_quiz_detail_404_not_published(self):
@@ -104,7 +120,7 @@ class TestQuizUnauthenticated(TestCase):
         self.assertEqual(response.data, serialized_data)
 
     def test_question_returns_all_answers(self):
-        """Check if answers to questions are returned."""
+        """Check if answers to question are returned."""
         quiz = Quiz.objects.create(name='quiz')
         quiz.publish()
         question = Question.objects.create(
@@ -230,6 +246,28 @@ class TestQuizCreator(TestCase):
 
     def test_update_quiz(self):
         """Assure existing quiz is updated."""
+        category = Category.objects.create(name="python")
+        category_2 = Category.objects.create(name="javascript")
+        quiz = Quiz.objects.create(name="quiz v1", category=category, creator=self.user_1)
+
+        payload_data = {
+            'name': 'quiz v2',
+            'category_name': 'javascript'
+        }
+
+        response = self.client.put(f"/api/v1/quizzes/{quiz.id}/", data=payload_data)
+        updated_quiz = Quiz.objects.get(id=quiz.id)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(updated_quiz.name, "quiz v2")
+        self.assertEqual(updated_quiz.category.name, "javascript")
+
+    def test_update_quiz_by_non_creator(self):
+        """Test non creat can't update someone else's quiz."""
+        pass
+
+    def test_update_quiz_by_non_authenticated(self):
+        """Test not logged in user can't update quiz."""
         pass
 
     def test_delete_quiz(self):
