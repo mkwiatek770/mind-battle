@@ -158,11 +158,6 @@ class TestQuizCreator(TestCase):
             username='user2',
             password='password'
         )
-        # token = Token.objects.get(user__username='user1')
-        # self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
-
-        # self.client.login(username='user1', password='password')
-
         self.client.force_authenticate(user=self.user_1)
 
     def test_get_draft_quizzes_for_user(self):
@@ -179,9 +174,59 @@ class TestQuizCreator(TestCase):
         self.assertNotIn(QuizSerializer(quiz_unpublished_user_2).data, response.data)
         self.assertNotIn(QuizSerializer(quiz_published_user_1).data, response.data)
 
-    def test_create_new_quiz(self):
-        """Assure new quiz is created."""
-        pass
+    def test_get_draft_quizzes_for_not_authenticated(self):
+        """Test http 403 status code is returned for annonymous user."""
+        Quiz.objects.create(name='quiz')
+
+        self.client.logout()
+        response = self.client.get('/api/v1/quizzes/drafts/')
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_create_and_publish_new_quiz(self):
+        """Assure new quiz is created and published."""
+        category = Category.objects.create(name='python')
+        payload_data = {
+            'name': 'Quiz 1',
+            'category_name': 'python',
+            'publish': True,
+        }
+
+        response = self.client.post('/api/v1/quizzes/', data=payload_data)
+        quiz = Quiz.objects.get(name='Quiz 1')
+
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(quiz.is_published)
+
+    def test_create_without_publish_new_quiz(self):
+        """Test quiz is created but not published."""
+        category = Category.objects.create(name='python')
+        payload_data = {
+            'name': 'Quiz 1',
+            'category_name': 'python',
+            'publish': False,
+        }
+
+        response = self.client.post('/api/v1/quizzes/', data=payload_data)
+        quiz = Quiz.objects.get(name='Quiz 1')
+
+        self.assertEqual(response.status_code, 201)
+        self.assertFalse(quiz.is_published)
+
+    def test_create_new_quiz_for_not_authenticated(self):
+        """Assure non authenticated user can't access this endpoint."""
+        category = Category.objects.create(name='python')
+        payload_data = {
+            'name': 'Quiz 1',
+            'category_name': 'python',
+            'publish': False,
+        }
+
+        self.client.logout()
+        response = self.client.post('/api/v1/quizzes/', data=payload_data)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(Quiz.objects.filter(name='Quiz 1').exists())
 
     def test_update_quiz(self):
         """Assure existing quiz is updated."""
