@@ -1,38 +1,86 @@
 from rest_framework import viewsets
 from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from quiz.models import Quiz, Question
 from quiz.serializers import QuizSerializer, QuestionSerializer
 
 
-class QuizView(viewsets.ModelViewSet):
+class QuizListView(APIView):
 
-    serializer_class = QuizSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
-    def get_queryset(self):
-        published_quizzes = Quiz.objects.published()
-        # Filter by category.
-        category = self.request.query_params.get('category')
+    def get(self, request, format=None):
+        quizzes = Quiz.objects.published()
+        category = request.query_params.get('category')
         if category:
-            return published_quizzes.filter(
-                category__name=category)
-        return published_quizzes
+            quizzes = quizzes.filter(category__name=category)
 
-    @action(methods=['get'], detail=False, permission_classes=[IsAuthenticated])
-    def drafts(self, request):
-        """View to return list of draft quizzes for logged in user."""
+        serializer = QuizSerializer(quizzes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, format=None):
+        serializer = QuizSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class QuizDraftsView(APIView):
+
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
         draft_quizzes = Quiz.objects.drafts(request.user.id)
-        serialized_data = QuizSerializer(draft_quizzes, many=True)
-        return Response(serialized_data.data, status=status.HTTP_200_OK)
+        serializer = QuizSerializer(draft_quizzes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class QuestionView(viewsets.ModelViewSet):
+class QuizDetailView(APIView):
 
-    serializer_class = QuestionSerializer
+    permission_classes = (IsAuthenticated,)
 
-    def get_queryset(self):
-        quiz_id = self.kwargs.get('parent_lookup_quiz')
-        return Quiz.objects.questions(quiz_id)
+    def get(self, request, pk, format=None):
+        quiz = Quiz.objects.filter(pk=pk).first()
+        if quiz:
+            if quiz.is_published or quiz.creator == request.user:
+                serializer = QuizSerializer(quiz)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({}, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request, pk, format=None):
+        quiz = Quiz.objects.get(pk=pk)
+        serializer = QuizSerializer(quiz, data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        pass
+
+
+class QuestionsListView(APIView):
+
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, pk, format=None):
+        """Return all quiz questions."""
+        questions = Quiz.objects.questions(quiz_id=pk)
+        serializer = QuestionSerializer(questions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class QuestionDetailView(APIView):
+
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, quiz_pk, question_pk):
+        question = Quiz.objects.questions(quiz_pk).get(pk=question_pk)
+        serializer = QuestionSerializer(question)
+        return Response(serializer.data, status=status.HTTP_200_OK)
