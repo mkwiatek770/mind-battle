@@ -1,7 +1,9 @@
 """"Test endpoints for API."""
 from rest_framework.test import APIClient
+from rest_framework.test import force_authenticate
 from django.test import TestCase
 from django.utils import timezone
+from django.contrib.auth import get_user_model
 from quiz.models import (
     Quiz,
     Category,
@@ -147,10 +149,29 @@ class TestQuizCreator(TestCase):
 
     def setUp(self):
         self.client = APIClient()
+        self.user_1 = get_user_model().objects.create(
+            username='user1',
+            password='password'
+        )
+        self.user_2 = get_user_model().objects.create(
+            username='user2',
+            password='password'
+        )
+        self.client.login(username='user1', password='password')
 
     def test_get_draft_quizzes_for_user(self):
         """Test getting all drafted quizzes for creator."""
-        pass
+        quiz_unpublished_user_1 = Quiz.objects.create(name='quiz1', creator=self.user_1)
+        quiz_unpublished_user_2 = Quiz.objects.create(name='quiz2', creator=self.user_2)
+        quiz_published_user_1 = Quiz.objects.create(name='quiz1published', creator=self.user_1)
+        quiz_published_user_1.publish()
+
+        response = self.client.get('/api/v1/quizzes/drafts/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(QuizSerializer(quiz_unpublished_user_1).data, response.data)
+        self.assertNotIn(QuizSerializer(quiz_unpublished_user_2).data, response.data)
+        self.assertNotIn(QuizSerializer(quiz_published_user_1).data, response.data)
 
     def test_create_new_quiz(self):
         """Assure new quiz is created."""
