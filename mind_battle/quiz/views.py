@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from quiz.models import Quiz, Question
 from quiz.serializers import QuizSerializer, QuestionSerializer
@@ -19,7 +20,7 @@ class QuizView(viewsets.ModelViewSet):
                 category__name=category)
         return published_quizzes
 
-    @action(methods=['get'], detail=False)
+    @action(methods=['get'], detail=False, permission_classes=[IsAuthenticated])
     def drafts(self, request):
         """View to return list of draft quizzes for logged in user."""
         draft_quizzes = Quiz.objects.drafts(request.user.id)
