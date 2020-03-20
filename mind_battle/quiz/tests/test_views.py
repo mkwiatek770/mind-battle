@@ -444,7 +444,21 @@ class TestQuestionDetail(TestCase):
 
     def test_update_question_by_author(self):
         """Assure author of quiz can update one of its questions."""
-        pass
+        quiz = Quiz.objects.create(name='name', creator=self.user)
+        question = Question.objects.create(quiz=quiz, question='...', explaination='...')
+
+        payload_data = {
+            'question': 'New one ...',
+            'explaination': 'changed explaination'
+        }
+        response = self.client.put(
+            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/',
+            data=payload_data)
+        question_obj = Question.objects.get(pk=question.id)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(question_obj.question, "New one ...")
+        self.assertEqual(response.data['question'], "New one ...")
 
     def test_update_question_not_author(self):
         """Assure only author can update question."""
