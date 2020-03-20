@@ -101,7 +101,7 @@ class TestQuizAuthenticated(TestCase):
 
     def test_get_all_quiz_questions(self):
         """Receive list of questions for specific quiz."""
-        quiz = Quiz.objects.create(name='name')
+        quiz = Quiz.objects.create(name='name', creator=self.user)
         question_1 = Question.objects.create(
             quiz=quiz,
             question="What is your favourite color?",
@@ -324,7 +324,16 @@ class TestQuizCreator(TestCase):
 
     def test_add_new_question_to_quiz(self):
         """Test add new question to existing quiz."""
-        pass
+        quiz = Quiz.objects.create(name="quiz 1", creator=self.user_1)
+
+        payload_data = {
+            'question': 'What is your name?',
+            'explaination': 'Lorem ipsum ...'
+        }
+        response = self.client.post(f"/api/v1/quizzes/{quiz.id}/questions/", data=payload_data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Question.objects.get(question='What is your name?').quiz, quiz)
 
     def test_update_question(self):
         """Test update question for quiz."""
