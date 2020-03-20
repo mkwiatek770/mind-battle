@@ -71,10 +71,17 @@ class QuestionAnswerSerializer(serializers.ModelSerializer):
 
 
 class QuestionSerializer(serializers.ModelSerializer):
-    quiz = QuizSerializer()
-    answers = QuestionAnswerSerializer(many=True)
+    quiz = QuizSerializer(read_only=True)
+    answers = QuestionAnswerSerializer(read_only=True, many=True)
+
+    def create(self, validated_data) -> Question:
+        """Create question instance."""
+        quiz = self.context['quiz']
+        question = Question.objects.create(quiz=quiz, **validated_data)
+        return question
 
     class Meta:
         model = Question
         fields = ('id', 'quiz', 'question', 'answers', 'explaination',
                   'good_answers', 'bad_answers')
+        read_only_fields = ('id', 'quiz', 'answers', 'good_answers', 'bad_answers')
