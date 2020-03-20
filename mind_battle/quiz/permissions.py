@@ -1,8 +1,16 @@
 from rest_framework.permissions import BasePermission
 
 
-class IsCreator(BasePermission):
-    """Permission that check if request.user is object creator"""
+class IsQuizCreatorOrReadOnly(BasePermission):
+    """
+    Permission that check if request.user is quiz creator
+    or quiz has been already published.
+    """
 
-    def has_object_permission(self, request, view, obj):
-        return obj.creator == request.user
+    def has_object_permission(self, request, view, quiz):
+
+        if quiz.creator == request.user:
+            return True
+
+        if request.method == 'GET' and quiz.date_published:
+            return True

@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 
 from quiz.models import Quiz, Question
 from quiz.serializers import QuizSerializer, QuestionSerializer
-from quiz.permissions import IsCreator
+from quiz.permissions import IsQuizCreatorOrReadOnly
 
 
 class QuizListView(APIView):
@@ -46,18 +46,22 @@ class QuizDraftsView(APIView):
 
 class QuizDetailView(APIView):
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsQuizCreatorOrReadOnly,)
+
+    def get_object(self, pk):
+        quiz = get_object_or_404(Quiz, pk=pk)
+        self.check_object_permissions(self.request, quiz)
+        return quiz
 
     def get(self, request, pk, format=None):
-        quiz = Quiz.objects.filter(pk=pk).first()
-        if quiz:
-            if quiz.is_published or quiz.creator == request.user:
-                serializer = QuizSerializer(quiz)
-                return Response(serializer.data, status=status.HTTP_200_OK)
+        quiz = self.get_object(pk)
+        if quiz.is_published or quiz.creator == request.user:
+            serializer = QuizSerializer(quiz)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({}, status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request, pk, format=None):
-        quiz = Quiz.objects.get(pk=pk)
+        quiz = self.get_object(pk)
         serializer = QuizSerializer(quiz, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -70,7 +74,7 @@ class QuizDetailView(APIView):
 
 class QuizPublishView(APIView):
 
-    permission_classes = (IsCreator,)
+    permission_classes = (IsQuizCreatorOrReadOnly,)
 
     def get_object(self, pk):
         quiz = get_object_or_404(Quiz, pk=pk)
@@ -86,7 +90,7 @@ class QuizPublishView(APIView):
 
 class QuizUnpublishView(APIView):
 
-    permission_classes = (IsCreator,)
+    permission_classes = (IsQuizCreatorOrReadOnly,)
 
     def get_object(self, pk):
         quiz = get_object_or_404(Quiz, pk=pk)
