@@ -332,7 +332,7 @@ class TestQuizCreator(TestCase):
         }
         response = self.client.post(f"/api/v1/quizzes/{quiz.id}/questions/", data=payload_data)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(Question.objects.get(question='What is your name?').quiz, quiz)
 
     def test_update_question(self):
