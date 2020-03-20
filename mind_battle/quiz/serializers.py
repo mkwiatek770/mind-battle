@@ -94,11 +94,14 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 class ImageSerializer(serializers.Serializer):
 
-    url = serializers.CharField()
+    url = serializers.CharField(read_only=True)
     image = serializers.ImageField(write_only=True)
 
     def get_full_path(self):
         pass
 
-    def create(self, validated_data):
-        pass
+    def update(self, instance, validated_data):
+        quiz = Quiz.objects.get(pk=self.context['quiz_pk'])
+        quiz.image = validated_data['image']
+        quiz.save()
+        return quiz
