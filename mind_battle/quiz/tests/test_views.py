@@ -497,8 +497,14 @@ class TestQuestionDetail(TestCase):
         self.assertEqual(question_obj.question, "...")
 
     def test_delete_question_by_author(self):
-        """Make sure user can't delete question."""
-        pass
+        """Make sure user can delete question of his own quiz."""
+        quiz = Quiz.objects.create(name='name', creator=self.user)
+        question = Question.objects.create(quiz=quiz, question='...', explaination='...')
+
+        response = self.client.delete(f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/')
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Question.objects.count(), 0)
 
     def test_delete_question_by_non_creator(self):
         """Don't allow not quiz creator to delete question."""
