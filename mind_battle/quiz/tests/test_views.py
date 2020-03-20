@@ -569,20 +569,33 @@ class TestQuizAvatar(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['url'], quiz.image.url)
 
-    def test_uploading_avatar_by_creator(self):
-        """Assert quiz avatar is uploaded by creator."""
+    def test_uploading_image_by_creator(self):
+        """Assert quiz image is uploaded by creator."""
         quiz = Quiz.objects.create(name='test', creator=self.user)
         image_to_upload = self.get_image_file("sample.png")
 
-        response = self.client.put(f"/api/v1/quizzes/{quiz.id}/image/", format='multipart')
+        response = self.client.put(
+            f"/api/v1/quizzes/{quiz.id}/image/",
+            data={'image': image_to_upload},
+            format='multipart')
         quiz_obj = Quiz.objects.get(name='test')
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 204)
         self.assertIsNotNone(quiz_obj.image)
 
-    def test_changing_avatar(self):
-        """Assert quiz avatar is changed."""
-        pass
+    def test_changing_image_by_not_creator(self):
+        """Assert quiz image is not changed if not creator requested it."""
+        quiz = Quiz.objects.create(name='test', creator=self.user_2)
+        image_to_upload = self.get_image_file("sample.png")
+
+        response = self.client.put(
+            f"/api/v1/quizzes/{quiz.id}/image/",
+            data={'image': image_to_upload},
+            format='multipart')
+        quiz_obj = Quiz.objects.get(name='test')
+
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(quiz_obj.image)
 
     def test_removing_avatar(self):
         """Assert quiz avatar is removed."""

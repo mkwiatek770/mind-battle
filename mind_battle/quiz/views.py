@@ -168,15 +168,27 @@ class QuestionDetailView(APIView):
 class QuizImageView(APIView):
     """View to conduct operations on quiz avatar's image."""
 
-    def get(self, request, pk, format=None):
+    permission_classes = (IsQuizCreatorOrReadOnly,)
+
+    def get_object(self, pk):
         quiz = get_object_or_404(Quiz, pk=pk)
+        self.check_object_permissions(self.request, quiz)
+        return quiz
+
+    def get(self, request, pk, format=None):
+        quiz = self.get_object(pk)
         if quiz.image:
             serializer = ImageSerializer(quiz.image)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def put(self, request, pk, format=None):
-        pass
+        quiz = self.get_object(pk)
+        serializer = ImageSerializer(quiz, data=request.data, context={'quiz_pk': pk})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         pass
