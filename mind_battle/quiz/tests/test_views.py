@@ -435,6 +435,7 @@ class TestQuestionDetail(TestCase):
     def test_get_question_detail_for_not_author(self):
         """Assure questions detail is returned for not author."""
         quiz = Quiz.objects.create(name='name', creator=self.user_2)
+        quiz.publish()
         question = Question.objects.create(quiz=quiz, question='...', explaination='...')
 
         response = self.client.get(f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/')

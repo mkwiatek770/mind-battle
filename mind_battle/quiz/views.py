@@ -138,7 +138,7 @@ class QuestionsListView(APIView):
 
 class QuestionDetailView(APIView):
 
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, IsQuizCreatorOrReadOnly)
 
     def get_object(self, quiz_pk, question_pk):
         quiz = get_object_or_404(Quiz, pk=quiz_pk)
