@@ -1,8 +1,7 @@
 """"Test endpoints for API."""
-from rest_framework.test import APIClient
+from rest_framework.test import APIClient, APITestCase
 from rest_framework.authtoken.models import Token
 from rest_framework.test import force_authenticate
-from django.test import TestCase
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from quiz.models import (
@@ -18,7 +17,7 @@ from quiz.serializers import (
 )
 
 
-class TestQuizUnauthenticated(TestCase):
+class TestQuizUnauthenticated(APITestCase):
     """Test for quiz related endpoints for unathenticated user."""
 
     def setUp(self):
@@ -60,7 +59,7 @@ class TestQuizUnauthenticated(TestCase):
         self.assertNotIn(QuizSerializer(quiz_2).data, response.data)
 
 
-class TestQuizAuthenticated(TestCase):
+class TestQuizAuthenticated(APITestCase):
     """Test suite for authenticated user."""
 
     def setUp(self):
@@ -146,7 +145,7 @@ class TestQuizAuthenticated(TestCase):
         self.assertIn(QuestionAnswerSerializer(answer_2).data, answers)
 
 
-class TestUserQuestion(TestCase):
+class TestUserQuestion(APITestCase):
     """Test actions suite by user for question."""
 
     def setUp(self):
@@ -161,7 +160,7 @@ class TestUserQuestion(TestCase):
         pass
 
 
-class TestQuizCreator(TestCase):
+class TestQuizCreator(APITestCase):
     """Test suite for quiz creator."""
 
     def setUp(self):
@@ -402,7 +401,7 @@ class TestQuizCreator(TestCase):
         self.assertIsNotNone(quiz_obj.date_published)
 
 
-class TestQuestionDetail(TestCase):
+class TestQuestionDetail(APITestCase):
     """Test suit for question specific operations."""
 
     def setUp(self):
@@ -533,7 +532,7 @@ class TestQuestionDetail(TestCase):
         self.assertEqual(Question.objects.count(), 1)
 
 
-class TestQuizAvatar(TestCase):
+class TestQuizAvatar(APITestCase):
     """Test suite for avatar related actions for quiz."""
 
     def test_uploading_avatar(self):
