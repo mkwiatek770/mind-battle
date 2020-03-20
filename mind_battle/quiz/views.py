@@ -129,11 +129,10 @@ class QuestionsListView(APIView):
         """Create new question."""
         quiz = self.get_object(pk)
         serializer = QuestionSerializer(
-            data=request.data, context={'request': request, 'quiz': quiz})
+            data=request.data, context={'request': request, 'quiz_pk': quiz.pk})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -141,7 +140,22 @@ class QuestionDetailView(APIView):
 
     permission_classes = (IsAuthenticated, )
 
+    def get_object(self, quiz_pk, question_pk):
+        quiz = get_object_or_404(Quiz, pk=quiz_pk)
+        self.check_object_permissions(self.request, quiz)
+        question = get_object_or_404(Question, pk=question_pk, quiz=quiz)
+        return question
+
     def get(self, request, quiz_pk, question_pk):
-        question = Quiz.objects.questions(quiz_pk).get(pk=question_pk)
+        question = self.get_object(quiz_pk, question_pk)
         serializer = QuestionSerializer(question)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, quiz_pk, question_pk):
+        question = self.get_object(quiz_pk, question_pk)
+        serializer = QuestionSerializer(question, data=request.data, context={
+                                        'request': request, 'quiz_pk': quiz_pk})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
