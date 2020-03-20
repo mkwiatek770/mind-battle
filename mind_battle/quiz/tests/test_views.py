@@ -315,7 +315,12 @@ class TestQuizCreator(TestCase):
 
     def test_delete_quiz_by_non_creator(self):
         """Assure non creator can't remove quiz from db."""
-        pass
+        quiz = Quiz.objects.create(name="quiz 1", creator=self.user_2)
+
+        response = self.client.delete(f"/api/v1/quizzes/{quiz.id}/")
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Quiz.objects.count(), 1)
 
     def test_add_new_question_to_quiz(self):
         """Test add new question to existing quiz."""
