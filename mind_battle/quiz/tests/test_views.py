@@ -1,5 +1,5 @@
 """"Test endpoints for API."""
-from rest_framework.test import APIClient, APITestCase
+from rest_framework.test import APITestCase
 from rest_framework.authtoken.models import Token
 from rest_framework.test import force_authenticate
 from django.utils import timezone
@@ -21,7 +21,6 @@ class TestQuizUnauthenticated(APITestCase):
     """Test for quiz related endpoints for unathenticated user."""
 
     def setUp(self):
-        self.client = APIClient()
         self.user = get_user_model().objects.create(
             username='user1',
             password='password'
@@ -63,7 +62,6 @@ class TestQuizAuthenticated(APITestCase):
     """Test suite for authenticated user."""
 
     def setUp(self):
-        self.client = APIClient()
         self.user = get_user_model().objects.create(
             username="user",
             password="password"
@@ -149,7 +147,7 @@ class TestUserQuestion(APITestCase):
     """Test actions suite by user for question."""
 
     def setUp(self):
-        self.client = APIClient()
+        pass
 
     def test_answer_to_question(self):
         """Submit answer to specific quiz question."""
@@ -164,7 +162,6 @@ class TestQuizCreator(APITestCase):
     """Test suite for quiz creator."""
 
     def setUp(self):
-        self.client = APIClient()
         self.user_1 = get_user_model().objects.create(
             username='user1',
             password='password'
@@ -405,7 +402,6 @@ class TestQuestionDetail(APITestCase):
     """Test suit for question specific operations."""
 
     def setUp(self):
-        self.client = APIClient()
         self.user = get_user_model().objects.create(
             username='user',
             password='password'
