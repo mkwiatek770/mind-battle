@@ -14,7 +14,7 @@ class QuizQueryset(models.QuerySet):
 
     def questions(self, quiz_id: int):
         """Return all quiz questions."""
-        return self.get(pk=quiz_id).questions.all()
+        return self.get(pk=quiz_id).questions.all().prefetch_related('answers')
 
 
 class QuizManager(models.Manager):
