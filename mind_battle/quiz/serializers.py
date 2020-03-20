@@ -90,3 +90,11 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = ('id', 'quiz', 'question', 'answers', 'explaination',
                   'good_answers', 'bad_answers')
         read_only_fields = ('id', 'quiz', 'answers', 'good_answers', 'bad_answers')
+
+
+class ImageSerializer(serializers.Serializer):
+
+    url = serializers.CharField()
+
+    def get_full_path(self):
+        pass
