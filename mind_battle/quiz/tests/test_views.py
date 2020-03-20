@@ -397,6 +397,53 @@ class TestQuizCreator(TestCase):
         self.assertIsNotNone(quiz_obj.date_published)
 
 
+class TestQuestionDetail(TestCase):
+    """Test suit for question specific operations."""
+
+    def setuUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create(
+            username='user',
+            password='password'
+        )
+        self.client.force_authenticate(user=self.user)
+
+    def test_get_question_for_creator(self):
+        """Test question detail is returned for creator."""
+        pass
+
+    def test_get_question_for_not_authenticated(self):
+        """Make sure not authenticated user can't  access this endpoint."""
+
+    def test_get_question_detail_for_not_author(self):
+        """Assure questions detail is returned for not author."""
+        pass
+
+    def test_update_question_by_author(self):
+        """Assure author of quiz can update one of its questions."""
+        pass
+
+    def test_update_question_not_author(self):
+        """Assure only author can update question."""
+        pass
+
+    def test_update_question_not_authenticated(self):
+        """Make sure not authenticated user can't access this endpoint."""
+        pass
+
+    def test_delete_question_by_author(self):
+        """Make sure user can't delete question."""
+        pass
+
+    def test_delete_question_by_non_creator(self):
+        """Don't allow not quiz creator to delete question."""
+        pass
+
+    def test_delete_question_by_not_authenticated(self):
+        """Make sure not authenticated user can't access this endpoint."""
+        pass
+
+
 class TestQuizAvatar(TestCase):
     """Test suite for avatar related actions for quiz."""
 
