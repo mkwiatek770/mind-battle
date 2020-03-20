@@ -296,7 +296,12 @@ class TestQuizCreator(TestCase):
 
     def test_delete_quiz(self):
         """Assure specific quiz is removed."""
-        pass
+        quiz = Quiz.objects.create(name="quiz 1", creator=self.user_1)
+
+        response = self.client.delete(f"/api/v1/quizzes/{quiz.id}/")
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Quiz.objects.count(), 0)
 
     def test_delete_quiz_by_non_authenticated(self):
         """Assure non authenticated user can't delete quiz."""
