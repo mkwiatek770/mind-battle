@@ -280,7 +280,19 @@ class TestQuizCreator(TestCase):
 
     def test_update_quiz_by_non_authenticated(self):
         """Test not logged in user can't update quiz."""
-        pass
+        quiz = Quiz.objects.create(name="quiz v1", creator=self.user_2)
+
+        payload_data = {
+            'name': 'quiz v2',
+            'category_name': 'python'
+        }
+
+        self.client.logout()
+        response = self.client.put(f"/api/v1/quizzes/{quiz.id}/", data=payload_data)
+        quiz_obj = Quiz.objects.get(pk=quiz.id)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(quiz_obj.name, "quiz v1")
 
     def test_delete_quiz(self):
         """Assure specific quiz is removed."""
