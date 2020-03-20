@@ -1,6 +1,8 @@
-from django.db import connection, reset_queries
+import os
 import time
 import functools
+from django.utils.text import slugify
+from django.db import connection, reset_queries
 
 
 def query_debugger(func):
@@ -26,3 +28,14 @@ def query_debugger(func):
         return result
 
     return inner_func
+
+
+def get_quiz_image_location(instance, filename: str) -> str:
+    """
+    Return quiz image location with format:
+    /quiz/<slug:name>.<extension>.
+    """
+    ext = filename.split('.')[-1]
+    slugified_name = slugify(instance.name)
+    basename = '{}.{}'.format(slugified_name, ext)
+    return os.path.join('quiz', basename)

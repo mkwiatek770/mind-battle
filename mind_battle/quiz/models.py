@@ -1,9 +1,11 @@
+import os
 from django.db import models
 from django.db.models import Sum, Count, Case, When, Value
 from django.conf import settings
 from django.utils.text import slugify
 from django.utils import timezone
 from quiz.managers import QuizManager
+from mind_battle.helpers import get_quiz_image_location
 
 
 class Quiz(models.Model):
@@ -15,7 +17,7 @@ class Quiz(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_published = models.DateTimeField(null=True, blank=True)
     date_modified = models.DateTimeField(auto_now=True)
-    image = models.ImageField(null=True, blank=True, upload_to='images')
+    image = models.ImageField(null=True, blank=True, upload_to=get_quiz_image_location)
 
     # overwrite default manager
     objects = QuizManager()
