@@ -569,9 +569,16 @@ class TestQuizAvatar(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['url'], quiz.image.url)
 
-    def test_uploading_avatar(self):
-        """Assert quiz avatar is uploaded."""
-        pass
+    def test_uploading_avatar_by_creator(self):
+        """Assert quiz avatar is uploaded by creator."""
+        quiz = Quiz.objects.create(name='test', creator=self.user)
+        image_to_upload = self.get_image_file("sample.png")
+
+        response = self.client.put(f"/api/v1/quizzes/{quiz.id}/image/", format='multipart')
+        quiz_obj = Quiz.objects.get(name='test')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(quiz_obj.image)
 
     def test_changing_avatar(self):
         """Assert quiz avatar is changed."""

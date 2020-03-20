@@ -95,6 +95,10 @@ class QuestionSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.Serializer):
 
     url = serializers.CharField()
+    image = serializers.ImageField(write_only=True)
 
     def get_full_path(self):
+        pass
+
+    def create(self, validated_data):
         pass
