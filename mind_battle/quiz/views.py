@@ -74,19 +74,30 @@ class QuizPublishView(APIView):
 
     def get_object(self, pk):
         quiz = get_object_or_404(Quiz, pk=pk)
-        self.check_object_permissions(request, quiz)
+        self.check_object_permissions(self.request, quiz)
         return quiz
 
     def post(self, request, pk, format=None):
-        quiz = Quiz.objects.get(pk=pk)
-        self.check_object_permissions(request, quiz)
+        quiz = self.get_object(pk)
         quiz.publish()
         serializer = QuizSerializer(quiz)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class QuizUnpublishView(APIView):
-    pass
+
+    permission_classes = (IsCreator,)
+
+    def get_object(self, pk):
+        quiz = get_object_or_404(Quiz, pk=pk)
+        self.check_object_permissions(self.request, quiz)
+        return quiz
+
+    def post(self, request, pk, format=None):
+        quiz = self.get_object(pk)
+        quiz.unpublish()
+        serializer = QuizSerializer(quiz)
+        return Response(serializer.data, status.HTTP_200_OK)
 
 
 class QuestionsListView(APIView):
