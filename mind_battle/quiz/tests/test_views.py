@@ -335,6 +335,19 @@ class TestQuizCreator(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Question.objects.get(question='What is your name?').quiz, quiz)
 
+    def test_add_new_question_to_quiz_for_not_creator(self):
+        """Test non creator, can't add new question for quiz."""
+        quiz = Quiz.objects.create(name="quiz 1", creator=self.user_2)
+
+        payload_data = {
+            'question': 'What is your name?',
+            'explaination': 'Lorem ipsum ...'
+        }
+        response = self.client.post(f"/api/v1/quizzes/{quiz.id}/questions/", data=payload_data)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Question.objects.count(), 0)
+
     def test_update_question(self):
         """Test update question for quiz."""
         pass
