@@ -508,7 +508,13 @@ class TestQuestionDetail(TestCase):
 
     def test_delete_question_by_non_creator(self):
         """Don't allow not quiz creator to delete question."""
-        pass
+        quiz = Quiz.objects.create(name='name', creator=self.user_2)
+        question = Question.objects.create(quiz=quiz, question='...', explaination='...')
+
+        response = self.client.delete(f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/')
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Question.objects.count(), 1)
 
     def test_delete_question_by_not_authenticated(self):
         """Make sure not authenticated user can't access this endpoint."""
