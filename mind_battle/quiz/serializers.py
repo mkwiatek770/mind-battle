@@ -76,7 +76,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data) -> Question:
         """Create question instance."""
-        quiz = self.context['quiz']
+        quiz = Quiz.objects.get(pk=self.context['quiz_pk'])
         question = Question.objects.create(quiz=quiz, **validated_data)
         return question
 
