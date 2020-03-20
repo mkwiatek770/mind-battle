@@ -307,7 +307,13 @@ class TestQuizCreator(TestCase):
 
     def test_unpublish_quiz_by_creator(self):
         """Assure quiz is unpublished"""
-        pass
+        quiz = Quiz.objects.create(name="Quiz 1", creator=self.user_1)
+        quiz.publish()
+
+        response = self.client.post(f"/api/v1/quizzes/{quiz.id}/unpublish/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.data['date_published'])
 
     def test_unpublish_quiz_by_non_creator(self):
         """Assure unpublishing quiz by non creator is not possible."""
