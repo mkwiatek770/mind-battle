@@ -65,6 +65,14 @@ class QuizDetailView(APIView):
         pass
 
 
+class QuizPublishView(APIView):
+    pass
+
+
+class QuizUnpublishView(APIView):
+    pass
+
+
 class QuestionsListView(APIView):
 
     permission_classes = (IsAuthenticated,)
