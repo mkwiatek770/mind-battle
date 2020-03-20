@@ -72,12 +72,17 @@ class QuestionAnswerSerializer(serializers.ModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     quiz = QuizSerializer(read_only=True)
-    answers = QuestionAnswerSerializer(read_only=True, many=True)
+    answers = QuestionAnswerSerializer(many=True, required=False)
 
     def create(self, validated_data) -> Question:
         """Create question instance."""
+        answers = validated_data.pop('answers')
         quiz = Quiz.objects.get(pk=self.context['quiz_pk'])
         question = Question.objects.create(quiz=quiz, **validated_data)
+        for answer in answers:
+            QuestionAnswer.objects.bulk_create([
+                QuestionAnswer(**answer, question=question)
+            ])
         return question
 
     class Meta:

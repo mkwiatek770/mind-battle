@@ -5,7 +5,6 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
-from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 from quiz.models import Quiz, Question

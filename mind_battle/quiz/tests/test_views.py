@@ -328,7 +328,11 @@ class TestQuizCreator(TestCase):
 
         payload_data = {
             'question': 'What is your name?',
-            'explaination': 'Lorem ipsum ...'
+            'explaination': 'Lorem ipsum ...',
+            'answers': [
+                dict(content='answer1', is_correct=False),
+                dict(content='answer2', is_correct=True)
+            ]
         }
         response = self.client.post(f"/api/v1/quizzes/{quiz.id}/questions/", data=payload_data)
 
