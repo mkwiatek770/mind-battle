@@ -66,7 +66,12 @@ class QuizDetailView(APIView):
 
 
 class QuizPublishView(APIView):
-    pass
+
+    def post(self, request, pk, format=None):
+        quiz = Quiz.objects.get(pk=pk)
+        quiz.publish()
+        serializer = QuizSerializer(quiz)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class QuizUnpublishView(APIView):
