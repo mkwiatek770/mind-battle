@@ -4,10 +4,13 @@ from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+
 from quiz.models import Quiz, Question
 from quiz.serializers import QuizSerializer, QuestionSerializer
+from quiz.permissions import IsCreator
 
 
 class QuizListView(APIView):
@@ -67,8 +70,16 @@ class QuizDetailView(APIView):
 
 class QuizPublishView(APIView):
 
+    permission_classes = (IsCreator,)
+
+    def get_object(self, pk):
+        quiz = get_object_or_404(Quiz, pk=pk)
+        self.check_object_permissions(request, quiz)
+        return quiz
+
     def post(self, request, pk, format=None):
         quiz = Quiz.objects.get(pk=pk)
+        self.check_object_permissions(request, quiz)
         quiz.publish()
         serializer = QuizSerializer(quiz)
         return Response(serializer.data, status=status.HTTP_200_OK)
