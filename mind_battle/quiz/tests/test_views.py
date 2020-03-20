@@ -338,6 +338,7 @@ class TestQuizCreator(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Question.objects.get(question='What is your name?').quiz, quiz)
+        self.assertEqual(QuestionAnswer.objects.count(), 2)
 
     def test_add_new_question_to_quiz_for_not_creator(self):
         """Test non creator, can't add new question for quiz."""
