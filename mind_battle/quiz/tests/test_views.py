@@ -88,16 +88,16 @@ class TestQuizAuthenticated(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-    def test_get_quiz_detail_404_not_published(self):
+    def test_get_quiz_detail_403_not_published(self):
         """
-        404 not found status code is returned if is not published yet.
+        403 not found status code is returned if is not published yet.
         """
         quiz = Quiz.objects.create(name='quiz 1')
 
         response = self.client.get(f'/api/v1/quizzes/{quiz.id}/')
 
         self.assertFalse(quiz.is_published)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_get_all_quiz_questions(self):
         """Receive list of questions for specific quiz."""
