@@ -191,4 +191,6 @@ class QuizImageView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        pass
+        quiz = self.get_object(pk)
+        quiz.image.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
