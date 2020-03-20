@@ -108,13 +108,33 @@ class QuizUnpublishView(APIView):
 
 class QuestionsListView(APIView):
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsQuizCreatorOrReadOnly,)
+
+    def get_queryset(self, pk):
+        quiz = self.get_object(pk)
+        return Quiz.objects.questions(quiz_id=pk)
+
+    def get_object(self, pk):
+        quiz = get_object_or_404(Quiz, pk=pk)
+        self.check_object_permissions(self.request, quiz)
+        return quiz
 
     def get(self, request, pk, format=None):
         """Return all quiz questions."""
-        questions = Quiz.objects.questions(quiz_id=pk)
+        questions = self.get_queryset(pk)
         serializer = QuestionSerializer(questions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, pk, format=None):
+        """Create new question."""
+        quiz = self.get_object(pk)
+        serializer = QuestionSerializer(
+            data=request.data, context={'request': request, 'quiz': quiz})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class QuestionDetailView(APIView):
