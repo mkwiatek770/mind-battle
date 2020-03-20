@@ -163,3 +163,16 @@ class QuestionDetailView(APIView):
         question = self.get_object(quiz_pk, question_pk)
         question.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class QuizImageView(APIView):
+    """View to conduct operations on quiz avatar's image."""
+
+    def get(self, pk, format=None):
+        pass
+
+    def put(self, pk, format=None):
+        pass
+
+    def delete(self, pk, format=None):
+        pass
