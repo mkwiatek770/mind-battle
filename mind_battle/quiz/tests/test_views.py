@@ -462,7 +462,20 @@ class TestQuestionDetail(TestCase):
 
     def test_update_question_not_author(self):
         """Assure only author can update question."""
-        pass
+        quiz = Quiz.objects.create(name='name', creator=self.user_2)
+        question = Question.objects.create(quiz=quiz, question='...', explaination='...')
+
+        payload_data = {
+            'question': 'New one ...',
+            'explaination': 'changed explaination'
+        }
+        response = self.client.put(
+            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/',
+            data=payload_data)
+        question_obj = Question.objects.get(pk=question.id)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(question_obj.question, "...")
 
     def test_update_question_not_authenticated(self):
         """Make sure not authenticated user can't access this endpoint."""
