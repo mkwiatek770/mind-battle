@@ -1,9 +1,14 @@
 """"Test endpoints for API."""
+from io import BytesIO
+from PIL import Image
 from rest_framework.test import APITestCase
 from rest_framework.authtoken.models import Token
 from rest_framework.test import force_authenticate
+
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from django.core.files.base import File
+
 from quiz.models import (
     Quiz,
     Category,
@@ -530,6 +535,39 @@ class TestQuestionDetail(APITestCase):
 
 class TestQuizAvatar(APITestCase):
     """Test suite for avatar related actions for quiz."""
+
+    def setUp(self):
+        self.user = get_user_model().objects.create(
+            username='user',
+            password='password'
+        )
+        self.user_2 = get_user_model().objects.create(
+            username='user2',
+            password='password'
+        )
+        self.client.force_authenticate(self.user)
+
+    def get_image_file(self, name, ext='png', size=(50, 50), color=(256, 0, 0)):
+        file_obj = BytesIO()
+        image = Image.new("RGBA", size=size, color=color)
+        image.save(file_obj, ext)
+        file_obj.seek(0)
+        return File(file_obj, name=name)
+
+    def test_get_image_by_authenticated(self):
+        """Assert any authenticated user can access quiz image."""
+        # FIXME side effect - image is created
+        image = self.get_image_file("image.png")
+        quiz = Quiz.objects.create(
+            name='Quiz 1',
+            creator=self.user,
+            image=image
+        )
+
+        response = self.client.get(f"/api/v1/quizzes/{quiz.id}/image/", format='multipart')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['url'], quiz.image.url)
 
     def test_uploading_avatar(self):
         """Assert quiz avatar is uploaded."""
