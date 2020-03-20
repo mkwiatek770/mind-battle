@@ -581,7 +581,7 @@ class TestQuizAvatar(APITestCase):
         quiz_obj = Quiz.objects.get(name='test')
 
         self.assertEqual(response.status_code, 204)
-        self.assertIsNotNone(quiz_obj.image)
+        self.assertTrue(quiz_obj.image)
 
     def test_changing_image_by_not_creator(self):
         """Assert quiz image is not changed if not creator requested it."""
@@ -597,6 +597,21 @@ class TestQuizAvatar(APITestCase):
         self.assertEqual(response.status_code, 403)
         self.assertFalse(quiz_obj.image)
 
-    def test_removing_avatar(self):
-        """Assert quiz avatar is removed."""
+    def test_removing_image_by_creator(self):
+        """Assert quiz image is removed if author requested it."""
+        image = self.get_image_file("image.png")
+        quiz = Quiz.objects.create(
+            name='Quiz 1',
+            creator=self.user,
+            image=image
+        )
+
+        response = self.client.delete(f"/api/v1/quizzes/{quiz.id}/image/")
+        quiz_obj = Quiz.objects.get(name='Quiz 1')
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(quiz_obj.image)
+
+    def test_removing_image_by_non_creator(self):
+        """Make sure removing quiz image by non creator is not possible."""
         pass
