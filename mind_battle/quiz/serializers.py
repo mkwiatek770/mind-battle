@@ -47,7 +47,7 @@ class QuizSerializer(serializers.ModelSerializer):
             instance.publish()
         elif validated_data.get("publish") is False:
             instance.unpublish()
-        if validated_data["category_name"] != instance.category.name:
+        if not instance.category or validated_data["category_name"] != instance.category.name:
             category = Category.objects.get(name=validated_data["category_name"])
             instance.category = category
         instance.name = validated_data.get("name", instance.name)
