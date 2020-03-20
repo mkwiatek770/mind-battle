@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
 from quiz.models import Quiz, Question
-from quiz.serializers import QuizSerializer, QuestionSerializer
+from quiz.serializers import QuizSerializer, QuestionSerializer, ImageSerializer
 from quiz.permissions import IsQuizCreatorOrReadOnly
 
 
@@ -168,11 +168,15 @@ class QuestionDetailView(APIView):
 class QuizImageView(APIView):
     """View to conduct operations on quiz avatar's image."""
 
-    def get(self, pk, format=None):
+    def get(self, request, pk, format=None):
+        quiz = get_object_or_404(Quiz, pk=pk)
+        if quiz.image:
+            serializer = ImageSerializer(quiz.image)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def put(self, request, pk, format=None):
         pass
 
-    def put(self, pk, format=None):
-        pass
-
-    def delete(self, pk, format=None):
+    def delete(self, request, pk, format=None):
         pass
