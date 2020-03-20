@@ -614,4 +614,15 @@ class TestQuizAvatar(APITestCase):
 
     def test_removing_image_by_non_creator(self):
         """Make sure removing quiz image by non creator is not possible."""
-        pass
+        image = self.get_image_file("image.png")
+        quiz = Quiz.objects.create(
+            name='Quiz 1',
+            creator=self.user_2,
+            image=image
+        )
+
+        response = self.client.delete(f"/api/v1/quizzes/{quiz.id}/image/")
+        quiz_obj = Quiz.objects.get(name='Quiz 1')
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(quiz_obj.image)
