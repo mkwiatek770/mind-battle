@@ -480,7 +480,21 @@ class TestQuestionDetail(TestCase):
 
     def test_update_question_not_authenticated(self):
         """Make sure not authenticated user can't access this endpoint."""
-        pass
+        quiz = Quiz.objects.create(name='name', creator=self.user)
+        question = Question.objects.create(quiz=quiz, question='...', explaination='...')
+
+        payload_data = {
+            'question': 'New one ...',
+            'explaination': 'changed explaination'
+        }
+        self.client.logout()
+        response = self.client.put(
+            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/',
+            data=payload_data)
+        question_obj = Question.objects.get(pk=question.id)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(question_obj.question, "...")
 
     def test_delete_question_by_author(self):
         """Make sure user can't delete question."""
