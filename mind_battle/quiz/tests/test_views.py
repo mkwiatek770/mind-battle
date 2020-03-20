@@ -400,24 +400,47 @@ class TestQuizCreator(TestCase):
 class TestQuestionDetail(TestCase):
     """Test suit for question specific operations."""
 
-    def setuUp(self):
+    def setUp(self):
         self.client = APIClient()
         self.user = get_user_model().objects.create(
             username='user',
+            password='password'
+        )
+        self.user_2 = get_user_model().objects.create(
+            username='user2',
             password='password'
         )
         self.client.force_authenticate(user=self.user)
 
     def test_get_question_for_creator(self):
         """Test question detail is returned for creator."""
-        pass
+        quiz = Quiz.objects.create(name='name', creator=self.user)
+        question = Question.objects.create(quiz=quiz, question='...', explaination='...')
+
+        response = self.client.get(f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['question'], '...')
 
     def test_get_question_for_not_authenticated(self):
         """Make sure not authenticated user can't  access this endpoint."""
+        quiz = Quiz.objects.create(name='name', creator=self.user)
+        question = Question.objects.create(quiz=quiz, question='...', explaination='...')
+
+        self.client.logout()
+        response = self.client.get(f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/')
+
+        self.assertEqual(response.status_code, 403)
 
     def test_get_question_detail_for_not_author(self):
         """Assure questions detail is returned for not author."""
-        pass
+        quiz = Quiz.objects.create(name='name', creator=self.user_2)
+        question = Question.objects.create(quiz=quiz, question='...', explaination='...')
+
+        response = self.client.get(f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['question'], '...')
 
     def test_update_question_by_author(self):
         """Assure author of quiz can update one of its questions."""

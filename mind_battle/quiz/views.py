@@ -139,7 +139,7 @@ class QuestionsListView(APIView):
 
 class QuestionDetailView(APIView):
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, )
 
     def get(self, request, quiz_pk, question_pk):
         question = Quiz.objects.questions(quiz_pk).get(pk=question_pk)
