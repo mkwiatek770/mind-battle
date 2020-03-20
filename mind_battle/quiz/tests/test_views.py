@@ -298,6 +298,14 @@ class TestQuizCreator(TestCase):
         """Assure specific quiz is removed."""
         pass
 
+    def test_delete_quiz_by_non_authenticated(self):
+        """Assure non authenticated user can't delete quiz."""
+        pass
+
+    def test_delete_quiz_by_non_creator(self):
+        """Assure non creator can't remove quiz from db."""
+        pass
+
     def test_add_new_question_to_quiz(self):
         """Test add new question to existing quiz."""
         pass
