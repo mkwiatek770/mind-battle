@@ -1,6 +1,9 @@
+from rest_framework import status
 from rest_framework.test import APITestCase
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+
 from quiz.models import Quiz, Question, QuestionAnswer
 from user.models import QuizUser, QuestionUser
 
@@ -23,7 +26,7 @@ class TestUserQuiz(APITestCase):
 
         response = self.client.post(reverse('quiz_start', args=(quiz.id,)))
 
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(QuizUser.objects.count(), 1)
 
     def test_start_quiz_again(self):
@@ -36,7 +39,7 @@ class TestUserQuiz(APITestCase):
         response = self.client.post(reverse('quiz_start', args=(quiz.id,)))
         modified_object = QuizUser.objects.last()
 
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(QuizUser.objects.count(), 1)
         self.assertGreater(modified_object.date_started, date_started_before)
         self.assertIsNone(modified_object.date_finished)
@@ -47,7 +50,7 @@ class TestUserQuiz(APITestCase):
 
         response = self.client.post(reverse('quiz_start', args=(not_published_quiz.id,)))
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(QuizUser.objects.count(), 0)
 
     def test_finish_quiz_by_authenticated(self):
@@ -59,7 +62,7 @@ class TestUserQuiz(APITestCase):
         response = self.client.post(reverse('quiz_finish', args=(quiz.id,)))
         modified_object = QuizUser.objects.get(id=quiz.id)
 
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertIsNotNone(modified_object.date_finished)
 
     def test_finish_unpublished_quiz(self):
@@ -68,7 +71,7 @@ class TestUserQuiz(APITestCase):
 
         response = self.client.post(reverse('quiz_finish', args=(quiz.id,)))
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_finish_not_started_quiz(self):
         """Make sure user can't finish unstarted quiz."""
@@ -77,7 +80,7 @@ class TestUserQuiz(APITestCase):
 
         response = self.client.post(reverse('quiz_finish', args=(quiz.id,)))
 
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class TestUserAnswer(APITestCase):
@@ -109,7 +112,7 @@ class TestUserAnswer(APITestCase):
             reverse('question_answer', args=(quiz.id, question.id)),
             data=payload_data)
 
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(QuestionUser.objects.count(), 1)
         self.assertTrue(QuestionUser.objects.first().is_correct)
 
@@ -130,7 +133,7 @@ class TestUserAnswer(APITestCase):
             reverse('question_answer', args=(quiz.id, question.id)),
             data=payload_data)
 
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         self.assertEqual(QuestionUser.objects.count(), 0)
 
     def test_answer_to_question_for_finished_quiz(self):
@@ -152,7 +155,7 @@ class TestUserAnswer(APITestCase):
             reverse('question_answer', args=(quiz.id, question.id)),
             data=payload_data)
 
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         self.assertEqual(QuestionUser.objects.count(), 0)
 
     def test_answer_to_question_by_unauthenticated(self):
@@ -175,5 +178,5 @@ class TestUserAnswer(APITestCase):
             reverse('question_answer', args=(quiz.id, question.id)),
             data=payload_data)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(QuestionUser.objects.count(), 0)

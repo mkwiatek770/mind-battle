@@ -1,6 +1,7 @@
 """"Test endpoints for API."""
 from io import BytesIO
 from PIL import Image
+from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.authtoken.models import Token
 from rest_framework.test import force_authenticate
@@ -42,7 +43,7 @@ class TestQuizUnauthenticated(APITestCase):
         serialized_data = QuizSerializer(
             Quiz.objects.published(), many=True).data
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serialized_data)
         self.assertIn(QuizSerializer(quiz_published).data, response.data)
         self.assertNotIn(QuizSerializer(
@@ -59,7 +60,7 @@ class TestQuizUnauthenticated(APITestCase):
 
         response = self.client.get(reverse("quiz_list"), {'category': 'python'})
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn(QuizSerializer(quiz_1).data, response.data)
         self.assertNotIn(QuizSerializer(quiz_2).data, response.data)
 
@@ -82,14 +83,14 @@ class TestQuizAuthenticated(APITestCase):
 
         response = self.client.get(reverse('quiz_detail', args=(quiz.id,)))
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serialized_data)
 
     def test_get_quiz_detail_404_not_exist(self):
         """404 not found status code is returned if quiz does not exist."""
         response = self.client.get(reverse('quiz_detail', args=(31231,)))
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_quiz_detail_403_not_published(self):
         """
@@ -100,7 +101,7 @@ class TestQuizAuthenticated(APITestCase):
         response = self.client.get(reverse('quiz_detail', args=(quiz.id,)))
 
         self.assertFalse(quiz.is_published)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_all_quiz_questions(self):
         """Receive list of questions for specific quiz."""
@@ -119,7 +120,7 @@ class TestQuizAuthenticated(APITestCase):
 
         response = self.client.get(reverse('question_list', args=(quiz.id,)))
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serialized_data)
 
     def test_question_returns_all_answers(self):
@@ -172,7 +173,7 @@ class TestQuizCreator(APITestCase):
 
         response = self.client.get(reverse('quiz_drafts'))
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn(QuizSerializer(quiz_unpublished_user_1).data, response.data)
         self.assertNotIn(QuizSerializer(quiz_unpublished_user_2).data, response.data)
         self.assertNotIn(QuizSerializer(quiz_published_user_1).data, response.data)
@@ -184,7 +185,7 @@ class TestQuizCreator(APITestCase):
         self.client.logout()
         response = self.client.get(reverse('quiz_drafts'))
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_and_publish_new_quiz(self):
         """Assure new quiz is created and published."""
@@ -198,7 +199,7 @@ class TestQuizCreator(APITestCase):
         response = self.client.post(reverse('quiz_list'), data=payload_data)
         quiz = Quiz.objects.get(name='Quiz 1')
 
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(quiz.is_published)
 
     def test_create_without_publish_new_quiz(self):
@@ -213,7 +214,7 @@ class TestQuizCreator(APITestCase):
         response = self.client.post(reverse('quiz_list'), data=payload_data)
         quiz = Quiz.objects.get(name='Quiz 1')
 
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertFalse(quiz.is_published)
 
     def test_create_new_quiz_for_not_authenticated(self):
@@ -228,7 +229,7 @@ class TestQuizCreator(APITestCase):
         self.client.logout()
         response = self.client.post(reverse('quiz_list'), data=payload_data)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(Quiz.objects.filter(name='Quiz 1').exists())
 
     def test_update_quiz(self):
@@ -245,7 +246,7 @@ class TestQuizCreator(APITestCase):
         response = self.client.put(reverse('quiz_detail', args=(quiz.id,)), data=payload_data)
         updated_quiz = Quiz.objects.get(id=quiz.id)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(updated_quiz.name, "quiz v2")
         self.assertEqual(updated_quiz.category.name, "javascript")
 
@@ -262,7 +263,7 @@ class TestQuizCreator(APITestCase):
         response = self.client.put(reverse('quiz_detail', args=(quiz.id,)), data=payload_data)
         quiz_obj = Quiz.objects.get(pk=quiz.id)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(quiz_obj.name, "quiz v1")
 
     def test_update_quiz_by_non_authenticated(self):
@@ -278,7 +279,7 @@ class TestQuizCreator(APITestCase):
         response = self.client.put(reverse('quiz_detail', args=(quiz.id,)), data=payload_data)
         quiz_obj = Quiz.objects.get(pk=quiz.id)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(quiz_obj.name, "quiz v1")
 
     def test_delete_quiz(self):
@@ -287,7 +288,7 @@ class TestQuizCreator(APITestCase):
 
         response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
 
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Quiz.objects.count(), 0)
 
     def test_delete_quiz_by_non_authenticated(self):
@@ -297,7 +298,7 @@ class TestQuizCreator(APITestCase):
         self.client.logout()
         response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Quiz.objects.count(), 1)
 
     def test_delete_quiz_by_non_creator(self):
@@ -306,7 +307,7 @@ class TestQuizCreator(APITestCase):
 
         response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Quiz.objects.count(), 1)
 
     def test_add_new_question_to_quiz(self):
@@ -323,7 +324,7 @@ class TestQuizCreator(APITestCase):
         }
         response = self.client.post(reverse('question_list', args=(quiz.id,)), data=payload_data)
 
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Question.objects.get(question='What is your name?').quiz, quiz)
         self.assertEqual(QuestionAnswer.objects.count(), 2)
 
@@ -337,7 +338,7 @@ class TestQuizCreator(APITestCase):
         }
         response = self.client.post(reverse('question_list', args=(quiz.id,)), data=payload_data)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Question.objects.count(), 0)
 
     def test_update_question(self):
@@ -354,7 +355,7 @@ class TestQuizCreator(APITestCase):
 
         response = self.client.post(reverse('quiz_publish', args=(quiz.id,)))
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsNotNone(response.data['date_published'])
 
     def test_publish_quiz_by_non_creator(self):
@@ -364,7 +365,7 @@ class TestQuizCreator(APITestCase):
         response = self.client.post(reverse('quiz_publish', args=(quiz.id,)))
         quiz_obj = Quiz.objects.get(pk=quiz.id)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertIsNone(quiz_obj.date_published)
 
     def test_unpublish_quiz_by_creator(self):
@@ -374,7 +375,7 @@ class TestQuizCreator(APITestCase):
 
         response = self.client.post(reverse('quiz_unpublish', args=(quiz.id,)))
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsNone(response.data['date_published'])
 
     def test_unpublish_quiz_by_non_creator(self):
@@ -385,7 +386,7 @@ class TestQuizCreator(APITestCase):
         response = self.client.post(reverse('quiz_unpublish', args=(quiz.id,)))
         quiz_obj = Quiz.objects.get(pk=quiz.id)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertIsNotNone(quiz_obj.date_published)
 
 
@@ -410,7 +411,7 @@ class TestQuestionDetail(APITestCase):
 
         response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['question'], '...')
 
     def test_get_question_for_not_authenticated(self):
@@ -421,7 +422,7 @@ class TestQuestionDetail(APITestCase):
         self.client.logout()
         response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_question_detail_for_not_author(self):
         """Assure questions detail is returned for not author."""
@@ -431,7 +432,7 @@ class TestQuestionDetail(APITestCase):
 
         response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['question'], '...')
 
     def test_update_question_by_author(self):
@@ -448,7 +449,7 @@ class TestQuestionDetail(APITestCase):
             data=payload_data)
         question_obj = Question.objects.get(pk=question.id)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(question_obj.question, "New one ...")
         self.assertEqual(response.data['question'], "New one ...")
 
@@ -466,7 +467,7 @@ class TestQuestionDetail(APITestCase):
             data=payload_data)
         question_obj = Question.objects.get(pk=question.id)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(question_obj.question, "...")
 
     def test_update_question_not_authenticated(self):
@@ -484,7 +485,7 @@ class TestQuestionDetail(APITestCase):
             data=payload_data)
         question_obj = Question.objects.get(pk=question.id)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(question_obj.question, "...")
 
     def test_delete_question_by_author(self):
@@ -494,7 +495,7 @@ class TestQuestionDetail(APITestCase):
 
         response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
 
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Question.objects.count(), 0)
 
     def test_delete_question_by_non_creator(self):
@@ -504,7 +505,7 @@ class TestQuestionDetail(APITestCase):
 
         response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Question.objects.count(), 1)
 
     def test_delete_question_by_not_authenticated(self):
@@ -515,7 +516,7 @@ class TestQuestionDetail(APITestCase):
         self.client.logout()
         response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Question.objects.count(), 1)
 
 
@@ -552,7 +553,7 @@ class TestQuizAvatar(APITestCase):
 
         response = self.client.get(reverse('quiz_image', args=(quiz.id,)), format='multipart')
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['url'], quiz.image.url)
 
     def test_uploading_image_by_creator(self):
@@ -566,7 +567,7 @@ class TestQuizAvatar(APITestCase):
             format='multipart')
         quiz_obj = Quiz.objects.get(name='test')
 
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertTrue(quiz_obj.image)
 
     def test_changing_image_by_not_creator(self):
@@ -580,7 +581,7 @@ class TestQuizAvatar(APITestCase):
             format='multipart')
         quiz_obj = Quiz.objects.get(name='test')
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(quiz_obj.image)
 
     def test_removing_image_by_creator(self):
@@ -595,7 +596,7 @@ class TestQuizAvatar(APITestCase):
         response = self.client.delete(reverse('quiz_image', args=(quiz.id,)))
         quiz_obj = Quiz.objects.get(name='Quiz 1')
 
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(quiz_obj.image)
 
     def test_removing_image_by_non_creator(self):
@@ -610,5 +611,5 @@ class TestQuizAvatar(APITestCase):
         response = self.client.delete(reverse('quiz_image', args=(quiz.id,)))
         quiz_obj = Quiz.objects.get(name='Quiz 1')
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertTrue(quiz_obj.image)
