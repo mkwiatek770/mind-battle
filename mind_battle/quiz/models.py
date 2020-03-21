@@ -53,10 +53,19 @@ class Quiz(models.Model):
 
     def start_quiz(self, user) -> None:
         """Start quiz by user."""
-        obj = QuizUser.objects.filter(user=user, quiz=self)
+        obj = QuizUser.objects.filter(user=user, quiz=self).first()
         if obj:
             obj.delete()
         QuizUser.objects.create(user=user, quiz=self)
+
+    def finish_quiz(self, user) -> bool:
+        """Finish quiz by user. Quiz must be started to finish it."""
+        obj = QuizUser.objects.filter(user=user, quiz=self).first()
+        if obj:
+            obj.date_finished = timezone.now()
+            obj.save()
+            return True
+        return False
 
 
 class Question(models.Model):
