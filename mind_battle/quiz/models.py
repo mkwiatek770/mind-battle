@@ -97,10 +97,15 @@ class Question(models.Model):
         return result['total']
 
     def answer(self, user, answer_pk) -> bool:
+        """Answer to quiz's question by specific user."""
         answer_obj = QuestionAnswer.objects.get(id=answer_pk)
         question_obj = QuestionUser.objects.filter(user=user, question=self).first()
 
-        if not QuizUser.objects.filter(user=user, quiz=self.quiz).exists():
+        quiz_user_obj = QuizUser.objects.filter(user=user, quiz=self.quiz).first()
+        if quiz_user_obj:
+            if quiz_user_obj.date_finished:
+                return False
+        else:
             return False
 
         if question_obj:

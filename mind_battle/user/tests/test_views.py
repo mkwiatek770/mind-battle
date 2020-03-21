@@ -76,7 +76,7 @@ class TestUserQuiz(APITestCase):
 
         response = self.client.post(f'/api/v1/quizzes/{quiz.id}/finish/')
 
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 405)
 
 
 class TestUserAnswer(APITestCase):
@@ -98,7 +98,8 @@ class TestUserAnswer(APITestCase):
             question=question, content='Answer 1', is_correct=True)
         answer_2 = QuestionAnswer.objects.create(
             question=question, content='Answer 2', is_correct=False)
-        QuizUser.objects.create(user=self.user, quiz=quiz)
+        # start quiz
+        quiz.start_quiz(self.user)
 
         payload_data = {
             'answer': answer_1.id
@@ -113,7 +114,45 @@ class TestUserAnswer(APITestCase):
 
     def test_answer_to_question_not_started_quiz(self):
         """Forbid answering to not started quiz by user."""
-        pass
+        quiz = Quiz.objects.create(name='quiz')
+        quiz.publish()
+        question = Question.objects.create(question='Lorem ...', quiz=quiz, explaination='...')
+        answer_1 = QuestionAnswer.objects.create(
+            question=question, content='Answer 1', is_correct=True)
+        answer_2 = QuestionAnswer.objects.create(
+            question=question, content='Answer 2', is_correct=False)
+
+        payload_data = {
+            'answer': answer_1.id
+        }
+        response = self.client.put(
+            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/answer/',
+            data=payload_data)
+
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(QuestionUser.objects.count(), 0)
+
+    def test_answer_to_question_for_finished_quiz(self):
+        """Forbid user to answer to finished quiz."""
+        quiz = Quiz.objects.create(name='quiz')
+        quiz.publish()
+        question = Question.objects.create(question='Lorem ...', quiz=quiz, explaination='...')
+        answer_1 = QuestionAnswer.objects.create(
+            question=question, content='Answer 1', is_correct=True)
+        answer_2 = QuestionAnswer.objects.create(
+            question=question, content='Answer 2', is_correct=False)
+        quiz.start_quiz(self.user)
+        quiz.finish_quiz(self.user)
+
+        payload_data = {
+            'answer': answer_1.id
+        }
+        response = self.client.put(
+            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/answer/',
+            data=payload_data)
+
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(QuestionUser.objects.count(), 0)
 
     def test_answer_to_question_by_authenticated(self):
         """Forbid answering to question if user is not authenticated."""

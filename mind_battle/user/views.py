@@ -30,7 +30,7 @@ class QuizUserFinishView(QuizUserActionsMixin):
         quiz = self.get_object(pk)
         if quiz.finish_quiz(request.user):
             return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class QuestionUserAnswerView(QuizUserActionsMixin):
@@ -39,6 +39,6 @@ class QuestionUserAnswerView(QuizUserActionsMixin):
         quiz = self.get_object(quiz_pk)
         question = get_object_or_404(Question, pk=question_pk)
 
-        question.answer(request.user, request.data['answer'])
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if question.answer(request.user, request.data['answer']):
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
