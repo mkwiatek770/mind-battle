@@ -2,9 +2,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from quiz.models import Quiz
+from quiz.models import Quiz, Question
 from quiz.permissions import IsQuizPublished
-from user.models import QuizUser
 
 
 class QuizUserActionsMixin(APIView):
@@ -32,3 +31,14 @@ class QuizUserFinishView(QuizUserActionsMixin):
         if quiz.finish_quiz(request.user):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class QuestionUserAnswerView(QuizUserActionsMixin):
+
+    def put(self, request, quiz_pk, question_pk):
+        quiz = self.get_object(quiz_pk)
+        question = get_object_or_404(Question, pk=question_pk)
+
+        question.answer(request.user, request.data['answer'])
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
