@@ -20,7 +20,7 @@ class TestUserQuiz(APITestCase):
         quiz = Quiz.objects.create(name='quiz')
         quiz.publish()
 
-        response = self.client.post('/api/v1/quizzes/{quiz.id}/start/')
+        response = self.client.post(f'/api/v1/quizzes/{quiz.id}/start/')
 
         self.assertEqual(response.status_code, 204)
         self.assertEqual(QuizUser.objects.count(), 1)
