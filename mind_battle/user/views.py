@@ -7,7 +7,7 @@ from quiz.permissions import IsQuizPublished
 from user.models import QuizUser
 
 
-class QuizUserStartView(APIView):
+class QuizUserActionsMixin(APIView):
 
     permission_classes = (IsQuizPublished,)
 
@@ -16,7 +16,14 @@ class QuizUserStartView(APIView):
         self.check_object_permissions(self.request, quiz)
         return quiz
 
+
+class QuizUserStartView(QuizUserActionsMixin):
+
     def post(self, request, pk):
         quiz = self.get_object(pk)
         quiz.start_quiz(request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class QuizUserFinishView(QuizUserActionsMixin):
+    pass
