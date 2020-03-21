@@ -26,4 +26,9 @@ class QuizUserStartView(QuizUserActionsMixin):
 
 
 class QuizUserFinishView(QuizUserActionsMixin):
-    pass
+
+    def post(self, request, pk):
+        quiz = self.get_object(pk)
+        if quiz.finish_quiz(request.user):
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status.HTTP_400_BAD_REQUEST)
