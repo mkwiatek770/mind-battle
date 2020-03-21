@@ -6,6 +6,7 @@ from django.utils.text import slugify
 from django.utils import timezone
 from quiz.managers import QuizManager
 from mind_battle.helpers import get_quiz_image_location
+from user.models import QuizUser
 
 
 class Quiz(models.Model):
@@ -49,6 +50,10 @@ class Quiz(models.Model):
         """Unpublish quiz."""
         self.date_published = None
         self.save()
+
+    def start_quiz(self, user) -> None:
+        """Start quiz by user."""
+        QuizUser.objects.create(user=user, quiz=self)
 
 
 class Question(models.Model):

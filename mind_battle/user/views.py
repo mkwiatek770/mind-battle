@@ -15,5 +15,5 @@ class QuizUserStartView(APIView):
 
     def post(self, request, pk):
         quiz = self.get_object(pk)
-        QuizUser.objects.create(quiz=quiz, user=request.user)  # create method .start_quiz_by_user()
+        quiz.start_quiz(request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
