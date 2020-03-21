@@ -6,7 +6,7 @@ from django.utils.text import slugify
 from django.utils import timezone
 from quiz.managers import QuizManager
 from mind_battle.helpers import get_quiz_image_location
-from user.models import QuizUser
+from user.models import QuizUser, QuestionUser
 
 
 class Quiz(models.Model):
@@ -95,6 +95,19 @@ class Question(models.Model):
             )
         )
         return result['total']
+
+    def answer(self, user, answer_pk) -> None:
+        answer_obj = QuestionAnswer.objects.get(id=answer_pk)
+        question_obj = QuestionUser.objects.filter(user=user, question=self).first()
+        if question_obj:
+            question_obj.answer = answer_obj
+            question_obj.save()
+        else:
+            QuestionUser.objects.create(
+                user=user,
+                question=self,
+                answer=answer_obj
+            )
 
 
 class QuestionAnswer(models.Model):
