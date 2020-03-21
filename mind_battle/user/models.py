@@ -7,7 +7,7 @@ class QuizUser(models.Model):
     quiz = models.ForeignKey(
         'quiz.Quiz', on_delete=models.CASCADE, related_name='quiz_attempts')
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='quiz_attempts')
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='users')
     date_started = models.DateTimeField(auto_now_add=True)
     date_finished = models.DateTimeField(null=True, blank=True)
 
