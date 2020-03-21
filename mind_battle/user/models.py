@@ -5,7 +5,7 @@ from django.conf import settings
 class QuizUser(models.Model):
     """Model for quiz solved by user."""
     quiz = models.ForeignKey(
-        'quiz.Quiz', on_delete=models.CASCADE, related_name='quiz_attempts')
+        'quiz.Quiz', on_delete=models.CASCADE, related_name='attempts')
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='users')
     date_started = models.DateTimeField(auto_now_add=True)
