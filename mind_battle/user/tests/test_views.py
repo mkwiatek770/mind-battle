@@ -51,7 +51,15 @@ class TestUserQuiz(APITestCase):
 
     def test_finish_quiz_by_authenticated(self):
         """Make sure authenticated user can finish some quiz."""
-        pass
+        quiz = Quiz.objects.create(name='quiz')
+        quiz.publish()
+        QuizUser.objects.create(quiz=quiz, user=self.user)
+
+        response = self.client.post(f'/api/v1/quizzes/{quiz.id}/finish/')
+        modified_object = QuizUser.objects.get(id=quiz.id)
+
+        self.assertEqual(response.status_code, 204)
+        self.assertIsNotNone(modified_object.date_finished)
 
     def test_finish_unpublished_quiz(self):
         """Make sure user can't finish unpublished quiz."""
