@@ -1,5 +1,7 @@
 from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
+from quiz.models import Quiz
+from user.models import QuizUser
 
 
 class TestUserQuiz(APITestCase):
@@ -15,7 +17,13 @@ class TestUserQuiz(APITestCase):
 
     def test_start_quiz_by_authenticated(self):
         """Make sure authenticated user can start some quiz."""
-        pass
+        quiz = Quiz.objects.create(name='quiz')
+        quiz.publish()
+
+        response = self.client.post('/api/v1/quizzes/{quiz.id}/start/')
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(QuizUser.objects.count(), 1)
 
     def test_start_quiz_again(self):
         """Make sure user can start quiz again."""
