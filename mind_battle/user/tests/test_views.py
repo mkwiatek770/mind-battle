@@ -1,5 +1,6 @@
 from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 from quiz.models import Quiz, Question, QuestionAnswer
 from user.models import QuizUser, QuestionUser
 
@@ -20,7 +21,7 @@ class TestUserQuiz(APITestCase):
         quiz = Quiz.objects.create(name='quiz')
         quiz.publish()
 
-        response = self.client.post(f'/api/v1/quizzes/{quiz.id}/start/')
+        response = self.client.post(reverse('quiz_start', args=(quiz.id,)))
 
         self.assertEqual(response.status_code, 204)
         self.assertEqual(QuizUser.objects.count(), 1)
@@ -32,7 +33,7 @@ class TestUserQuiz(APITestCase):
         quiz_user = QuizUser.objects.create(quiz=quiz, user=self.user)
 
         date_started_before = quiz_user.date_started
-        response = self.client.post(f'/api/v1/quizzes/{quiz.id}/start/')
+        response = self.client.post(reverse('quiz_start', args=(quiz.id,)))
         modified_object = QuizUser.objects.last()
 
         self.assertEqual(response.status_code, 204)
@@ -44,7 +45,7 @@ class TestUserQuiz(APITestCase):
         """Make sure user can't start unpublished quiz."""
         not_published_quiz = Quiz.objects.create(name='quiz')
 
-        response = self.client.post(f'/api/v1/quizzes/{not_published_quiz.id}/start/')
+        response = self.client.post(reverse('quiz_start', args=(not_published_quiz.id,)))
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(QuizUser.objects.count(), 0)
@@ -55,7 +56,7 @@ class TestUserQuiz(APITestCase):
         quiz.publish()
         QuizUser.objects.create(quiz=quiz, user=self.user)
 
-        response = self.client.post(f'/api/v1/quizzes/{quiz.id}/finish/')
+        response = self.client.post(reverse('quiz_finish', args=(quiz.id,)))
         modified_object = QuizUser.objects.get(id=quiz.id)
 
         self.assertEqual(response.status_code, 204)
@@ -65,7 +66,7 @@ class TestUserQuiz(APITestCase):
         """Make sure user can't finish unpublished quiz."""
         quiz = Quiz.objects.create(name='quiz')
 
-        response = self.client.post(f'/api/v1/quizzes/{quiz.id}/finish/')
+        response = self.client.post(reverse('quiz_finish', args=(quiz.id,)))
 
         self.assertEqual(response.status_code, 403)
 
@@ -74,7 +75,7 @@ class TestUserQuiz(APITestCase):
         quiz = Quiz.objects.create(name='quiz')
         quiz.publish()
 
-        response = self.client.post(f'/api/v1/quizzes/{quiz.id}/finish/')
+        response = self.client.post(reverse('quiz_finish', args=(quiz.id,)))
 
         self.assertEqual(response.status_code, 405)
 
@@ -105,7 +106,7 @@ class TestUserAnswer(APITestCase):
             'answer': answer_1.id
         }
         response = self.client.put(
-            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/answer/',
+            reverse('question_answer', args=(quiz.id, question.id)),
             data=payload_data)
 
         self.assertEqual(response.status_code, 204)
@@ -126,7 +127,7 @@ class TestUserAnswer(APITestCase):
             'answer': answer_1.id
         }
         response = self.client.put(
-            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/answer/',
+            reverse('question_answer', args=(quiz.id, question.id)),
             data=payload_data)
 
         self.assertEqual(response.status_code, 405)
@@ -148,7 +149,7 @@ class TestUserAnswer(APITestCase):
             'answer': answer_1.id
         }
         response = self.client.put(
-            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/answer/',
+            reverse('question_answer', args=(quiz.id, question.id)),
             data=payload_data)
 
         self.assertEqual(response.status_code, 405)
@@ -171,7 +172,7 @@ class TestUserAnswer(APITestCase):
         # logout user
         self.client.logout()
         response = self.client.put(
-            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/answer/',
+            reverse('question_answer', args=(quiz.id, question.id)),
             data=payload_data)
 
         self.assertEqual(response.status_code, 403)

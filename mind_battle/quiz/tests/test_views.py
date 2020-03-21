@@ -8,6 +8,7 @@ from rest_framework.test import force_authenticate
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.core.files.base import File
+from django.urls import reverse
 
 from quiz.models import (
     Quiz,
@@ -37,7 +38,7 @@ class TestQuizUnauthenticated(APITestCase):
         quiz_published.publish()
         quiz_not_published = Quiz.objects.create(name="quiz 2")
 
-        response = self.client.get("/api/v1/quizzes/")
+        response = self.client.get(reverse("quiz_list"))
         serialized_data = QuizSerializer(
             Quiz.objects.published(), many=True).data
 
@@ -56,7 +57,7 @@ class TestQuizUnauthenticated(APITestCase):
         quiz_1.publish()
         quiz_2.publish()
 
-        response = self.client.get('/api/v1/quizzes/', {'category': 'python'})
+        response = self.client.get(reverse("quiz_list"), {'category': 'python'})
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(QuizSerializer(quiz_1).data, response.data)
@@ -79,14 +80,14 @@ class TestQuizAuthenticated(APITestCase):
         quiz.publish()
         serialized_data = QuizSerializer(quiz).data
 
-        response = self.client.get(f'/api/v1/quizzes/{quiz.id}/')
+        response = self.client.get(reverse('quiz_detail', args=(quiz.id,)))
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, serialized_data)
 
     def test_get_quiz_detail_404_not_exist(self):
         """404 not found status code is returned if quiz does not exist."""
-        response = self.client.get('/api/v1/quizzes/3123/')
+        response = self.client.get(reverse('quiz_detail', args=(31231,)))
 
         self.assertEqual(response.status_code, 404)
 
@@ -96,7 +97,7 @@ class TestQuizAuthenticated(APITestCase):
         """
         quiz = Quiz.objects.create(name='quiz 1')
 
-        response = self.client.get(f'/api/v1/quizzes/{quiz.id}/')
+        response = self.client.get(reverse('quiz_detail', args=(quiz.id,)))
 
         self.assertFalse(quiz.is_published)
         self.assertEqual(response.status_code, 403)
@@ -116,7 +117,7 @@ class TestQuizAuthenticated(APITestCase):
         serialized_data = QuestionSerializer(
             Question.objects.filter(quiz=quiz), many=True).data
 
-        response = self.client.get(f'/api/v1/quizzes/{quiz.id}/questions/')
+        response = self.client.get(reverse('question_list', args=(quiz.id,)))
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, serialized_data)
@@ -140,27 +141,12 @@ class TestQuizAuthenticated(APITestCase):
             is_correct=True
         )
 
-        response = self.client.get(
-            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/')
+        response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
+
         answers = response.data['answers']
 
         self.assertIn(QuestionAnswerSerializer(answer_1).data, answers)
         self.assertIn(QuestionAnswerSerializer(answer_2).data, answers)
-
-
-class TestUserQuestion(APITestCase):
-    """Test actions suite by user for question."""
-
-    def setUp(self):
-        pass
-
-    def test_answer_to_question(self):
-        """Submit answer to specific quiz question."""
-        pass
-
-    def test_change_answer_to_question(self):
-        """Change already submitted answer."""
-        pass
 
 
 class TestQuizCreator(APITestCase):
@@ -184,7 +170,7 @@ class TestQuizCreator(APITestCase):
         quiz_published_user_1 = Quiz.objects.create(name='quiz1published', creator=self.user_1)
         quiz_published_user_1.publish()
 
-        response = self.client.get('/api/v1/quizzes/drafts/')
+        response = self.client.get(reverse('quiz_drafts'))
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(QuizSerializer(quiz_unpublished_user_1).data, response.data)
@@ -196,7 +182,7 @@ class TestQuizCreator(APITestCase):
         Quiz.objects.create(name='quiz')
 
         self.client.logout()
-        response = self.client.get('/api/v1/quizzes/drafts/')
+        response = self.client.get(reverse('quiz_drafts'))
 
         self.assertEqual(response.status_code, 403)
 
@@ -209,7 +195,7 @@ class TestQuizCreator(APITestCase):
             'publish': True,
         }
 
-        response = self.client.post('/api/v1/quizzes/', data=payload_data)
+        response = self.client.post(reverse('quiz_list'), data=payload_data)
         quiz = Quiz.objects.get(name='Quiz 1')
 
         self.assertEqual(response.status_code, 201)
@@ -224,7 +210,7 @@ class TestQuizCreator(APITestCase):
             'publish': False,
         }
 
-        response = self.client.post('/api/v1/quizzes/', data=payload_data)
+        response = self.client.post(reverse('quiz_list'), data=payload_data)
         quiz = Quiz.objects.get(name='Quiz 1')
 
         self.assertEqual(response.status_code, 201)
@@ -240,7 +226,7 @@ class TestQuizCreator(APITestCase):
         }
 
         self.client.logout()
-        response = self.client.post('/api/v1/quizzes/', data=payload_data)
+        response = self.client.post(reverse('quiz_list'), data=payload_data)
 
         self.assertEqual(response.status_code, 403)
         self.assertFalse(Quiz.objects.filter(name='Quiz 1').exists())
@@ -256,7 +242,7 @@ class TestQuizCreator(APITestCase):
             'category_name': 'javascript'
         }
 
-        response = self.client.put(f"/api/v1/quizzes/{quiz.id}/", data=payload_data)
+        response = self.client.put(reverse('quiz_detail', args=(quiz.id,)), data=payload_data)
         updated_quiz = Quiz.objects.get(id=quiz.id)
 
         self.assertEqual(response.status_code, 200)
@@ -273,7 +259,7 @@ class TestQuizCreator(APITestCase):
             'category_name': 'python'
         }
 
-        response = self.client.put(f"/api/v1/quizzes/{quiz.id}/", data=payload_data)
+        response = self.client.put(reverse('quiz_detail', args=(quiz.id,)), data=payload_data)
         quiz_obj = Quiz.objects.get(pk=quiz.id)
 
         self.assertEqual(response.status_code, 403)
@@ -289,7 +275,7 @@ class TestQuizCreator(APITestCase):
         }
 
         self.client.logout()
-        response = self.client.put(f"/api/v1/quizzes/{quiz.id}/", data=payload_data)
+        response = self.client.put(reverse('quiz_detail', args=(quiz.id,)), data=payload_data)
         quiz_obj = Quiz.objects.get(pk=quiz.id)
 
         self.assertEqual(response.status_code, 403)
@@ -299,7 +285,7 @@ class TestQuizCreator(APITestCase):
         """Assure specific quiz is removed."""
         quiz = Quiz.objects.create(name="quiz 1", creator=self.user_1)
 
-        response = self.client.delete(f"/api/v1/quizzes/{quiz.id}/")
+        response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
 
         self.assertEqual(response.status_code, 204)
         self.assertEqual(Quiz.objects.count(), 0)
@@ -309,7 +295,7 @@ class TestQuizCreator(APITestCase):
         quiz = Quiz.objects.create(name="quiz 1", creator=self.user_1)
 
         self.client.logout()
-        response = self.client.delete(f"/api/v1/quizzes/{quiz.id}/")
+        response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Quiz.objects.count(), 1)
@@ -318,7 +304,7 @@ class TestQuizCreator(APITestCase):
         """Assure non creator can't remove quiz from db."""
         quiz = Quiz.objects.create(name="quiz 1", creator=self.user_2)
 
-        response = self.client.delete(f"/api/v1/quizzes/{quiz.id}/")
+        response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Quiz.objects.count(), 1)
@@ -335,7 +321,7 @@ class TestQuizCreator(APITestCase):
                 dict(content='answer2', is_correct=True)
             ]
         }
-        response = self.client.post(f"/api/v1/quizzes/{quiz.id}/questions/", data=payload_data)
+        response = self.client.post(reverse('question_list', args=(quiz.id,)), data=payload_data)
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Question.objects.get(question='What is your name?').quiz, quiz)
@@ -349,7 +335,7 @@ class TestQuizCreator(APITestCase):
             'question': 'What is your name?',
             'explaination': 'Lorem ipsum ...'
         }
-        response = self.client.post(f"/api/v1/quizzes/{quiz.id}/questions/", data=payload_data)
+        response = self.client.post(reverse('question_list', args=(quiz.id,)), data=payload_data)
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Question.objects.count(), 0)
@@ -366,7 +352,7 @@ class TestQuizCreator(APITestCase):
         """Assure quiz is published."""
         quiz = Quiz.objects.create(name="Quiz 1", creator=self.user_1)
 
-        response = self.client.post(f"/api/v1/quizzes/{quiz.id}/publish/")
+        response = self.client.post(reverse('quiz_publish', args=(quiz.id,)))
 
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(response.data['date_published'])
@@ -375,7 +361,7 @@ class TestQuizCreator(APITestCase):
         """Assure publishing quiz by non creator is forbiden."""
         quiz = Quiz.objects.create(name="Quiz 2", creator=self.user_2)
 
-        response = self.client.post(f"/api/v1/quizzes/{quiz.id}/publish/")
+        response = self.client.post(reverse('quiz_publish', args=(quiz.id,)))
         quiz_obj = Quiz.objects.get(pk=quiz.id)
 
         self.assertEqual(response.status_code, 403)
@@ -386,7 +372,7 @@ class TestQuizCreator(APITestCase):
         quiz = Quiz.objects.create(name="Quiz 1", creator=self.user_1)
         quiz.publish()
 
-        response = self.client.post(f"/api/v1/quizzes/{quiz.id}/unpublish/")
+        response = self.client.post(reverse('quiz_unpublish', args=(quiz.id,)))
 
         self.assertEqual(response.status_code, 200)
         self.assertIsNone(response.data['date_published'])
@@ -396,7 +382,7 @@ class TestQuizCreator(APITestCase):
         quiz = Quiz.objects.create(name="Quiz 2", creator=self.user_2)
         quiz.publish()
 
-        response = self.client.post(f"/api/v1/quizzes/{quiz.id}/unpublish/")
+        response = self.client.post(reverse('quiz_unpublish', args=(quiz.id,)))
         quiz_obj = Quiz.objects.get(pk=quiz.id)
 
         self.assertEqual(response.status_code, 403)
@@ -422,7 +408,7 @@ class TestQuestionDetail(APITestCase):
         quiz = Quiz.objects.create(name='name', creator=self.user)
         question = Question.objects.create(quiz=quiz, question='...', explaination='...')
 
-        response = self.client.get(f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/')
+        response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['question'], '...')
@@ -433,7 +419,7 @@ class TestQuestionDetail(APITestCase):
         question = Question.objects.create(quiz=quiz, question='...', explaination='...')
 
         self.client.logout()
-        response = self.client.get(f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/')
+        response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
 
         self.assertEqual(response.status_code, 403)
 
@@ -443,7 +429,7 @@ class TestQuestionDetail(APITestCase):
         quiz.publish()
         question = Question.objects.create(quiz=quiz, question='...', explaination='...')
 
-        response = self.client.get(f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/')
+        response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['question'], '...')
@@ -458,7 +444,7 @@ class TestQuestionDetail(APITestCase):
             'explaination': 'changed explaination'
         }
         response = self.client.put(
-            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/',
+            reverse('question_detail', args=(quiz.id, question.id)),
             data=payload_data)
         question_obj = Question.objects.get(pk=question.id)
 
@@ -476,7 +462,7 @@ class TestQuestionDetail(APITestCase):
             'explaination': 'changed explaination'
         }
         response = self.client.put(
-            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/',
+            reverse('question_detail', args=(quiz.id, question.id)),
             data=payload_data)
         question_obj = Question.objects.get(pk=question.id)
 
@@ -494,7 +480,7 @@ class TestQuestionDetail(APITestCase):
         }
         self.client.logout()
         response = self.client.put(
-            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/',
+            reverse('question_detail', args=(quiz.id, question.id)),
             data=payload_data)
         question_obj = Question.objects.get(pk=question.id)
 
@@ -506,7 +492,7 @@ class TestQuestionDetail(APITestCase):
         quiz = Quiz.objects.create(name='name', creator=self.user)
         question = Question.objects.create(quiz=quiz, question='...', explaination='...')
 
-        response = self.client.delete(f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/')
+        response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
 
         self.assertEqual(response.status_code, 204)
         self.assertEqual(Question.objects.count(), 0)
@@ -516,7 +502,7 @@ class TestQuestionDetail(APITestCase):
         quiz = Quiz.objects.create(name='name', creator=self.user_2)
         question = Question.objects.create(quiz=quiz, question='...', explaination='...')
 
-        response = self.client.delete(f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/')
+        response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Question.objects.count(), 1)
@@ -527,7 +513,7 @@ class TestQuestionDetail(APITestCase):
         question = Question.objects.create(quiz=quiz, question='...', explaination='...')
 
         self.client.logout()
-        response = self.client.delete(f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/')
+        response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Question.objects.count(), 1)
@@ -564,7 +550,7 @@ class TestQuizAvatar(APITestCase):
             image=image
         )
 
-        response = self.client.get(f"/api/v1/quizzes/{quiz.id}/image/", format='multipart')
+        response = self.client.get(reverse('quiz_image', args=(quiz.id,)), format='multipart')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['url'], quiz.image.url)
@@ -575,7 +561,7 @@ class TestQuizAvatar(APITestCase):
         image_to_upload = self.get_image_file("sample.png")
 
         response = self.client.put(
-            f"/api/v1/quizzes/{quiz.id}/image/",
+            reverse('quiz_image', args=(quiz.id,)),
             data={'image': image_to_upload},
             format='multipart')
         quiz_obj = Quiz.objects.get(name='test')
@@ -589,7 +575,7 @@ class TestQuizAvatar(APITestCase):
         image_to_upload = self.get_image_file("sample.png")
 
         response = self.client.put(
-            f"/api/v1/quizzes/{quiz.id}/image/",
+            reverse('quiz_image', args=(quiz.id,)),
             data={'image': image_to_upload},
             format='multipart')
         quiz_obj = Quiz.objects.get(name='test')
@@ -606,7 +592,7 @@ class TestQuizAvatar(APITestCase):
             image=image
         )
 
-        response = self.client.delete(f"/api/v1/quizzes/{quiz.id}/image/")
+        response = self.client.delete(reverse('quiz_image', args=(quiz.id,)))
         quiz_obj = Quiz.objects.get(name='Quiz 1')
 
         self.assertEqual(response.status_code, 204)
@@ -621,7 +607,7 @@ class TestQuizAvatar(APITestCase):
             image=image
         )
 
-        response = self.client.delete(f"/api/v1/quizzes/{quiz.id}/image/")
+        response = self.client.delete(reverse('quiz_image', args=(quiz.id,)))
         quiz_obj = Quiz.objects.get(name='Quiz 1')
 
         self.assertEqual(response.status_code, 403)
