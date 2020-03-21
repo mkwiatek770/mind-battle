@@ -63,7 +63,11 @@ class TestUserQuiz(APITestCase):
 
     def test_finish_unpublished_quiz(self):
         """Make sure user can't finish unpublished quiz."""
-        pass
+        quiz = Quiz.objects.create(name='quiz')
+
+        response = self.client.post(f'/api/v1/quizzes/{quiz.id}/finish/')
+
+        self.assertEqual(response.status_code, 403)
 
     def test_finish_not_started_quiz(self):
         """Make sure user can't finish unstarted quiz."""
