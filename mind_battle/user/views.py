@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from quiz.models import Quiz, Question
 from quiz.permissions import IsQuizPublished
@@ -8,7 +9,7 @@ from quiz.permissions import IsQuizPublished
 
 class QuizUserActionsMixin(APIView):
 
-    permission_classes = (IsQuizPublished,)
+    permission_classes = (IsQuizPublished, IsAuthenticated,)
 
     def get_object(self, pk):
         quiz = get_object_or_404(Quiz, pk=pk)

@@ -154,6 +154,25 @@ class TestUserAnswer(APITestCase):
         self.assertEqual(response.status_code, 405)
         self.assertEqual(QuestionUser.objects.count(), 0)
 
-    def test_answer_to_question_by_authenticated(self):
+    def test_answer_to_question_by_unauthenticated(self):
         """Forbid answering to question if user is not authenticated."""
-        pass
+        quiz = Quiz.objects.create(name='quiz')
+        quiz.publish()
+        question = Question.objects.create(question='Lorem ...', quiz=quiz, explaination='...')
+        answer_1 = QuestionAnswer.objects.create(
+            question=question, content='Answer 1', is_correct=True)
+        answer_2 = QuestionAnswer.objects.create(
+            question=question, content='Answer 2', is_correct=False)
+        quiz.start_quiz(self.user)
+
+        payload_data = {
+            'answer': answer_1.id
+        }
+        # logout user
+        self.client.logout()
+        response = self.client.put(
+            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/answer/',
+            data=payload_data)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(QuestionUser.objects.count(), 0)
