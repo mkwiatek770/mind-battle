@@ -3,10 +3,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from quiz.models import Quiz
+from quiz.permissions import IsQuizPublished
 from user.models import QuizUser
 
 
 class QuizUserStartView(APIView):
+
+    permission_classes = (IsQuizPublished,)
 
     def get_object(self, pk):
         quiz = get_object_or_404(Quiz, pk=pk)
