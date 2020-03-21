@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
-from quiz.models import Quiz
-from user.models import QuizUser
+from quiz.models import Quiz, Question, QuestionAnswer
+from user.models import QuizUser, QuestionUser
 
 
 class TestUserQuiz(APITestCase):
@@ -91,7 +91,25 @@ class TestUserAnswer(APITestCase):
 
     def test_answer_to_question_started_quiz(self):
         """Assert answering to one of quiz question that user started."""
-        pass
+        quiz = Quiz.objects.create(name='quiz')
+        quiz.publish()
+        question = Question.objects.create(question='Lorem ...', quiz=quiz, explaination='...')
+        answer_1 = QuestionAnswer.objects.create(
+            question=question, content='Answer 1', is_correct=True)
+        answer_2 = QuestionAnswer.objects.create(
+            question=question, content='Answer 2', is_correct=False)
+        QuizUser.objects.create(user=self.user, quiz=quiz)
+
+        payload_data = {
+            'answer': answer_1.id
+        }
+        response = self.client.put(
+            f'/api/v1/quizzes/{quiz.id}/questions/{question.id}/answer/',
+            data=payload_data)
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(QuestionUser.objects.count(), 1)
+        self.assertTrue(QuestionUser.objects.first().is_correct)
 
     def test_answer_to_question_not_started_quiz(self):
         """Forbid answering to not started quiz by user."""
