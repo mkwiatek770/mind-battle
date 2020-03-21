@@ -53,6 +53,9 @@ class Quiz(models.Model):
 
     def start_quiz(self, user) -> None:
         """Start quiz by user."""
+        obj = QuizUser.objects.filter(user=user, quiz=self)
+        if obj:
+            obj.delete()
         QuizUser.objects.create(user=user, quiz=self)
 
 

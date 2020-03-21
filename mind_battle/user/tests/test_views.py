@@ -27,7 +27,15 @@ class TestUserQuiz(APITestCase):
 
     def test_start_quiz_again(self):
         """Make sure user can start quiz again."""
-        pass
+        quiz = Quiz.objects.create(name='quiz')
+        quiz_user = QuizUser.objects.create(quiz=quiz, user=self.user)
+
+        date_started_before = quiz_user.date_started
+        response = self.client.post(f'/api/v1/quizzes/{quiz.id}/start/')
+        modified_object = QuizUser.objects.last()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(QuizUser.objects.count(), 1)
 
     def test_start_unpublished_quiz(self):
         """Make sure user can't start unpublished quiz."""
