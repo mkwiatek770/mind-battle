@@ -13,6 +13,30 @@ class TestUserQuiz(APITestCase):
         )
         self.client.force_authenticate(user=self.user)
 
+    def test_start_quiz_by_authenticated(self):
+        """Make sure authenticated user can start some quiz."""
+        pass
+
+    def test_start_quiz_again(self):
+        """Make sure user can start quiz again."""
+        pass
+
+    def test_start_unpublished_quiz(self):
+        """Make sure user can't start unpublished quiz."""
+        pass
+
+    def test_finish_quiz_by_authenticated(self):
+        """Make sure authenticated user can finish some quiz."""
+        pass
+
+    def test_finish_unpublished_quiz(self):
+        """Make sure user can't finish unpublished quiz."""
+        pass
+
+    def test_finish_not_started_quiz(self):
+        """Make sure user can't finish unstarted quiz."""
+        pass
+
 
 class TestUserAnswer(APITestCase):
 
