@@ -96,9 +96,13 @@ class Question(models.Model):
         )
         return result['total']
 
-    def answer(self, user, answer_pk) -> None:
+    def answer(self, user, answer_pk) -> bool:
         answer_obj = QuestionAnswer.objects.get(id=answer_pk)
         question_obj = QuestionUser.objects.filter(user=user, question=self).first()
+
+        if not QuizUser.objects.filter(user=user, quiz=self.quiz).exists():
+            return False
+
         if question_obj:
             question_obj.answer = answer_obj
             question_obj.save()
@@ -108,6 +112,7 @@ class Question(models.Model):
                 question=self,
                 answer=answer_obj
             )
+        return True
 
 
 class QuestionAnswer(models.Model):
