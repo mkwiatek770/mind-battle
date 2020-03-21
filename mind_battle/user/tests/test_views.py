@@ -36,6 +36,8 @@ class TestUserQuiz(APITestCase):
 
         self.assertEqual(response.status_code, 204)
         self.assertEqual(QuizUser.objects.count(), 1)
+        self.assertGreater(modified_object.date_started, date_started_before)
+        self.assertIsNone(modified_object.date_finished)
 
     def test_start_unpublished_quiz(self):
         """Make sure user can't start unpublished quiz."""
