@@ -8,6 +8,7 @@ from quiz.models import (
 
 
 class CategorySerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Category
         fields = ('id', 'name')
@@ -71,6 +72,7 @@ class QuestionAnswerSerializer(serializers.ModelSerializer):
 
 
 class QuestionSerializer(serializers.ModelSerializer):
+
     quiz = QuizSerializer(read_only=True)
     answers = QuestionAnswerSerializer(many=True, required=False)
 
