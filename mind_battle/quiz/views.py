@@ -13,7 +13,9 @@ from quiz.permissions import IsQuizCreatorOrReadOnly
 
 
 class QuizListView(APIView):
-
+    """
+    List of published quizzes.
+    """
     permission_classes = (IsAuthenticatedOrReadOnly, )
 
     def get(self, request, format=None):
@@ -34,7 +36,9 @@ class QuizListView(APIView):
 
 
 class QuizDraftsView(APIView):
-
+    """
+    List of unpublished quizzes for specific user.
+    """
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
@@ -44,7 +48,9 @@ class QuizDraftsView(APIView):
 
 
 class QuizDetailView(APIView):
-
+    """
+    Detail view of quiz, available methods are GET, PUT, DELETE
+    """
     permission_classes = (IsAuthenticated, IsQuizCreatorOrReadOnly,)
 
     def get_object(self, pk):
@@ -74,7 +80,9 @@ class QuizDetailView(APIView):
 
 
 class QuizPublishView(APIView):
-
+    """
+    Resource which allows to publish specific quiz instance.
+    """
     permission_classes = (IsQuizCreatorOrReadOnly,)
 
     def get_object(self, pk):
@@ -90,7 +98,9 @@ class QuizPublishView(APIView):
 
 
 class QuizUnpublishView(APIView):
-
+    """
+    Resource which allows to unpublish specific quiz instance.
+    """
     permission_classes = (IsQuizCreatorOrReadOnly,)
 
     def get_object(self, pk):
@@ -106,7 +116,9 @@ class QuizUnpublishView(APIView):
 
 
 class QuestionsListView(APIView):
-
+    """
+    List of all quiz questions. Available methods: [GET, POST].
+    """
     permission_classes = (IsAuthenticated, IsQuizCreatorOrReadOnly,)
 
     def get_queryset(self, pk):
@@ -136,7 +148,11 @@ class QuestionsListView(APIView):
 
 
 class QuestionDetailView(APIView):
+    """
+    Detail view of specific quiz's instance.
 
+    Available methods: [GET, PUT, DELETE].
+    """
     permission_classes = (IsAuthenticated, IsQuizCreatorOrReadOnly)
 
     def get_object(self, quiz_pk, question_pk):
@@ -166,8 +182,9 @@ class QuestionDetailView(APIView):
 
 
 class QuizImageView(APIView):
-    """View to conduct operations on quiz avatar's image."""
-
+    """
+    View to conduct operations on quiz avatar's image.
+    """
     permission_classes = (IsQuizCreatorOrReadOnly,)
 
     def get_object(self, pk):
