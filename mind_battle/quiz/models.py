@@ -123,6 +123,9 @@ class Question(models.Model):
             )
         return True
 
+    def get_absolute_url(self):
+        return reverse("question_detail", kwargs={"quiz_pk": self.quiz.pk, "question_pk": self.pk})
+
 
 class QuestionAnswer(models.Model):
     question = models.ForeignKey(
