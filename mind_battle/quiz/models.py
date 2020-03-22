@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import Sum, Count, Case, When, Value
 from django.conf import settings
 from django.utils.text import slugify
+from django.urls import reverse
 from django.utils import timezone
 from quiz.managers import QuizManager
 from mind_battle.helpers import get_quiz_image_location
@@ -66,6 +67,9 @@ class Quiz(models.Model):
             obj.save()
             return True
         return False
+
+    def get_absolute_url(self):
+        return reverse("quiz_detail", kwargs={"pk": self.pk})
 
 
 class Question(models.Model):
