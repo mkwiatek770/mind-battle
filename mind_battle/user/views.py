@@ -8,7 +8,9 @@ from quiz.permissions import IsQuizPublished
 
 
 class QuizUserActionsMixin(APIView):
-
+    """
+    Base class of APIView to be subclassed by other ones.
+    """
     permission_classes = (IsQuizPublished, IsAuthenticated,)
 
     def get_object(self, pk):
@@ -18,6 +20,9 @@ class QuizUserActionsMixin(APIView):
 
 
 class QuizUserStartView(QuizUserActionsMixin):
+    """
+    Resource to start quiz by user.
+    """
 
     def post(self, request, pk):
         quiz = self.get_object(pk)
@@ -26,6 +31,9 @@ class QuizUserStartView(QuizUserActionsMixin):
 
 
 class QuizUserFinishView(QuizUserActionsMixin):
+    """
+    Resource to finish quiz by user.
+    """
 
     def post(self, request, pk):
         quiz = self.get_object(pk)
@@ -35,6 +43,9 @@ class QuizUserFinishView(QuizUserActionsMixin):
 
 
 class QuestionUserAnswerView(QuizUserActionsMixin):
+    """
+    Resource to answer to quiz question by user.
+    """
 
     def put(self, request, quiz_pk, question_pk):
         quiz = self.get_object(quiz_pk)
