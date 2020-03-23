@@ -7,6 +7,12 @@ from quiz.models import Quiz, Question
 from quiz.permissions import IsQuizPublished
 
 
+class RegisterView(APIView):
+
+    def post(self, request):
+        pass
+
+
 class QuizUserActionsMixin(APIView):
     """
     Base class of APIView to be subclassed by other ones.
