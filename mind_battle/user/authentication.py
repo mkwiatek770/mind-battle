@@ -1,7 +1,7 @@
 from rest_framework import authentication
 from rest_framework import exceptions
 from rest_framework import status
-from user.models import User
+from django.contrib.auth import get_user_model
 from user.serializers import UserSerializer
 
 
@@ -16,8 +16,8 @@ class QuizAuthentication(authentication.BaseAuthentication):
             return None  # no username passed in request data
 
         try:
-            user = User.objects.get(username=request.data['username'])
-        except User.DoesNotExist:
+            user = get_user_model().objects.get(username=request.data['username'])
+        except get_user_model().DoesNotExist:
             return None
         # Check password
         if not user.check_password(request.data['password']):
@@ -30,6 +30,6 @@ class QuizAuthentication(authentication.BaseAuthentication):
 
     def get_user(user_id: int):
         try:
-            return User.objects.get(id=user_id)
-        except User.DoesNotExist:
+            return get_user_model().objects.get(id=user_id)
+        except get_user_model().DoesNotExist:
             return None
