@@ -28,6 +28,8 @@ class LogoutView(APIView):
     Logout user by removing token assigned to him.
     """
 
+    permission_classes = [IsAuthenticated, ]
+
     def post(self, request, format=None):
         # simply delete the token to force a login
         request.user.auth_token.delete()
