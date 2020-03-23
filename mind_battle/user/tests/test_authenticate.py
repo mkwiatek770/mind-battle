@@ -17,6 +17,6 @@ class TestRegisterUser(APITestCase):
             "age": 20
         }
 
-        response = self.client.post("register", data=payload_data)
+        response = self.client.post(reverse("register"), data=payload_data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
