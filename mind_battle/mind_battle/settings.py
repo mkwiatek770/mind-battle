@@ -130,7 +130,7 @@ REST_FRAMEWORK = {
         'user': '100/hour'
     },
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'user.authentication.QuizAuthentication',
+        # 'user.authentication.QuizAuthentication',
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
     ]
