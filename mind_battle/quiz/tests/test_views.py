@@ -189,7 +189,7 @@ class TestQuizCreator(APITestCase):
         self.client.logout()
         response = self.client.get(reverse('quiz_drafts'))
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_and_publish_new_quiz(self):
         """Assure new quiz is created and published."""
@@ -233,7 +233,7 @@ class TestQuizCreator(APITestCase):
         self.client.logout()
         response = self.client.post(reverse('quiz_list'), data=payload_data)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertFalse(Quiz.objects.filter(name='Quiz 1').exists())
 
     def test_update_quiz(self):
@@ -283,7 +283,7 @@ class TestQuizCreator(APITestCase):
         response = self.client.put(reverse('quiz_detail', args=(quiz.id,)), data=payload_data)
         quiz_obj = Quiz.objects.get(pk=quiz.id)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(quiz_obj.name, "quiz v1")
 
     def test_delete_quiz(self):
@@ -302,7 +302,7 @@ class TestQuizCreator(APITestCase):
         self.client.logout()
         response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(Quiz.objects.count(), 1)
 
     def test_delete_quiz_by_non_creator(self):
@@ -428,7 +428,7 @@ class TestQuestionDetail(APITestCase):
         self.client.logout()
         response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_question_detail_for_not_author(self):
         """Assure questions detail is returned for not author."""
@@ -491,7 +491,7 @@ class TestQuestionDetail(APITestCase):
             data=payload_data)
         question_obj = Question.objects.get(pk=question.id)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(question_obj.question, "...")
 
     def test_delete_question_by_author(self):
@@ -522,7 +522,7 @@ class TestQuestionDetail(APITestCase):
         self.client.logout()
         response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(Question.objects.count(), 1)
 
 

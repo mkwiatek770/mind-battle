@@ -180,5 +180,5 @@ class TestUserAnswer(APITestCase):
             reverse('question_answer', args=(quiz.id, question.id)),
             data=payload_data)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(QuestionUser.objects.count(), 0)
