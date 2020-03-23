@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     # make email field required
-    email = models.EmailField(max_length=255)
+    email = models.EmailField(max_length=255, unique=True)
     username = models.CharField(max_length=30, unique=True)
     age = models.PositiveIntegerField(default=18)
 
