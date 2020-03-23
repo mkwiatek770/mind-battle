@@ -7,7 +7,7 @@ from django.contrib.auth import login
 from django.shortcuts import get_object_or_404
 from quiz.models import Quiz, Question
 from quiz.permissions import IsQuizPublished
-from user.serializers import UserSerializer
+from user.serializers import UserSerializer, RefreshTokenSerializer
 
 
 class RegisterView(APIView):
@@ -31,9 +31,15 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated, ]
 
     def post(self, request, format=None):
+        serializer = RefreshTokenSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         # simply delete the token to force a login
-        request.user.auth_token.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        # request.user.auth_token.delete()
+        # return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class QuizUserActionsMixin(APIView):

@@ -1,13 +1,15 @@
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_simplejwt import views as jwt_views
 from django.urls import path
 from user import views
 
 
 urlpatterns = [
     path('auth/create-account/', views.RegisterView.as_view(), name='register'),
-    path('auth/login/', obtain_auth_token, name='login'),
+    path('auth/login/', jwt_views.TokenObtainPairView.as_view(), name='login'),
     path('auth/logout/', views.LogoutView.as_view(), name='logout'),
+    path('auth/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='refresh'),
     # path('auth/login/', views.LoginView.as_view(), name='login'),
     # path('auth/logout/', views.LogoutView.as_view(), name='logout'),
     # path('auth/refresh_token', views.RefreshTokenView.as_view(), 'refresh_token'),
