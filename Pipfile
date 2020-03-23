@@ -14,6 +14,7 @@ Django = "==3.0.4"
 djangorestframework = "==3.11.0"
 drf-extensions = "==0.6.0"
 Pillow = "==7.0.0"
+djangorestframework-simplejwt = "*"
 
 [requires]
 python_version = "3.6"
