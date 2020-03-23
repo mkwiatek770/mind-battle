@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     # 3rd party apps
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt.token_blacklist',
     # django built-in apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -131,8 +132,7 @@ REST_FRAMEWORK = {
         'user': '100/hour'
     },
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'user.authentication.QuizAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
     ]
 
 }
