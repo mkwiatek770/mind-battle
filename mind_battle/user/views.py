@@ -2,6 +2,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import authenticate
+from django.contrib.auth import login
 from django.shortcuts import get_object_or_404
 from quiz.models import Quiz, Question
 from quiz.permissions import IsQuizPublished
@@ -9,8 +11,6 @@ from user.serializers import UserSerializer
 
 
 class RegisterView(APIView):
-
-    permission_classes = []
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
