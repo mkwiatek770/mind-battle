@@ -1,5 +1,13 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+
+
+class User(AbstractUser):
+    # make email field required
+    email = models.EmailField(max_length=255)
+    age = models.PositiveIntegerField()
+
 
 
 class QuizUser(models.Model):
