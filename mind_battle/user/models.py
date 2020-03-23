@@ -8,6 +8,11 @@ class User(AbstractUser):
     email = models.EmailField(max_length=255)
     age = models.PositiveIntegerField(default=18)
 
+    @property
+    def is_adult(self) -> bool:
+        """Check if user is greater or equal 18 years old."""
+        return self.age >= 18
+
 
 class QuizUser(models.Model):
     """Model for quiz solved by user."""
