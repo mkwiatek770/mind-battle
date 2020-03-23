@@ -4,9 +4,11 @@ from user.models import User
 
 class UserSerializer(serializers.ModelSerializer):
 
+    password = serializers.CharField(write_only=True)
     re_password = serializers.CharField(write_only=True)
 
     def create(self, validated_data: dict) -> User:
+        validated_data.pop('re_password')
         user = User.objects.create(**validated_data)
         return user
 
