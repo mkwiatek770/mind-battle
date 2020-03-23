@@ -7,6 +7,7 @@ from user import views
 urlpatterns = [
     path('auth/create-account/', views.RegisterView.as_view(), name='register'),
     path('auth/login/', obtain_auth_token, name='login'),
+    path('auth/logout/', views.LogoutView.as_view(), name='logout'),
     # path('auth/login/', views.LoginView.as_view(), name='login'),
     # path('auth/logout/', views.LogoutView.as_view(), name='logout'),
     # path('auth/refresh_token', views.RefreshTokenView.as_view(), 'refresh_token'),

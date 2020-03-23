@@ -11,13 +11,27 @@ from user.serializers import UserSerializer
 
 
 class RegisterView(APIView):
+    """
+    View to create new default user model account. 
+    """
 
-    def post(self, request):
+    def post(self, request, format=None):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutView(APIView):
+    """
+    Logout user by removing token assigned to him.
+    """
+
+    def post(self, request, format=None):
+        # simply delete the token to force a login
+        request.user.auth_token.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class QuizUserActionsMixin(APIView):
