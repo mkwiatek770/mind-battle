@@ -23,7 +23,7 @@ class TestRegisterUser(APITestCase):
 
 
 class TestLoginUser(APITestCase):
-    """Test suite for logging user."""
+    """Test suite for logging user using TokenAuthentication backend."""
 
     def setUp(self):
         self.user = get_user_model().objects.create_user(
