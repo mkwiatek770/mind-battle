@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 
@@ -6,12 +7,20 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     # make email field required
     email = models.EmailField(max_length=255)
+    username = models.CharField(max_length=30, unique=True)
     age = models.PositiveIntegerField(default=18)
+
+    # USERNAME_FIELD = ['username', 'email']
 
     @property
     def is_adult(self) -> bool:
         """Check if user is greater or equal 18 years old."""
         return self.age >= 18
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(check=~models.Q(username=""), name="non_empty_username"),
+        ]
 
 
 class QuizUser(models.Model):
