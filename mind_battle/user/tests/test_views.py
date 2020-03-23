@@ -15,7 +15,8 @@ class TestUserQuiz(APITestCase):
 
         self.user = get_user_model().objects.create(
             username='user',
-            password='password'
+            password='password',
+            email='email@gmail.com'
         )
         self.client.force_authenticate(user=self.user)
 
@@ -89,7 +90,8 @@ class TestUserAnswer(APITestCase):
 
         self.user = get_user_model().objects.create(
             username='user',
-            password='password'
+            password='password',
+            email='email@gmail.com'
         )
         self.client.force_authenticate(user=self.user)
 

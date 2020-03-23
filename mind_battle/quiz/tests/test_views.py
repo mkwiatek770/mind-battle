@@ -30,7 +30,8 @@ class TestQuizUnauthenticated(APITestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(
             username='user1',
-            password='password'
+            password='password',
+            email='email@gmail.com'
         )
 
     def test_get_all_published_quizzes(self):
@@ -71,7 +72,8 @@ class TestQuizAuthenticated(APITestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(
             username="user",
-            password="password"
+            password="password",
+            email='email@gmail.com'
         )
         self.client.force_authenticate(user=self.user)
 
@@ -156,11 +158,13 @@ class TestQuizCreator(APITestCase):
     def setUp(self):
         self.user_1 = get_user_model().objects.create(
             username='user1',
-            password='password'
+            password='password',
+            email='email@gmail.com'
         )
         self.user_2 = get_user_model().objects.create(
             username='user2',
-            password='password'
+            password='password',
+            email='email2@gmail.com'
         )
         self.client.force_authenticate(user=self.user_1)
 
@@ -396,11 +400,13 @@ class TestQuestionDetail(APITestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(
             username='user',
-            password='password'
+            password='password',
+            email='email@gmail.com'
         )
         self.user_2 = get_user_model().objects.create(
             username='user2',
-            password='password'
+            password='password',
+            email='email2@gmail.com'
         )
         self.client.force_authenticate(user=self.user)
 
@@ -526,11 +532,13 @@ class TestQuizAvatar(APITestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(
             username='user',
-            password='password'
+            password='password',
+            email='email1@gmail.com'
         )
         self.user_2 = get_user_model().objects.create(
             username='user2',
-            password='password'
+            password='password',
+            email='email2@gmail.com'
         )
         self.client.force_authenticate(self.user)
 
