@@ -18,11 +18,7 @@ class QuizAuthentication(authentication.BaseAuthentication):
         try:
             user = User.objects.get(username=request.data['username'])
         except User.DoesNotExist:
-            raise exceptions.AuthenticationFailed(
-                "User does not exist.",
-                code=status.HTTP_403_FORBIDDEN
-            )
-
+            return None
         # Check password
         if not user.check_password(request.data['password']):
             raise exceptions.AuthenticationFailed(
@@ -31,3 +27,9 @@ class QuizAuthentication(authentication.BaseAuthentication):
             )
 
         return (user, None)  # Authentication successful
+
+    def get_user(user_id: int):
+        try:
+            return User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return None
