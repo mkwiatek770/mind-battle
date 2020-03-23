@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from user.managers import UserManager
 
 
 class User(AbstractUser):
@@ -11,6 +12,9 @@ class User(AbstractUser):
     age = models.PositiveIntegerField(default=18)
 
     # USERNAME_FIELD = ['username', 'email']
+
+    # overwrite default manager
+    objects = UserManager()
 
     @property
     def is_adult(self) -> bool:
