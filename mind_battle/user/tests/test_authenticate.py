@@ -44,10 +44,15 @@ class TestAuthUserTokenAuthentication(APITestCase):
 
     def test_logout_user_success(self):
         """Assert logout endpoint expire immediatelly user token."""
-        self.client.force_login(self.user)
+        self.client.force_authenticate(self.user)
         Token.objects.create(user=self.user)
 
         response = self.client.post(reverse('logout'))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Token.objects.count(), 0)
+
+    def test_only_logged_in_user_can_logout(self):
+        """Make sure only logged in user can access logout endpoint."""
+        response = self.client.post(reverse('logout'))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
