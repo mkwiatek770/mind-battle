@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'user',
     # 3rd party apps
     'rest_framework',
+    'rest_framework.authtoken',
     # django built-in apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -130,7 +131,8 @@ REST_FRAMEWORK = {
         'user': '100/hour'
     },
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'user.authentication.QuizAuthentication',
+        # 'user.authentication.QuizAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ]
 
 }
