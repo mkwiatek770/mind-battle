@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     # django apps
     'quiz',
     'user',
+    'core',
     # 3rd party apps
     'storages',
     'rest_framework',
