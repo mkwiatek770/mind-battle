@@ -10,4 +10,4 @@
 docker-compose up
 ``` 
 
-The API will be available at http://127.0.0.1:8000
+The API will be available at http://0.0.0.0:8000
