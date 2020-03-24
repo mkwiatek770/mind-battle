@@ -345,14 +345,6 @@ class TestQuizCreator(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Question.objects.count(), 0)
 
-    def test_update_question(self):
-        """Test update question for quiz."""
-        pass
-
-    def test_delete_question(self):
-        """Test remove question."""
-        pass
-
     def test_publish_quiz_by_creator(self):
         """Assure quiz is published."""
         quiz = Quiz.objects.create(name="Quiz 1", creator=self.user_1)
