@@ -558,10 +558,12 @@ class TestQuizAvatar(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['url'], quiz.image.url)
 
-    def test_uploading_image_by_creator(self):
+    @mock.patch('mind_battle.storages.MediaRootS3Boto3Storage.save')
+    def test_uploading_image_by_creator(self, mock_storage):
         """Assert quiz image is uploaded by creator."""
+        mock_storage.return_value = 'test.png'
         quiz = Quiz.objects.create(name='test', creator=self.user)
-        image_to_upload = self.get_image_file("sample.png")
+        image_to_upload = self.get_image_file("test.png")
 
         response = self.client.put(
             reverse('quiz_image', args=(quiz.id,)),
@@ -586,8 +588,10 @@ class TestQuizAvatar(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(quiz_obj.image)
 
-    def test_removing_image_by_creator(self):
+    @mock.patch('mind_battle.storages.MediaRootS3Boto3Storage.save')
+    def test_removing_image_by_creator(self, mock_storage):
         """Assert quiz image is removed if author requested it."""
+        mock_storage.return_value = 'quiz-1.png'
         image = self.get_image_file("image.png")
         quiz = Quiz.objects.create(
             name='Quiz 1',
@@ -601,8 +605,10 @@ class TestQuizAvatar(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(quiz_obj.image)
 
-    def test_removing_image_by_non_creator(self):
+    @mock.patch('mind_battle.storages.MediaRootS3Boto3Storage.save')
+    def test_removing_image_by_non_creator(self, mock_storage):
         """Make sure removing quiz image by non creator is not possible."""
+        mock_storage.return_value = 'quiz-1.png'
         image = self.get_image_file("image.png")
         quiz = Quiz.objects.create(
             name='Quiz 1',
