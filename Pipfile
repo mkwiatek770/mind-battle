@@ -16,6 +16,7 @@ drf-extensions = "==0.6.0"
 Pillow = "==7.0.0"
 djangorestframework-simplejwt = "*"
 django-storages = "*"
+boto3 = "*"
 
 [requires]
 python_version = "3.6"
