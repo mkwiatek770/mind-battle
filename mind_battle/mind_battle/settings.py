@@ -1,22 +1,21 @@
 import os
+import environ
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+# reading .env file
+environ.Env.read_env()
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+SECRET_KEY = env('SECRET_KEY')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '_-fp5w)etf4bqgij&kk*ao2p)eywk_xq-&_w9%@$)litcc2xkv'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
-
-# Application definition
 
 INSTALLED_APPS = [
     # django apps
@@ -68,9 +67,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mind_battle.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -78,9 +74,6 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -135,14 +128,12 @@ AUTH_USER_MODEL = 'user.User'
 
 
 STATIC_URL = '/static/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 
 # File storage S3
-AWS_ACCESS_KEY_ID = os.getenv("APO_S3_AWS_ACCESS_KEY")
-AWS_SECRET_ACCESS_KEY = os.getenv("APO_S3_AWS_SECRET_KEY")
-AWS_STORAGE_BUCKET_NAME = os.getenv("APO_S3_STORAGE_BUCKET_NAME")
-AWS_S3_REGION_NAME = 'us-west-1'
+AWS_ACCESS_KEY_ID = env('APO_S3_AWS_ACCESS_KEY')
+AWS_SECRET_ACCESS_KEY = env('APO_S3_AWS_SECRET_KEY')
+AWS_STORAGE_BUCKET_NAME = env('APO_S3_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME')
 
 DEFAULT_FILE_STORAGE = 'mind_battle.storages.MediaRootS3Boto3Storage'
 MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/media/'
