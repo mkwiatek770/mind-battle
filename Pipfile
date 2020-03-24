@@ -17,6 +17,7 @@ Pillow = "==7.0.0"
 djangorestframework-simplejwt = "*"
 django-storages = "*"
 boto3 = "*"
+django-environ = "==0.4.5"
 
 [requires]
 python_version = "3.6"
