@@ -7,7 +7,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./:/app
+      - ./api/db.sqlite3:/api/db.sqlite3
     command: >
       sh -c "python api/manage.py wait_for_db && 
              python api/manage.py migrate &&
