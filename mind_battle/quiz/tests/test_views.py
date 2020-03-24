@@ -1,6 +1,7 @@
 """"Test endpoints for API."""
 from io import BytesIO
 from PIL import Image
+from unittest import mock
 from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.authtoken.models import Token
@@ -541,9 +542,10 @@ class TestQuizAvatar(APITestCase):
         file_obj.seek(0)
         return File(file_obj, name=name)
 
-    def test_get_image_by_authenticated(self):
+    @mock.patch('mind_battle.storages.MediaRootS3Boto3Storage.save')
+    def test_get_image_by_authenticated(self, mock_storage):
         """Assert any authenticated user can access quiz image."""
-        # FIXME side effect - image is created
+        mock_storage.return_value = 'image.png'
         image = self.get_image_file("image.png")
         quiz = Quiz.objects.create(
             name='Quiz 1',
