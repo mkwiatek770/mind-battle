@@ -14,7 +14,8 @@
     <form>
         <span>username</span><input type="text" name="username"
             id="registerUsername"><br>
-        <span>email</span><input type="text" name="email" id="registrEmail"><br>
+        <span>email</span><input type="text" name="email"
+            id="registerEmail"><br>
         <span>password</span><input type="password" name="password"
             id="registerPassword"><br>
         <span>rePassword</span><input type="password" name="rePassword"
@@ -22,6 +23,7 @@
         <span>age</span><input type="number" id="age"><br>
         <button id="registerBtn">Register</button>
     </form>
+    <div id="register"></div>
     <br>
     <br>
     <hr>
@@ -78,7 +80,35 @@
     // callback functions
     function login() {};
 
-    function register() {};
+    function register() {
+        let registerContainer = document.getElementById('register');
+        let data = {
+            'username': document.getElementById('registerUsername').value,
+            'password': document.getElementById('registerPassword').value,
+            're_password': document.getElementById('rePassword').value,
+            'email': document.getElementById('registerEmail').value,
+            'age': parseInt(document.getElementById('age').value),
+        }
+
+        fetch('http://0.0.0.0:8000/api/v1/auth/create-account/', {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+                // body data type must match "Content-Type" header
+            })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+            })
+            .catch(err => {
+                console.log(err);
+                registerContainer.innerHTML = `There was an error: ${err}`;
+            })
+    };
 
     function getQuizzes() {
 
