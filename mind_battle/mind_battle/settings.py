@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'quiz',
     'user',
     # 3rd party apps
+    'storages',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt.token_blacklist',
@@ -111,13 +112,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.1/howto/static-files/
-
-STATIC_URL = '/static/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
-
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
@@ -137,5 +131,21 @@ REST_FRAMEWORK = {
 
 }
 
-
 AUTH_USER_MODEL = 'user.User'
+
+
+STATIC_URL = '/static/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# File storage S3
+AWS_ACCESS_KEY_ID = os.getenv("APO_S3_AWS_ACCESS_KEY")
+AWS_SECRET_ACCESS_KEY = os.getenv("APO_S3_AWS_SECRET_KEY")
+AWS_STORAGE_BUCKET_NAME = os.getenv("APO_S3_STORAGE_BUCKET_NAME")
+AWS_S3_REGION_NAME = 'us-west-1'
+
+DEFAULT_FILE_STORAGE = 'mind_battle.storages.MediaRootS3Boto3Storage'
+MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/media/'
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
