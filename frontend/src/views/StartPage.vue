@@ -2,7 +2,7 @@
   <div class="start">
     <TheNavbar />
     <RegisterForm v-if="isRegisterBtnClicked" />
-    <RegisterButton v-else @click="isRegisterBtnClicked = true" />
+    <RegisterButton />
   </div>
 </template>
 
