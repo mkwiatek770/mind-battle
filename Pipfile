@@ -8,6 +8,7 @@ ipython = "*"
 autopep8 = "*"
 mypy = "*"
 django-stubs = {editable = true,git = "https://github.com/mkurnikov/django-stubs"}
+faker = "*"
 
 [packages]
 Django = "==3.0.4"
