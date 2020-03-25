@@ -1,5 +1,5 @@
 <template>
-  <div class="start">
+  <div id="start">
     <TheNavbar />
     <RegisterForm v-if="isRegisterBtnClicked" />
     <RegisterButton />
@@ -23,3 +23,11 @@ export default {
   })
 };
 </script>
+
+<style scoped>
+#start {
+  width: 100%;
+  height: 100vh;
+  background-image: url("../assets/question-bg.png");
+}
+</style>

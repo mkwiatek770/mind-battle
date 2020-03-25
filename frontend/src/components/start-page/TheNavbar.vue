@@ -1,19 +1,16 @@
 <template>
-  <nav id="start-nav">
+  <nav id="start-nav" class="navbar justify-content-end">
     <LoginForm />
-    <LoginButton />
   </nav>
 </template>
 
 <script>
-import LoginButton from "./LoginButton.vue";
 import LoginForm from "./LoginForm.vue";
 
 export default {
   name: "TheNavbar",
   components: {
-    LoginForm,
-    LoginButton
+    LoginForm
   },
   data: () => {}
 };
@@ -22,7 +19,8 @@ export default {
 <style scoped>
 #start-nav {
   height: 50px;
-  background-color: rgb(69, 21, 172);
   width: 100%;
+  border-bottom: 2px solid black;
+  background-color: rgba(234, 234, 234, 0.5);
 }
 </style>
