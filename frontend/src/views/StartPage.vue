@@ -19,7 +19,7 @@ export default {
     TheNavbar
   },
   data: () => ({
-      isRegisterBtnClicked = false,
+    isRegisterBtnClicked: false
   })
 };
 </script>
