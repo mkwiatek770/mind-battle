@@ -11,11 +11,6 @@ from quiz.models import Quiz, Category, Question, QuestionAnswer
 class Command(BaseCommand):
     """Command to populate DB with many records."""
 
-    # metoda, która tworzy X kategorie i zwraca je
-    # metoda, która tworzy X nowych użytkowników
-    # metoda, która tworzy X nowych quizów, losując kategorie (shuffle), oraz tak samo użytkownika, tak samo 50% szans, że ten quiz będzie opubliskowany
-    # metoda, która do każdego quizu tworzy losową liczbę pytań np [5, 10] i po 3/4 odpowiedzi do nich
-
     # przyjmować jako argument od użytkownika jedną z flag 0, 1, 2 gdzie 0 znaczy mało 1 średnio a 2 dużo
     # zamienić tworzenie na bulk_create
 
@@ -23,6 +18,7 @@ class Command(BaseCommand):
     N_USERS = 10
     N_QUIZZES = 10
     faker = Faker("en_US")
+    User = get_user_model()
 
     def handle(self, *args, **kwargs):
         self.stdout.write('Starting DB population...')
@@ -37,7 +33,7 @@ class Command(BaseCommand):
         self.create_quizzes(self.N_QUIZZES, categories, users)
         self.stdout.write(self.style.SUCCESS(f"Generated {self.N_QUIZZES} quiz instances"))
         t1 = time.perf_counter()
-        self.stdout.write(self.style.SUCCESS(f"Time took: {t1-t0:.2f}s"))
+        self.stdout.write(f"Time took: {t1-t0:.2f}s")
 
     def create_categories(self, n: int) -> List[Category]:
         return [Category.objects.create(name=self.faker.word()) for _ in range(n)]
@@ -46,12 +42,13 @@ class Command(BaseCommand):
         users = []
         for _ in range(n):
             profile = self.faker.profile()
-            users.append(get_user_model().objects.create_user(
+            users.append(self.User.objects.create_user(
                 username=profile['username'],
                 password=self.faker.password(),
                 email=profile['mail'],
                 age=random.randint(15, 67)
             ))
+        # return self.User.objects.bulk_create(users)
         return users
 
     def create_quizzes(self, n: int, categories: list, users: list) -> None:
