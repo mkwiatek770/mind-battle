@@ -6,14 +6,14 @@ Vue.use(VueRouter);
 
 const routes = [
   {
+    path: "/start",
+    name: "StartPage",
+    component: () => import("../views/StartPage.vue")
+  },
+  {
     path: "/",
     name: "Home",
     component: Home
-  },
-  {
-    path: "/register",
-    name: "StartPage",
-    component: () => import("../views/StartPage.vue")
   },
   {
     path: "/quiz",
