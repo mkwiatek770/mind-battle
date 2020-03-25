@@ -1,7 +1,8 @@
 <template>
   <div class="start">
     <TheNavbar />
-    <RegisterButton />
+    <RegisterForm v-if="isRegisterBtnClicked" />
+    <RegisterButton v-else @click="isRegisterBtnClicked = true" />
   </div>
 </template>
 
@@ -16,6 +17,9 @@ export default {
     RegisterForm,
     RegisterButton,
     TheNavbar
-  }
+  },
+  data: () => ({
+      isRegisterBtnClicked = false,
+  })
 };
 </script>
