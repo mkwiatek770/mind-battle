@@ -1,8 +1,14 @@
 <template>
   <div class="home">
     <TheNavbar />
-    <TheMain />
-    <TheSidebar />
+    <div class="row">
+      <div class="col-sm-12 col-md-8 col-lg-9">
+        <TheMain />
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-3">
+        <TheSidebar />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -21,3 +27,14 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+#start {
+  width: 100%;
+  height: 100vh;
+}
+
+div.row div {
+  padding: 0px;
+}
+</style>
