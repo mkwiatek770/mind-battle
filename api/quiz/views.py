@@ -7,8 +7,8 @@ from rest_framework.response import Response
 
 from django.shortcuts import get_object_or_404
 
-from quiz.models import Quiz, Question
-from quiz.serializers import QuizSerializer, QuestionSerializer, ImageSerializer
+from quiz.models import Quiz, Question, Category
+from quiz.serializers import QuizSerializer, QuestionSerializer, ImageSerializer, CategorySerializer
 from quiz.permissions import IsQuizCreatorOrReadOnly
 
 
@@ -211,3 +211,10 @@ class QuizImageView(APIView):
         quiz = self.get_object(pk)
         quiz.image.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CategoryListView(APIView):
+
+    def get(self, request, format=None):
+        categories = CategorySerializer(Category.objects.all(), many=True)
+        return Response(categories.data, status=status.HTTP_200_OK)
