@@ -43,7 +43,7 @@ class QuizSerializer(serializers.ModelSerializer):
             quiz.publish()
         return quiz
 
-    def update(self, instance, validated_data):
+    def update(self, instance, validated_data) -> Quiz:
         """Update existing quiz instance."""
         if validated_data.get("publish"):
             instance.publish()
@@ -77,6 +77,7 @@ class QuestionSerializer(serializers.ModelSerializer):
     quiz = QuizSerializer(read_only=True)
     answers = QuestionAnswerSerializer(many=True, required=False)
 
+    # TODO poprawic kod, bulk create nie działa tak jak powinien ...
     def create(self, validated_data) -> Question:
         """Create question instance."""
         answers = validated_data.pop('answers')
@@ -87,6 +88,19 @@ class QuestionSerializer(serializers.ModelSerializer):
                 QuestionAnswer(**answer, question=question)
             ])
         return question
+
+    def update(self, instance, validated_data) -> Question:
+        """Update question instance."""
+        instance.question = validated_data['question']
+        instance.explaination = validated_data['explaination']
+
+        if validated_data.get('answers'):
+            instance.answers.filter().delete()
+            QuestionAnswer.objects.bulk_create(
+                [QuestionAnswer(**answer, question=instance) for answer in validated_data['answers']])
+
+        instance.save()
+        return instance
 
     class Meta:
         model = Question
