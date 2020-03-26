@@ -511,10 +511,10 @@ class TestQuestionDetail(APITestCase):
             reverse('question_detail', args=(quiz.id, question.id)),
             data=payload_data
         )
-        updated_obj = Question.objects.get(id=question.id).prefetch_related('answers')
+        updated_obj = Question.objects.get(id=question.id)
 
         self.assertEqual(updated_obj.question, 'What is your name?')
-        self.assertEqual(response.data, QuestionSerializer(updated_obj))
+        self.assertEqual(response.data, QuestionSerializer(updated_obj).data)
         self.assertEqual(QuestionAnswer.objects.count(), 2)
         self.assertEqual(updated_obj.answers.count(), 2)
 
