@@ -16,6 +16,7 @@ urlpatterns = [
     path('quizzes/<int:quiz_pk>/questions/<int:question_pk>/',
          views.QuestionDetailView.as_view(), name='question_detail'),
 
+    path('categories/', views.CategoryListView.as_view(), name='categories'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
