@@ -215,6 +215,8 @@ class QuizImageView(APIView):
 
 class CategoryListView(APIView):
 
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     def get(self, request, format=None):
         categories = CategorySerializer(Category.objects.all(), many=True)
         return Response(categories.data, status=status.HTTP_200_OK)
