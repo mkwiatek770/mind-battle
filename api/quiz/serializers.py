@@ -77,16 +77,15 @@ class QuestionSerializer(serializers.ModelSerializer):
     quiz = QuizSerializer(read_only=True)
     answers = QuestionAnswerSerializer(many=True, required=False)
 
-    # TODO poprawic kod, bulk create nie działa tak jak powinien ...
     def create(self, validated_data) -> Question:
         """Create question instance."""
         answers = validated_data.pop('answers')
         quiz = Quiz.objects.get(pk=self.context['quiz_pk'])
         question = Question.objects.create(quiz=quiz, **validated_data)
-        for answer in answers:
-            QuestionAnswer.objects.bulk_create([
-                QuestionAnswer(**answer, question=question)
-            ])
+
+        QuestionAnswer.objects.bulk_create([
+            QuestionAnswer(**answer, question=question) for answer in answers
+        ])
         return question
 
     def update(self, instance, validated_data) -> Question:
