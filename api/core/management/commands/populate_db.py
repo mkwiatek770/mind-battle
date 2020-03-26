@@ -73,16 +73,19 @@ class Command(BaseCommand):
 
     def create_quizzes(self, n: int, categories: list, users: list) -> None:
         quizzes = []
-        for _ in range(n):
+        date_before = timezone.now()
+
+        for i in range(n):
             category = random.choice(categories)
             user = random.choice(users)
-            quiz = Quiz.objects.create(
-                name=self.faker.sentence(),
+            quizzes.append(Quiz(
+                name=f"{self.faker.sentence()}{i}",
                 creator=user,
                 category=category,
                 date_published=timezone.now() if random.random() > 0.5 else None
-            )
-
+            ))
+        Quiz.objects.bulk_create(quizzes)
+        for quiz in Quiz.objects.filter(date_created__gt=date_before):
             self.create_questions_to_quiz(quiz)
 
     def create_questions_to_quiz(self, quiz: Quiz) -> None:
