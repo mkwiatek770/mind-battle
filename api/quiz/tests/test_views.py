@@ -639,7 +639,11 @@ class TestCategory(APITestCase):
 
     def test_create_new_category_by_authenticated(self):
         """Make sure authenticated user can create new category."""
-        pass
+        self.client.force_authenticate(self.user)
+        response = self.client.post(reverse("categories"), data={'name': 'New Category'})
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Category.objects.count(), 1)
 
     def test_create_new_category_by_not_authenticated(self):
         """Make sure unauthenticated user can't create new category."""
