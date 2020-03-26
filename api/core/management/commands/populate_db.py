@@ -15,11 +15,27 @@ class Command(BaseCommand):
     # zamienić tworzenie na bulk_create
     # zamienić listę na set, żeby nie było problemu z unique constraint
 
-    N_CATEGORIES = 5
-    N_USERS = 10
-    N_QUIZZES = 10
     faker = Faker("en_US")
     User = get_user_model()
+    LEVEL = 0
+
+    LEVELS = {
+        0: {
+            'N_CATEGORIES': 3,
+            'N_USERS': 5,
+            'N_QUIZZES': 10
+        },
+        1: {
+            'N_CATEGORIES': 5,
+            'N_USERS': 10,
+            'N_QUIZZES': 20
+        },
+        2: {
+            'N_CATEGORIES': 7,
+            'N_USERS': 15,
+            'N_QUIZZES': 50
+        }
+    }
 
     def add_arguments(self, parser):
         # Named (optional) argument
@@ -30,19 +46,25 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        self.stdout.write('Starting DB population...')
 
         # handle arguments
+        if options['level'] and options['level'] in (0, 1, 2):
+            self.LEVEL = options['level']
+        n_categories = self.LEVELS[self.LEVEL]['N_CATEGORIES']
+        n_users = self.LEVELS[self.LEVEL]['N_USERS']
+        n_quizzes = self.LEVELS[self.LEVEL]['N_QUIZZES']
+
+        self.stdout.write('Starting DB population...')
 
         t0 = time.perf_counter()
-        categories = self.create_categories(self.N_CATEGORIES)
-        self.stdout.write(self.style.SUCCESS(f"Generated {self.N_CATEGORIES} categories"))
+        categories = self.create_categories(n_categories)
+        self.stdout.write(self.style.SUCCESS(f"Generated {n_categories} categories"))
 
-        users = self.create_users(self.N_USERS)
-        self.stdout.write(self.style.SUCCESS(f"Generated {self.N_USERS} users"))
+        users = self.create_users(n_users)
+        self.stdout.write(self.style.SUCCESS(f"Generated {n_users} users"))
 
-        self.create_quizzes(self.N_QUIZZES, categories, users)
-        self.stdout.write(self.style.SUCCESS(f"Generated {self.N_QUIZZES} quiz instances"))
+        self.create_quizzes(n_quizzes, categories, users)
+        self.stdout.write(self.style.SUCCESS(f"Generated {n_quizzes} quiz instances"))
         t1 = time.perf_counter()
         self.stdout.write(f"Time took: {t1-t0:.2f}s")
 
