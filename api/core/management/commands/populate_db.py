@@ -60,16 +60,18 @@ class Command(BaseCommand):
 
     def create_users(self, n: int) -> List[settings.AUTH_USER_MODEL]:
         users = []
+        date_before = timezone.now()
+
         for _ in range(n):
             profile = self.faker.profile()
-            users.append(self.User.objects.create_user(
+            users.append(self.User(
                 username=profile['username'],
-                password=self.faker.password(),
+                password=self.faker.password(),  # passwords are not hashed!!
                 email=profile['mail'],
                 age=random.randint(15, 67)
             ))
-        # return self.User.objects.bulk_create(users)
-        return users
+        self.User.objects.bulk_create(users)
+        return self.User.objects.filter(date_joined__gt=date_before)
 
     def create_quizzes(self, n: int, categories: list, users: list) -> None:
         quizzes = []
