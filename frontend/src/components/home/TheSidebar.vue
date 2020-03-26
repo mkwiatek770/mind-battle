@@ -20,7 +20,11 @@ export default {
 
 <style scoped>
 #sidebar {
+  padding-top: 20px;
   background-color: purple;
-  height: 100%;
+  height: 100vh;
+  overflow-x: hidden;
+  position: sticky;
+  top: 0;
 }
 </style>
