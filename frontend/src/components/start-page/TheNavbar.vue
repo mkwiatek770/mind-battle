@@ -12,7 +12,9 @@ export default {
   components: {
     LoginForm
   },
-  data: () => {}
+  data: function() {
+    return {};
+  }
 };
 </script>
 
