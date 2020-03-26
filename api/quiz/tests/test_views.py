@@ -21,7 +21,8 @@ from quiz.models import (
 from quiz.serializers import (
     QuizSerializer,
     QuestionSerializer,
-    QuestionAnswerSerializer
+    QuestionAnswerSerializer,
+    CategorySerializer
 )
 
 
@@ -633,6 +634,9 @@ class TestCategory(APITestCase):
             email='email@gmail.com'
         )
 
+    def create_category(self, name: str) -> Category:
+        return Category.objects.create(name=name)
+
     def test_create_new_category_by_authenticated(self):
         """Make sure authenticated user can create new category."""
         pass
@@ -643,4 +647,12 @@ class TestCategory(APITestCase):
 
     def test_retrieve_category_list(self):
         """List of all cattegories is retrieved."""
-        pass
+        category_1 = self.create_category("first")
+        category_2 = self.create_category("second")
+
+        response = self.client.get(reverse('categories'))
+        serialized_data = CategorySerializer(response.data, many=True)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(serialized_data, Category.objects.all())
+        self.assertIn(CategorySerializer(category_1), serialized_data)
