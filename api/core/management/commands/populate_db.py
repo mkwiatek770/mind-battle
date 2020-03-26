@@ -13,6 +13,7 @@ class Command(BaseCommand):
 
     # przyjmować jako argument od użytkownika jedną z flag 0, 1, 2 gdzie 0 znaczy mało 1 średnio a 2 dużo
     # zamienić tworzenie na bulk_create
+    # zamienić listę na set, żeby nie było problemu z unique constraint
 
     N_CATEGORIES = 5
     N_USERS = 10
@@ -20,8 +21,18 @@ class Command(BaseCommand):
     faker = Faker("en_US")
     User = get_user_model()
 
-    def handle(self, *args, **kwargs):
+    def add_arguments(self, parser):
+        # Named (optional) argument
+        parser.add_argument(
+            '--level',
+            type=int,
+            help='Set how many records to insert. 0 option is default 2 - is max.',
+        )
+
+    def handle(self, *args, **options):
         self.stdout.write('Starting DB population...')
+
+        # handle arguments
 
         t0 = time.perf_counter()
         categories = self.create_categories(self.N_CATEGORIES)
