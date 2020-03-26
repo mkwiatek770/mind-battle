@@ -647,7 +647,10 @@ class TestCategory(APITestCase):
 
     def test_create_new_category_by_not_authenticated(self):
         """Make sure unauthenticated user can't create new category."""
-        pass
+        response = self.client.post(reverse("categories"), data={'name': 'new one'})
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(Category.objects.count(), 0)
 
     def test_retrieve_category_list(self):
         """List of all cattegories is retrieved."""
