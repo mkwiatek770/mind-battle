@@ -488,6 +488,36 @@ class TestQuestionDetail(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(question_obj.question, "...")
 
+    def test_update_question_with_answers(self):
+        """
+        Make sure question is updated, and new answers are added,
+        old ones are destroyed.
+        """
+        quiz = Quiz.objects.create(name='quiz', creator=self.user)
+        question = Question.objects.create(quiz=quiz, question='...', explaination='...')
+        old_answer = QuestionAnswer.objects.create(
+            question=question, content='...', is_correct=True)
+
+        payload_data = {
+            'question': 'What is your name?',
+            'explaination': 'Lorem ipsum ...',
+            'answers': [
+                dict(content='answer1', is_correct=False),
+                dict(content='answer2', is_correct=True)
+            ]
+        }
+
+        response = self.client.put(
+            reverse('question_detail', args=(quiz.id, question.id)),
+            data=payload_data
+        )
+        updated_obj = Question.objects.get(id=question.id).prefetch_related('answers')
+
+        self.assertEqual(updated_obj.question, 'What is your name?')
+        self.assertEqual(response.data, QuestionSerializer(updated_obj))
+        self.assertEqual(QuestionAnswer.objects.count(), 2)
+        self.assertEqual(updated_obj.answers.count(), 2)
+
     def test_delete_question_by_author(self):
         """Make sure user can delete question of his own quiz."""
         quiz = Quiz.objects.create(name='name', creator=self.user)
