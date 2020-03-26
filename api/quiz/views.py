@@ -214,7 +214,9 @@ class QuizImageView(APIView):
 
 
 class CategoryListView(APIView):
-
+    """
+    View to conduct operation on Category model.
+    """
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get(self, request, format=None):
