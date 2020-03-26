@@ -18,23 +18,10 @@ class Command(BaseCommand):
     faker = Faker("en_US")
     User = get_user_model()
     LEVEL = 0
-
     LEVELS = {
-        0: {
-            'N_CATEGORIES': 3,
-            'N_USERS': 5,
-            'N_QUIZZES': 10
-        },
-        1: {
-            'N_CATEGORIES': 5,
-            'N_USERS': 10,
-            'N_QUIZZES': 20
-        },
-        2: {
-            'N_CATEGORIES': 7,
-            'N_USERS': 15,
-            'N_QUIZZES': 50
-        }
+        'N_CATEGORIES': [3, 5, 10],
+        'N_USERS': [5, 10, 30],
+        'N_QUIZZES': [7, 15, 50]
     }
 
     def add_arguments(self, parser):
@@ -50,9 +37,9 @@ class Command(BaseCommand):
         # handle arguments
         if options['level'] and options['level'] in (0, 1, 2):
             self.LEVEL = options['level']
-        n_categories = self.LEVELS[self.LEVEL]['N_CATEGORIES']
-        n_users = self.LEVELS[self.LEVEL]['N_USERS']
-        n_quizzes = self.LEVELS[self.LEVEL]['N_QUIZZES']
+        n_categories = self.LEVELS['N_CATEGORIES'][self.LEVEL]
+        n_users = self.LEVELS['N_USERS'][self.LEVEL]
+        n_quizzes = self.LEVELS['N_QUIZZES'][self.LEVEL]
 
         self.stdout.write('Starting DB population...')
 
