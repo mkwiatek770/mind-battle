@@ -12,9 +12,6 @@ from quiz.models import Quiz, Category, Question, QuestionAnswer
 class Command(BaseCommand):
     """Command to populate DB with many records."""
 
-    # zamienić tworzenie na bulk_create
-    # zamienić listę na set, żeby nie było problemu z unique constraint
-
     faker = Faker("en_US")
     User = get_user_model()
     LEVEL = 0
