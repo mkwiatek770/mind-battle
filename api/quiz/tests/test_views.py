@@ -621,3 +621,26 @@ class TestQuizAvatar(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertTrue(quiz_obj.image)
+
+
+class TestCategory(APITestCase):
+    """Test suite for Category model related actions."""
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username='user',
+            password='password',
+            email='email@gmail.com'
+        )
+
+    def test_create_new_category_by_authenticated(self):
+        """Make sure authenticated user can create new category."""
+        pass
+
+    def test_create_new_category_by_not_authenticated(self):
+        """Make sure unauthenticated user can't create new category."""
+        pass
+
+    def test_retrieve_category_list(self):
+        """List of all cattegories is retrieved."""
+        pass
