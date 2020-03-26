@@ -651,8 +651,8 @@ class TestCategory(APITestCase):
         category_2 = self.create_category("second")
 
         response = self.client.get(reverse('categories'))
-        serialized_data = CategorySerializer(response.data, many=True)
+        serialized_categories = CategorySerializer(Category.objects.all(), many=True)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(serialized_data, Category.objects.all())
-        self.assertIn(CategorySerializer(category_1), serialized_data)
+        self.assertEqual(response.data, serialized_categories.data)
+        self.assertIn(CategorySerializer(category_1).data, response.data)
