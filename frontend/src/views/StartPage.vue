@@ -2,7 +2,7 @@
   <div id="start">
     <TheNavbar />
     <RegisterForm v-if="isRegisterBtnClicked" />
-    <RegisterButton />
+    <RegisterButton @clicked="isRegisterBtnClicked = true" />
   </div>
 </template>
 
@@ -20,7 +20,12 @@ export default {
   },
   data: () => ({
     isRegisterBtnClicked: false
-  })
+  }),
+  methods: {
+    action() {
+      console.log("dupa");
+    }
+  }
 };
 </script>
 

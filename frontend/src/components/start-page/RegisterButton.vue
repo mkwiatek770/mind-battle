@@ -1,6 +1,23 @@
 <template>
-  <button class="btn btn-outline-success" id="register-btn">SIGN UP</button>
+  <button
+    class="btn btn-outline-success"
+    @click="onClickButton"
+    id="register-btn"
+  >
+    SIGN UP
+  </button>
 </template>
+
+<script>
+export default {
+  name: "RegisterButton",
+  methods: {
+    onClickButton() {
+      this.$emit("clicked");
+    }
+  }
+};
+</script>
 
 <style scoped>
 #register-btn {

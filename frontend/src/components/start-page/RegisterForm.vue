@@ -58,6 +58,12 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: "Home"
+};
+</script>
+
 <style scoped>
 #register-form {
   position: absolute;
