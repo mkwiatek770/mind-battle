@@ -41,7 +41,7 @@ export default {
   height: 400px;
   color: white;
   position: relative;
-  opacity: 0.8;
+  opacity: 0.95;
 }
 
 @media only screen and (max-width: 1000px) {
