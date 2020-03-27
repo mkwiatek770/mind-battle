@@ -28,7 +28,7 @@
       >
         <p
           class="font-weight-bold mt-2"
-          style="border-top: 1px solid black; padding-top: 10px; font-size: 1.2em;"
+          style="padding-top: 10px; font-size: 1.2em;"
         >
           {{ index }}
         </p>
