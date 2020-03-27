@@ -77,7 +77,7 @@ export default {
       this.answers.push({ content: "", is_correct: false });
     },
     removeAnswer() {
-      this.answer.pop();
+      this.answers.pop();
     }
   }
 };
