@@ -34,7 +34,11 @@
         </p>
         <Question />
       </div>
-      <button type="button" class="btn btn-success" @click="questionCounter++">
+      <button
+        type="button"
+        class="btn btn-success mt-3"
+        @click="questionCounter++"
+      >
         Add question
       </button>
 
