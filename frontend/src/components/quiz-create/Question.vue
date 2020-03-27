@@ -11,8 +11,25 @@
     </div>
 
     <div class="row">
-      <div class="col-4"><h5>Answers</h5></div>
-      <div class="col-8"><i class="fas fa-plus"></i></div>
+      <div class="col-2">
+        <h5>Answers</h5>
+      </div>
+      <div class="col-lg-4 col-md-5 ml-auto text-right">
+        <button
+          type="button"
+          class="answer-action-btn add-btn"
+          @click="addAnswer"
+        >
+          <font-awesome-icon icon="plus" />
+        </button>
+        <button
+          type="button"
+          class="answer-action-btn remove-btn ml-2"
+          @click="removeAnswer"
+        >
+          <font-awesome-icon icon="times" />
+        </button>
+      </div>
     </div>
     <div
       class="answer-container mt-2"
@@ -41,9 +58,6 @@
         </div>
       </div>
     </div>
-    <button type="button" class="btn btn-success" @click="addAnswer">
-      Add answer
-    </button>
   </div>
 </template>
 
@@ -58,7 +72,37 @@ export default {
   methods: {
     addAnswer() {
       this.answers.push({ content: "", is_correct: false });
+    },
+    removeAnswer() {
+      this.answer.pop();
     }
   }
 };
 </script>
+
+<style scoped>
+/* Style buttons */
+.answer-action-btn {
+  border: none; /* Remove borders */
+  color: white; /* White text */
+  padding: 12px 16px; /* Some padding */
+  font-size: 16px; /* Set a font size */
+  cursor: pointer; /* Mouse pointer on hover */
+}
+
+.add-btn {
+  background-color: DodgerBlue; /* Blue background */
+}
+
+.add-btn:hover {
+  background-color: RoyalBlue;
+}
+
+.remove-btn {
+  background-color: red;
+}
+
+.remove-btn:hover {
+  background-color: brown;
+}
+</style>
