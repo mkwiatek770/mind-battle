@@ -65,7 +65,6 @@
             <label
               ><input
                 type="radio"
-                name="answerRadio"
                 class="mr-2"
                 v-model="question.answers[index].is_correct"
                 v-on:change="changeRadio(index)"

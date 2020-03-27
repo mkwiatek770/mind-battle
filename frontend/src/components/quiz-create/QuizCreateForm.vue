@@ -3,12 +3,18 @@
     <form>
       <div class="form-group mb-3">
         <label for="quiz-name">Quiz name</label>
-        <input type="text" class="form-control" id="quiz-name" placeholder="" />
+        <input
+          type="text"
+          class="form-control"
+          id="quiz-name"
+          placeholder=""
+          v-model="name"
+        />
       </div>
 
       <div class="form-group mb-3">
         <label for="quiz-category">Category:</label>
-        <select class="form-control" id="quiz-category">
+        <select class="form-control" id="quiz-category" v-model="category_name">
           <option v-for="category in categories" :key="category.id">{{
             category.name
           }}</option>
@@ -32,7 +38,7 @@
         >
           {{ index }}
         </p>
-        <Question />
+        <Question ref="questions" />
       </div>
       <button
         type="button"
@@ -43,7 +49,11 @@
       </button>
 
       <!-- Question components here -->
-      <button type="button" class="btn btn-success create-btn mt-5">
+      <button
+        type="button"
+        class="btn btn-success create-btn mt-5"
+        @click="createQuiz"
+      >
         Create Quiz
       </button>
     </form>
@@ -61,6 +71,9 @@ export default {
   data() {
     return {
       questionCounter: 0,
+      name: "",
+      image: "",
+      category_name: "",
       categories: [
         {
           id: 1,
@@ -72,6 +85,20 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    createQuiz() {
+      var quizObj = {
+        name: this.name,
+        category_name: this.category_name,
+        questions: []
+      };
+      for (var i = 0; i < this.$refs.questions.length; i++) {
+        quizObj.questions.push(this.$refs.questions[i].question);
+      }
+      console.log(quizObj);
+      console.log(JSON.stringify(quizObj));
+    }
   }
 };
 </script>
