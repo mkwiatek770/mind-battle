@@ -2,13 +2,17 @@
   <div id="quiz-detail">
     <TheNavbar />
     <div class="row">
-      <div class="col-sm-9 col-md-8 col-lg-6 col-xl-5 mx-auto mt-5">
+      <div
+        id="question-element"
+        class="col-sm-9 col-md-8 col-lg-6 col-xl-5 mx-auto mt-5 p-5"
+        style="background-color: white"
+      >
         <TheHeader :name="quiz.name" />
         <ProgressBar
           :questionsDone="questionsDone"
           :totalQuestions="questions.length"
         />
-        <Question />
+        <Question :question="questions[currentQuestionIndex]" />
       </div>
     </div>
   </div>
@@ -31,6 +35,7 @@ export default {
   data() {
     return {
       questionsDone: 0,
+      currentQuestionIndex: 0,
       quiz: {
         name: "Quiz 1"
       },
@@ -93,6 +98,12 @@ export default {
 #quiz-detail {
   width: 100%;
   height: 100vh;
-  background-color: pink;
+}
+
+#question-element {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>
