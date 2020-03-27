@@ -5,7 +5,13 @@
   >
     <div class="form-group mb-3">
       <label for="quiz-name">Question</label>
-      <input type="text" class="form-control" id="quiz-name" placeholder="" />
+      <input
+        type="text"
+        class="form-control"
+        id="quiz-name"
+        placeholder=""
+        v-model="question.question"
+      />
     </div>
 
     <div class="form-group mb-3">
@@ -15,6 +21,7 @@
         class="form-control"
         id="quiz-explanation"
         placeholder=""
+        v-model="question.explanation"
       />
     </div>
 
@@ -51,7 +58,7 @@
               type="text"
               class="form-control"
               id="quiz-name"
-              :placeholder="answer.content"
+              v-model="question.answers[index].content"
             />
           </div>
           <div class="col-6">
@@ -60,6 +67,8 @@
                 type="radio"
                 name="answerRadio"
                 class="mr-2"
+                v-model="question.answers[index].is_correct"
+                v-on:change="changeRadio(index)"
               />Correct</label
             >
           </div>
@@ -84,9 +93,18 @@ export default {
   methods: {
     addAnswer() {
       this.question.answers.push({ content: "", is_correct: false });
+      console.log(this.question);
     },
     removeAnswer() {
       this.question.answers.pop();
+    },
+    changeRadio(index) {
+      this.question.answers[index].is_correct = true;
+      for (var i = 0; i < this.question.answers.length; i++) {
+        if (i != index) {
+          this.question.answers[i].is_correct = false;
+        }
+      }
     }
   }
 };
