@@ -17,7 +17,7 @@
 <style scoped>
 .input-group {
   width: 100%;
-  padding: 20px 20%;
+  padding: 20px 20% 20px 0;
 }
 
 .has-search .form-control {

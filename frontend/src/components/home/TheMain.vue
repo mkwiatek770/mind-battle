@@ -24,7 +24,9 @@ export default {
             id: 1,
             name: "Nowa kategoria"
           },
-          creator: "user1"
+          creator: "user1",
+          image:
+            "https://image.winudf.com/v2/image1/Y29tLmNhbmR5LnNvd2FyX0dpcmx5X3NjcmVlbl8wXzE1NTE2NDI5OTVfMDY3/screen-0.jpg?fakeurl=1&type=.jpg"
         },
         {
           id: 2,
@@ -33,7 +35,9 @@ export default {
             id: 1,
             name: "Nowa kategoria"
           },
-          creator: "user2"
+          creator: "user2",
+          image:
+            "https://cdn.acidcow.com/pics/20190619/1560962877_s5j28jll8g.jpg"
         },
         {
           id: 3,
@@ -42,7 +46,9 @@ export default {
             id: 1,
             name: "python"
           },
-          creator: "user3"
+          creator: "user3",
+          image:
+            "https://media.funalive.com/article/images/pretty_girls_is_why_were_all_here_640_01.jpg"
         }
       ]
     };
@@ -53,7 +59,6 @@ export default {
 <style scoped>
 #main {
   padding-top: 20px;
-  background-color: green;
   height: 100%;
   width: 100%;
 }

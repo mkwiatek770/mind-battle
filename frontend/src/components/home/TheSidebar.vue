@@ -21,8 +21,9 @@ export default {
 <style scoped>
 #sidebar {
   padding-top: 20px;
-  background-color: purple;
   height: 100vh;
+  border-left: 2px solid black;
+  padding-left: 10px;
   overflow-x: hidden;
   position: sticky;
   top: 0;

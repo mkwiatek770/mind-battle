@@ -1,5 +1,8 @@
 <template>
-  <div class="quiz">
+  <div
+    class="quiz"
+    v-bind:style="{ 'background-image': 'url(' + quiz.image + ')' }"
+  >
     <div class="row bottom-bar">
       <div class="col">
         <div class="row">
@@ -33,13 +36,18 @@ export default {
 .quiz {
   width: 60%;
   margin: 0 auto 40px auto !important;
-  background-image: url("../../assets/python.jpg");
   background-size: cover;
   background-position: center;
   height: 400px;
   color: white;
   position: relative;
   opacity: 0.8;
+}
+
+@media only screen and (max-width: 1000px) {
+  .quiz {
+    width: 80%;
+  }
 }
 
 .quiz:hover {
