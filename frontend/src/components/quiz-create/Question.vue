@@ -9,8 +9,13 @@
     </div>
 
     <div class="form-group mb-3">
-      <label for="quiz-name">Explaination</label>
-      <input type="text" class="form-control" id="quiz-name" placeholder="" />
+      <label for="quiz-name">Explanation</label>
+      <input
+        type="text"
+        class="form-control"
+        id="quiz-explanation"
+        placeholder=""
+      />
     </div>
 
     <div class="row">
@@ -36,7 +41,7 @@
     </div>
     <div
       class="answer-container mt-2"
-      v-for="(answer, index) in answers"
+      v-for="(answer, index) in question.answers"
       :key="index"
     >
       <div class="form-group mb-1">
@@ -69,15 +74,19 @@ export default {
   name: "Question",
   data() {
     return {
-      answers: []
+      question: {
+        question: "",
+        explanation: "",
+        answers: []
+      }
     };
   },
   methods: {
     addAnswer() {
-      this.answers.push({ content: "", is_correct: false });
+      this.question.answers.push({ content: "", is_correct: false });
     },
     removeAnswer() {
-      this.answers.pop();
+      this.question.answers.pop();
     }
   }
 };
