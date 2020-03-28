@@ -1,154 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mind Battle</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <h1>Test resource site</h1>
-    <hr>
+    <hr />
     <h2>Register</h2>
     <form>
-        <span>username</span><input type="text" name="username"
-            id="registerUsername"><br>
-        <span>email</span><input type="text" name="email"
-            id="registerEmail"><br>
-        <span>password</span><input type="password" name="password"
-            id="registerPassword"><br>
-        <span>rePassword</span><input type="password" name="rePassword"
-            id="rePassword"><br>
-        <span>age</span><input type="number" id="age"><br>
-        <button id="registerBtn">Register</button>
+      <span>username</span
+      ><input type="text" name="username" id="registerUsername" /><br />
+      <span>email</span
+      ><input type="text" name="email" id="registerEmail" /><br />
+      <span>password</span
+      ><input type="password" name="password" id="registerPassword" /><br />
+      <span>rePassword</span
+      ><input type="password" name="rePassword" id="rePassword" /><br />
+      <span>age</span><input type="number" id="age" /><br />
+      <button type="button" id="registerBtn">Register</button>
     </form>
     <div id="register"></div>
-    <br>
-    <br>
-    <hr>
+    <br />
+    <br />
+    <hr />
     <h2>Login</h2>
     <form>
-        <span>username</span><input type="text" name="username"
-            id="registerUsername"><br>
-        <span>password</span><input type="password" name="password"
-            id="registerPassword"><br>
-        <button id="loginBtn">Login</button>
+      <span>username</span
+      ><input type="text" name="username" id="registerUsername" /><br />
+      <span>password</span
+      ><input type="password" name="password" id="registerPassword" /><br />
+      <button id="loginBtn">Login</button>
     </form>
 
-    <hr>
-    <h2>Published quizzes: </h2>
+    <hr />
+    <h2>Published quizzes:</h2>
     <button id="quizzesBtn">Send</button>
     <div id="publishedQuizzes"></div>
-    <hr>
+    <hr />
 
     <!-- list of published quizzes -->
-    <h2>Your drafts: </h2>
+    <h2>Your drafts:</h2>
     <button id="draftsBtn">Send</button>
     <div id="drafts"></div>
-    <hr>
+    <hr />
 
     <!-- Create quiz -->
-    <h2>Create Quiz: </h2>
+    <h2>Create Quiz:</h2>
     <form>
-        <span>name</span><input type="text" name="name" id="quizName"><br>
-        <span>category name</span><input type="text" name="category"
-            id="categoryName"><br>
-        <span>publish</span><input type="checkbox" name="publish"
-            id="publish"><br>
-        <button id="createQuizBtn">Create quiz</button>
+      <span>name</span><input type="text" name="name" id="quizName" /><br />
+      <span>category name</span
+      ><input type="text" name="category" id="categoryName" /><br />
+      <span>publish</span
+      ><input type="checkbox" name="publish" id="publish" /><br />
+      <button id="createQuizBtn">Create quiz</button>
     </form>
-    <hr>
+    <hr />
+  </body>
 
-</body>
-
-<script>
+  <script>
     // buttons
-    let loginBtn = document.getElementById('loginBtn');
-    let registerBtn = document.getElementById('registerBtn');
-    let quizzesBtn = document.getElementById('quizzesBtn');
-    let draftsBtn = document.getElementById('draftsBtn');
-    let createQuizBtn = document.getElementById('createQuizBtn');
+    let loginBtn = document.getElementById("loginBtn");
+    let registerBtn = document.getElementById("registerBtn");
+    let quizzesBtn = document.getElementById("quizzesBtn");
+    let draftsBtn = document.getElementById("draftsBtn");
+    let createQuizBtn = document.getElementById("createQuizBtn");
 
     // event handlers
-    loginBtn.addEventListener('click', login);
-    registerBtn.addEventListener('click', register);
-    quizzesBtn.addEventListener('click', getQuizzes);
-    draftsBtn.addEventListener('click', getDrafts);
-    createQuizBtn.addEventListener('click', createQuiz);
+    loginBtn.addEventListener("click", login);
+    registerBtn.addEventListener("click", register);
+    quizzesBtn.addEventListener("click", getQuizzes);
+    draftsBtn.addEventListener("click", getDrafts);
+    createQuizBtn.addEventListener("click", createQuiz);
 
     // callback functions
-    function login() {};
+    function login() {}
 
     function register() {
-        let registerContainer = document.getElementById('register');
-        let data = {
-            'username': document.getElementById('registerUsername').value,
-            'password': document.getElementById('registerPassword').value,
-            're_password': document.getElementById('rePassword').value,
-            'email': document.getElementById('registerEmail').value,
-            'age': parseInt(document.getElementById('age').value),
-        }
+      let registerContainer = document.getElementById("register");
+      let data = {
+        username: document.getElementById("registerUsername").value,
+        password: document.getElementById("registerPassword").value,
+        re_password: document.getElementById("rePassword").value,
+        email: document.getElementById("registerEmail").value,
+        age: parseInt(document.getElementById("age").value)
+      };
 
-        fetch('http://0.0.0.0:8000/api/v1/auth/create-account/', {
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-                // body data type must match "Content-Type" header
-            })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-            })
-            .catch(err => {
-                console.log(err);
-                registerContainer.innerHTML = `There was an error: ${err}`;
-            })
-    };
+      fetch("http://0.0.0.0:8000/api/v1/auth/create-account/", {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+        // body data type must match "Content-Type" header
+      })
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+          console.log(data);
+        })
+        .catch(err => {
+          console.log(err);
+          registerContainer.innerHTML = `There was an error: ${err}`;
+        });
+    }
 
     function getQuizzes() {
+      let quizContainer = document.getElementById("publishedQuizzes");
 
-        let quizContainer = document.getElementById("publishedQuizzes");
+      fetch("http://0.0.0.0:8000/api/v1/quizzes/")
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+          console.log(data);
 
-        fetch('http://0.0.0.0:8000/api/v1/quizzes/')
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
+          quizContainer.innerHTML = "";
 
-                console.log(data);
-
-                quizContainer.innerHTML = "";
-
-                for (let i = 0; i < data.length; i++) {
-                    let quizElement = document.createElement("div");
-                    quizElement.innerHTML = `
+          for (let i = 0; i < data.length; i++) {
+            let quizElement = document.createElement("div");
+            quizElement.innerHTML = `
                     Quiz name: ${data[i].name} <br>
                     ID: ${data[i].id} <br>
                     Category: ${data[i].category.name} <br>
                     Date published: ${data[i].date_published} <br>
                     Date modified: ${data[i].date_modified} <br>
                     <br><br>                    
-                    `
-                    quizContainer.appendChild(quizElement);
+                    `;
+            quizContainer.appendChild(quizElement);
+          }
+          // twórz htmlowy element, który zawiera wszystkie wyciągągniete informacje
+          // dodawaj element używając appendChild
+        })
+        .catch(err => {
+          console.log(err);
+          quizContainer.innerHTML = `There was an error: ${err}`;
+        });
+    }
 
-                }
-                // twórz htmlowy element, który zawiera wszystkie wyciągągniete informacje
-                // dodawaj element używając appendChild
-            })
-            .catch(err => {
-                console.log(err);
-                quizContainer.innerHTML = `There was an error: ${err}`;
-            })
-    };
+    function getDrafts() {}
 
-    function getDrafts() {};
-
-    function createQuiz() {};
-</script>
-
+    function createQuiz() {}
+  </script>
 </html>
