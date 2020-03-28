@@ -1,7 +1,7 @@
 <template>
   <div
     class="quiz"
-    v-bind:style="{ 'background-image': 'url(' + quiz.image + ')' }"
+    v-bind:style="{ 'background-image': 'url(' + tempImg + ')' }"
   >
     <div class="row bottom-bar">
       <div class="col">
@@ -28,6 +28,12 @@ export default {
   name: "Quiz",
   props: {
     quiz: Object
+  },
+  data() {
+    return {
+      tempImg:
+        "https://image.winudf.com/v2/image1/Y29tLmNhbmR5LnNvd2FyX0dpcmx5X3NjcmVlbl8wXzE1NTE2NDI5OTVfMDY3/screen-0.jpg?fakeurl=1&type=.jpg"
+    };
   }
 };
 </script>
