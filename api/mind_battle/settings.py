@@ -19,9 +19,9 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     # django apps
-    'quiz',
-    'user',
-    'core',
+    'quiz.apps.QuizConfig',
+    'user.apps.UserConfig',
+    'core.apps.CoreConfig',
     # 3rd party apps
     'storages',
     'rest_framework',
