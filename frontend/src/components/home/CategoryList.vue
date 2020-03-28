@@ -15,25 +15,19 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   name: "CategoryList",
   data() {
-    return {
-      categories: [
-        {
-          id: 1,
-          name: "python"
-        },
-        {
-          id: 2,
-          name: "javascript"
-        },
-        {
-          id: 3,
-          name: "java"
-        }
-      ]
-    };
+    return {};
+  },
+  computed: mapState({
+    categories: state => state.quiz.categories
+  }),
+  methods: mapActions("categories", ["getCategories"]),
+  created() {
+    this.$store.dispatch("quiz/getCategories");
   }
 };
 </script>
