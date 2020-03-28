@@ -63,7 +63,12 @@
           </div>
           <div class="col-6">
             <label>
-              <input :name="'radio' + idx" class="mr-2" type="radio" />
+              <input
+                :name="'radio' + idx"
+                v-on:change="changeRadio(index)"
+                class="mr-2"
+                type="radio"
+              />
               Correct</label
             >
           </div>
@@ -103,6 +108,8 @@ export default {
           this.question.answers[i].is_correct = false;
         }
       }
+
+      console.log(this.question.answers);
     }
   }
 };
