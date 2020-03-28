@@ -7,8 +7,8 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
 import Quiz from "./Quiz.vue";
-import axios from "axios";
 
 export default {
   name: "TheMain",
@@ -16,14 +16,14 @@ export default {
     Quiz
   },
   data() {
-    return {
-      quizzes: []
-    };
+    return {};
   },
-  mounted() {
-    axios
-      .get("http://localhost:8000/api/v1/quizzes")
-      .then(response => (this.quizzes = response.data));
+  computed: mapState({
+    quizzes: state => state.quiz.quizzes
+  }),
+  methods: mapActions("quizzes", ["getQuizzes"]),
+  created() {
+    this.$store.dispatch("quiz/getQuizzes");
   }
 };
 </script>
