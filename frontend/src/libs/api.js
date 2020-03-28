@@ -9,3 +9,32 @@ export default axios.create({
     "X-CSRFToken": Cookies.get("csrftoken")
   }
 });
+
+// ##############################
+// zrobione
+// ##############################
+
+// /quizzes/ GET
+// /categories/ GET, POST
+
+// ##############################
+// endpointy do zaimplementowania
+// ##############################
+
+// /auth/login/ POST
+// /auth/create-account/ POST
+// /auth/token/refresh/ POST
+// /auth/logout/ POST
+// /quizzes/ POST, GET(filtrowanie)
+// /categories/ POST, DELETE
+// /quizzes/drafts/ GET
+// /quizzes/<id>/avatar/ GET, PUT, DELETE
+// /quizzes/<id>/publish/ POST
+// /quizzes/<id>/unpublish/ POST
+// /quizzes/<id>/ GET, PUT, DELETE
+// /quizzes/<id>/questions/ GET, POST
+// /quizzes/<id>/questions/<id>/ PUT, DELETE
+// /quizzes/<id>/questions/<id>/answer PUT
+// quizzes/<id>/publish/ POST
+// /quizzes/<id>/unpublish/ POST
+// /quizzes/<id>/image/ GET, PUT, DELETE
