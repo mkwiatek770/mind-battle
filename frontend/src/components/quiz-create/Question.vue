@@ -62,13 +62,9 @@
             />
           </div>
           <div class="col-6">
-            <label
-              ><input
-                type="radio"
-                class="mr-2"
-                v-model="question.answers[index].is_correct"
-                v-on:change="changeRadio(index)"
-              />Correct</label
+            <label>
+              <input :name="'radio' + idx" class="mr-2" type="radio" />
+              Correct</label
             >
           </div>
         </div>
@@ -80,6 +76,9 @@
 <script>
 export default {
   name: "Question",
+  props: {
+    idx: Number
+  },
   data() {
     return {
       question: {

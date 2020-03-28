@@ -38,7 +38,7 @@
         >
           {{ index }}
         </p>
-        <Question ref="questions" />
+        <Question ref="questions" :idx="index" />
       </div>
       <button
         type="button"
