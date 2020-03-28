@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     # 3rd party apps
     'storages',
     'rest_framework',
+    'corsheaders',
     'rest_framework.authtoken',
     'rest_framework_simplejwt.token_blacklist',
     # django built-in apps
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -140,3 +142,15 @@ MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/media/'
 
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
+
+
+CORS_ORIGIN_WHITELIST = [
+    # Vue.js
+    "http://127.0.0.1:5500",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    # Django
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+    "http://0.0.0.0:8000",
+]
