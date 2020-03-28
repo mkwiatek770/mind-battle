@@ -1,10 +1,11 @@
 import api from "@/libs/api";
 
 export default {
-  login(data) {
+  login(username, password) {
     return api
-      .post(`/auth/login`, {
-        body: JSON.stringify(data)
+      .post(`/auth/login/`, {
+        body: JSON.stringify({ username, password }),
+        headers: { "Content-Type": "application/json" }
       })
       .then(response => response.data)
       .catch(error => {
@@ -21,7 +22,7 @@ export default {
         console.log(error);
       });
   },
-  refreshToken() {
+  refreshToken(data) {
     return api
       .post(`/auth/token/refresh`, {
         body: JSON.stringify(data)

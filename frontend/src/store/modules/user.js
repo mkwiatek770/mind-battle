@@ -19,12 +19,9 @@ const getters = {
 };
 
 const actions = {
-  login({ commit }, username, password) {
-    var loginData = {
-      username: username,
-      password: password
-    };
-    userAPI.login(loginData).then(tokens => {
+  login({ commit }, { username, password }) {
+    console.log(`${username}, ${password}`);
+    userAPI.login(username, password).then(tokens => {
       commit("setTokens", tokens);
     });
   }
@@ -34,6 +31,9 @@ const mutations = {
   setTokens(state, tokens) {
     state.accessToken = tokens.access;
     state.refreshToken = tokens.refresh;
+    console.log("Nowe tokeny");
+    console.log(state.accessToken);
+    console.log(state.refreshToken);
   },
   setUsername(state, username) {
     state.username = username;

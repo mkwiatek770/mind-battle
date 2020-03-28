@@ -10,6 +10,9 @@ export default axios.create({
   }
 });
 
+// Poradnik na podstawie którego pisać kod
+// https://jasonwatmore.com/post/2018/07/14/vue-vuex-user-registration-and-login-tutorial-example
+
 // ##############################
 // zrobione
 // ##############################
