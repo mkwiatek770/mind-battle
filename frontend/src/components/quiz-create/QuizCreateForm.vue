@@ -48,10 +48,16 @@
         Add question
       </button>
 
-      <!-- Question components here -->
+      <div class="mt-5">
+        <input type="checkbox" id="checkbox" v-model="publish" />
+        <span for="checkbox" class="font-weight-bold">
+          Publish
+        </span>
+      </div>
+
       <button
         type="button"
-        class="btn btn-success create-btn mt-5"
+        class="btn btn-success create-btn mt-2"
         @click="createQuiz"
       >
         Create Quiz
@@ -74,6 +80,7 @@ export default {
       name: "",
       image: "",
       category_name: "",
+      publish: false,
       categories: [
         {
           id: 1,
@@ -91,13 +98,19 @@ export default {
       var quizObj = {
         name: this.name,
         category_name: this.category_name,
+        publish: this.publish,
         questions: []
       };
-      for (var i = 0; i < this.$refs.questions.length; i++) {
-        quizObj.questions.push(this.$refs.questions[i].question);
+      if (this.anyQuestion()) {
+        for (var i = 0; i < this.$refs.questions.length; i++) {
+          quizObj.questions.push(this.$refs.questions[i].question);
+        }
       }
       console.log(quizObj);
       console.log(JSON.stringify(quizObj));
+    },
+    anyQuestion() {
+      return Object.prototype.hasOwnProperty.call(this.$refs, "questions");
     }
   }
 };
