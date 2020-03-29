@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     # 3rd party apps
     'storages',
+    'drf_yasg',
     'rest_framework',
     'corsheaders',
     'rest_framework.authtoken',
