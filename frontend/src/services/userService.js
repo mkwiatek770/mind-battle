@@ -1,6 +1,6 @@
 import api from "@/services/api";
 
-export const userService = {
+export default {
   login,
   logout,
   register,
