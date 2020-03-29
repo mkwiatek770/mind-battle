@@ -66,7 +66,7 @@
 </template>
 
 <script>
-// import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "Home",
@@ -82,9 +82,19 @@ export default {
       submitted: false
     };
   },
+  computed: {
+    ...mapState("user", ["status"])
+  },
   methods: {
+    ...mapActions("user", ["register"]),
     handleSubmit() {
-      console.log(this.user);
+      this.submitted = true;
+      // this.$validator.validate().then(valid => {
+      //   if (valid) {
+      //     this.register(this.user);
+      //   }
+      // });
+      this.register(this.user);
     }
   }
 };
