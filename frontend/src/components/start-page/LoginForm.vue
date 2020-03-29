@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "LoginForm",
@@ -37,14 +37,22 @@ export default {
       password: ""
     };
   },
+  computed: {
+    ...mapState("user", ["status"])
+  },
   methods: {
-    ...mapActions("user", ["login"]),
+    ...mapActions("user", ["login", "logout"]),
     handleSubmit() {
+      this.submitted = true;
       const { username, password } = this;
       if (username && password) {
         this.login({ username, password });
       }
     }
+  },
+  created() {
+    // reset login status
+    this.logout();
   }
 };
 </script>
