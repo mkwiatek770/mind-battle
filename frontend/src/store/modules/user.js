@@ -15,9 +15,9 @@ const actions = {
     commit("loginRequest", { username });
 
     userService.login(username, password).then(
-      user => {
-        commit("loginSuccess", user);
-        router.push("/");
+      userData => {
+        commit("loginSuccess", userData);
+        // router.push("/");
       },
       error => {
         commit("loginFailure", error);
@@ -34,6 +34,7 @@ const actions = {
 
     userService.register(user).then(
       user => {
+        console.log(user);
         commit("registerSuccess", user);
         router.push("/start");
         setTimeout(() => {
@@ -41,6 +42,7 @@ const actions = {
         });
       },
       error => {
+        console.log(error);
         commit("registerFailure", error);
         dispatch("alert/error", error, { root: true });
       }
@@ -49,13 +51,15 @@ const actions = {
 };
 
 const mutations = {
-  loginRequest(state, user) {
+  loginRequest(state, username) {
     state.status = { loggingIn: true };
-    state.user = user;
+    console.log(username);
+    // state.user.username = username;
   },
-  loginSuccess(state, user) {
+  loginSuccess(state, userData) {
     state.status = { loggedIn: true };
-    state.user = user;
+    state.accessToken = userData.accessToken;
+    state.refreshToken = userData.refreshToken;
   },
   loginFailure(state) {
     state.status = {};
