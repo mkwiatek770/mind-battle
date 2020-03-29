@@ -28,7 +28,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework.authtoken',
     'rest_framework_simplejwt.token_blacklist',
-    'rest_framework_swagger',
     # django built-in apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -123,7 +122,7 @@ REST_FRAMEWORK = {
     },
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication'
-    ]
+    ],
 
 }
 
