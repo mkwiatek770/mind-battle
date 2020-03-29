@@ -1,6 +1,6 @@
 <template>
   <div id="register-form">
-    <form>
+    <form @submit.prevent="handleSubmit">
       <div class="form-group">
         <label for="username-input">Username</label>
         <input
@@ -8,6 +8,7 @@
           class="form-control"
           id="username-input"
           placeholder="Enter username"
+          v-model="user.username"
         />
         <small id="emailHelp" class="form-text text-muted"
           >We'll never share your email with anyone else.</small
@@ -21,6 +22,7 @@
           id="email-input"
           aria-describedby="email-help"
           placeholder="Enter email"
+          v-model="user.email"
         />
         <small id="email-help" class="form-text text-muted"
           >We'll never share your email with anyone else.</small
@@ -33,7 +35,7 @@
           type="password"
           class="form-control"
           id="password-input"
-          placeholder="Password"
+          v-model="user.password"
         />
       </div>
 
@@ -43,13 +45,18 @@
           type="password"
           class="form-control"
           id="re-password-input"
-          placeholder="Password"
+          v-model="user.re_password"
         />
       </div>
 
       <div class="form-group">
         <label for="age-input">Age</label>
-        <input type="number" class="form-control" id="age-input" />
+        <input
+          type="number"
+          class="form-control"
+          id="age-input"
+          v-model="user.age"
+        />
       </div>
       <div class="button-holder">
         <button type="submit" class="btn btn-success">Register</button>
@@ -59,8 +66,27 @@
 </template>
 
 <script>
+// import { mapState, mapActions } from 'vuex';
+
 export default {
-  name: "Home"
+  name: "Home",
+  data() {
+    return {
+      user: {
+        username: "",
+        email: "",
+        password: "",
+        re_password: "",
+        age: null
+      },
+      submitted: false
+    };
+  },
+  methods: {
+    handleSubmit() {
+      console.log(this.user);
+    }
+  }
 };
 </script>
 
