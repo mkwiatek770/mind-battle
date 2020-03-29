@@ -55,7 +55,7 @@
           type="number"
           class="form-control"
           id="age-input"
-          v-model="user.age"
+          v-model.number="user.age"
         />
       </div>
       <div class="button-holder">
