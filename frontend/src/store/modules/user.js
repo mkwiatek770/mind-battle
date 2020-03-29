@@ -1,4 +1,4 @@
-import userAPI from "../../libs/userAPI";
+import userService from "../../services/userService";
 
 const state = {
   username: "",
@@ -21,7 +21,7 @@ const getters = {
 const actions = {
   login({ commit }, { username, password }) {
     console.log(`${username}, ${password}`);
-    userAPI.login(username, password).then(tokens => {
+    userService.login(username, password).then(tokens => {
       commit("setTokens", tokens);
     });
   }

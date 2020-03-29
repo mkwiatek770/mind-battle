@@ -1,5 +1,5 @@
-import quizAPI from "../../libs/quizAPI";
-import categoryAPI from "../../libs/categoryAPI";
+import quizAPI from "../../services/quizService";
+import categoryAPI from "../../services/categoryService";
 
 const state = {
   quizzes: [],

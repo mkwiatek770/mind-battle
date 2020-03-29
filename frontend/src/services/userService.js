@@ -1,4 +1,4 @@
-import api from "@/libs/api";
+import api from "@/services/api";
 
 export default {
   login(username, password) {

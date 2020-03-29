@@ -1,9 +1,9 @@
-import api from "@/libs/api";
+import api from "@/services/api";
 
 export default {
-  getQuizzes() {
+  getCategories() {
     return api
-      .get(`/quizzes`)
+      .get(`/categories`)
       .then(response => response.data)
       .catch(error => {
         console.log(error);
