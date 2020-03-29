@@ -18,14 +18,19 @@ function login(username, password) {
   return api
     .post(`${API_BASE_URL}/auth/login/`, requestOptions)
     .then(handleResponse)
-    .then(user => {
+    .then(tokens => {
       // login successful if there's a jwt token in the response
-      if (user.token) {
+      if (tokens.access && tokens.refresh) {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
-        localStorage.setItem("user", JSON.stringify(user));
+        let userObj = {
+          username: username,
+          access: tokens.access,
+          refresh: tokens.refresh
+        };
+        localStorage.setItem("user", JSON.stringify(userObj));
       }
 
-      return user;
+      return tokens;
     });
 }
 
