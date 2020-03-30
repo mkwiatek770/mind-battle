@@ -58,15 +58,15 @@ function refreshToken(refresh) {
 
 function handleResponse(response) {
   const data = response.data;
-  if (response.status != 200) {
+  if (response.status != 200 || response.status != 201) {
     if (response.status === 401) {
       // auto logout if 401 response returned from api
       logout();
       location.reload(true);
-    }
 
-    const error = (data && data.message) || response.statusText;
-    return Promise.reject(error);
+      const error = (data && data.message) || response.statusText;
+      return Promise.reject(error);
+    }
   }
   return data;
 }
