@@ -155,3 +155,5 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:8000",
     "http://0.0.0.0:8000",
 ]
+
+CELERY_BROKER_URL = f'redis://{env("REDIS_HOST")}:{env("REDIS_PORT")}/{env("REDIS_CELERY_DB")}'
