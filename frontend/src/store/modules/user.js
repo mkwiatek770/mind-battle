@@ -8,6 +8,12 @@ const state = {
   refreshToken: localStorage.getItem("refreshToken") || ""
 };
 
+const getters = {
+  username: state => {
+    return state.username;
+  }
+};
+
 const actions = {
   login({ dispatch, commit }, { username, password }) {
     commit("loginRequest", { username });
@@ -25,6 +31,7 @@ const actions = {
   logout({ commit }) {
     userService.logout();
     commit("logout");
+    router.push("/start");
   },
   register({ dispatch, commit }, user) {
     commit("registerRequest");
@@ -83,6 +90,7 @@ const mutations = {
 export default {
   namespaced: true,
   state,
+  getters,
   actions,
   mutations
 };
