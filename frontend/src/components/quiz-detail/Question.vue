@@ -6,6 +6,9 @@
       @click="checkElement(index)"
       v-for="(answer, index) in question.answers"
       :key="answer.id"
+      v-bind:class="[
+        answered ? (answer.is_correct ? 'good-answer' : 'bad-answer') : 'answer'
+      ]"
     >
       <label
         ><input type="radio" name="answerRadio" class="mr-2" />{{
@@ -32,7 +35,11 @@
         </div>
       </div>
     </div>
-    <button class="question-btn btn btn-danger" v-if="!answered">
+    <button
+      class="question-btn btn btn-danger"
+      v-if="!answered"
+      @click="submitAnswer"
+    >
       Answer
     </button>
     <button class="question-btn btn btn-danger" v-else>Next Question</button>
@@ -46,6 +53,7 @@ export default {
   data() {
     return {
       answered: false
+      // choice: null
     };
   },
   methods: {
@@ -53,6 +61,11 @@ export default {
       document.getElementsByClassName("answer")[
         index
       ].children[0].children[0].checked = true;
+    },
+    submitAnswer() {
+      // sprawdź, który checkbox jest zaznaczony
+      // wyślij rodzicowi $emit id odpowiedzi
+      this.answered = true;
     }
   }
 };
@@ -70,6 +83,14 @@ export default {
   padding: 10px 20px;
   margin: 10px 0 !important;
   transition: background-color 0.3s;
+}
+
+.good-answer {
+  background-color: green;
+}
+
+.bad-answer {
+  background-color: red;
 }
 
 .answer:hover {

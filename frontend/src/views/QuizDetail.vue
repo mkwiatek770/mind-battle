@@ -37,7 +37,9 @@ export default {
   data() {
     return {
       questionsDone: 0,
-      currentQuestionIndex: 0
+      currentQuestionIndex: 0,
+      correctAnswers: 0,
+      userAnswers: []
     };
   },
   computed: {

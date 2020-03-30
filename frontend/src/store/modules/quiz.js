@@ -42,6 +42,7 @@ const actions = {
     quizAPI.getQuestionsForQuiz(id).then(
       questions => {
         commit("setQuizQuestions", questions);
+        router.push(`/quiz/${id}`);
       },
       error => {
         commit("responseFailure", error);
