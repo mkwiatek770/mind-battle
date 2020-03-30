@@ -617,7 +617,7 @@ class TestQuizAvatar(APITestCase):
         quiz_obj = Quiz.objects.get(name='test')
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertFalse(quiz_obj.image)
+        self.assertTrue(quiz_obj.image.name, 'default_quiz.jpeg')
 
     @mock.patch('mind_battle.storages.MediaRootS3Boto3Storage.save')
     def test_removing_image_by_creator(self, mock_storage):
