@@ -11,9 +11,13 @@
       ]"
     >
       <label
-        ><input type="radio" name="answerRadio" class="mr-2" />{{
-          answer.content
-        }}</label
+        ><input
+          type="radio"
+          name="answerRadio"
+          class="mr-2"
+          :value="answer.id"
+          v-model="choice"
+        />{{ answer.content }}</label
       >
     </div>
     <div class="explaination mt-3 mb-3" v-if="answered">
@@ -52,8 +56,8 @@ export default {
   props: { question: Object },
   data() {
     return {
-      answered: false
-      // choice: null
+      answered: false,
+      choice: null
     };
   },
   methods: {

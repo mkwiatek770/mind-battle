@@ -38,6 +38,14 @@ const routes = [
     }
   },
   {
+    path: "/quiz/solve",
+    name: "QuizSolve",
+    component: () => import("../views/QuizSolve.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: "/quiz/:id",
     name: "QuizDetail",
     component: () => import("../views/QuizDetail.vue"),
