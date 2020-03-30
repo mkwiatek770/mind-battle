@@ -38,7 +38,7 @@ const routes = [
     }
   },
   {
-    path: "/quiz/:slug",
+    path: "/quiz/:id",
     name: "QuizDetail",
     component: () => import("../views/QuizDetail.vue"),
     meta: {
