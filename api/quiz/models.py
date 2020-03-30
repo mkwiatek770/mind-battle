@@ -9,6 +9,8 @@ from quiz.managers import QuizManager
 from mind_battle.helpers import get_quiz_image_location
 from user.models import QuizUser, QuestionUser
 
+DEFAULT_IMG_URL = 'https://cdn.pixabay.com/photo/2015/02/24/15/41/dog-647528_960_720.jpg'
+
 
 class Quiz(models.Model):
     name = models.CharField(max_length=200, unique=True)
@@ -19,7 +21,8 @@ class Quiz(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_published = models.DateTimeField(null=True, blank=True)
     date_modified = models.DateTimeField(auto_now=True)
-    image = models.ImageField(null=True, blank=True, upload_to=get_quiz_image_location)
+    image = models.ImageField(null=True, blank=True, upload_to=get_quiz_image_location,
+                              default='default_quiz.jpeg')
 
     # overwrite default manager
     objects = QuizManager()
