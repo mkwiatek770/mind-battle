@@ -12,7 +12,11 @@
           :questionsDone="questionsDone"
           :totalQuestions="recentQuiz.questions.length"
         />
-        <Question :question="recentQuiz.questions[currentQuestionIndex]" />
+        <Question
+          :question="recentQuiz.questions[currentQuestionIndex]"
+          @answered="userAnswer"
+          @nextQuestion="userNextQuestionOrFinish"
+        />
       </div>
     </div>
   </div>
@@ -44,6 +48,22 @@ export default {
   },
   computed: {
     ...mapState("quiz", ["recentQuiz"])
+  },
+  methods: {
+    userAnswer(answerId, correct) {
+      this.userAnswers.push(answerId);
+      this.questionsDone += 1;
+      if (correct) {
+        this.correctAnswers += 1;
+      }
+    },
+    userNextQuestionOrFinish() {
+      if (this.currentQuestionIndex < this.recentQuiz.questions.length) {
+        this.currentQuestionIndex += 1;
+      } else {
+        this.$router.push("/quiz/summary");
+      }
+    }
   }
 };
 </script>

@@ -3,7 +3,7 @@
     <p class="question-content mt-5">{{ question.question }}</p>
     <div
       class="answer"
-      @click="checkElement(index)"
+      @click="selectElement(index, answer.id)"
       v-for="(answer, index) in question.answers"
       :key="answer.id"
       v-bind:class="[
@@ -15,8 +15,7 @@
           type="radio"
           name="answerRadio"
           class="mr-2"
-          :value="answer.id"
-          v-model="choice"
+          :disabled="answered"
         />{{ answer.content }}</label
       >
     </div>
@@ -43,10 +42,13 @@
       class="question-btn btn btn-danger"
       v-if="!answered"
       @click="submitAnswer"
+      :disabled="!choice"
     >
       Answer
     </button>
-    <button class="question-btn btn btn-danger" v-else>Next Question</button>
+    <button class="question-btn btn btn-danger" v-else @click="nextQuestion">
+      Next Question
+    </button>
   </div>
 </template>
 
@@ -57,19 +59,30 @@ export default {
   data() {
     return {
       answered: false,
-      choice: null
+      choice: null,
+      correct: null
     };
   },
   methods: {
-    checkElement(index) {
-      document.getElementsByClassName("answer")[
-        index
-      ].children[0].children[0].checked = true;
+    selectElement(index, answerId) {
+      if (!this.answered) {
+        document.getElementsByClassName("answer")[
+          index
+        ].children[0].children[0].checked = true;
+
+        this.choice = parseInt(answerId);
+        this.correct = this.question.answers[index].is_correct;
+      }
     },
     submitAnswer() {
-      // sprawdź, który checkbox jest zaznaczony
-      // wyślij rodzicowi $emit id odpowiedzi
       this.answered = true;
+      this.$emit("answered", this.choice, this.correct);
+    },
+    nextQuestion() {
+      this.$emit("nextQuestion");
+      this.answered = false;
+      this.choice = null;
+      this.correct = null;
     }
   }
 };
@@ -100,6 +113,9 @@ export default {
 .answer:hover {
   cursor: pointer;
   background-color: rgb(232, 235, 238);
+}
+.good-answer:hover {
+  background-color: green;
 }
 
 .answer label {
