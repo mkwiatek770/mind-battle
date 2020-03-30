@@ -22,14 +22,6 @@ const routes = [
     }
   },
   {
-    path: "/quiz",
-    name: "QuizDetail",
-    component: () => import("../views/QuizDetail.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
     path: "/quiz/new",
     name: "QuizCreate",
     component: () => import("../views/QuizCreate.vue"),
@@ -41,6 +33,14 @@ const routes = [
     path: "/quiz/edit",
     name: "QuizEdit",
     component: () => import("../views/QuizEdit.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/quiz/:slug",
+    name: "QuizDetail",
+    component: () => import("../views/QuizDetail.vue"),
     meta: {
       requiresAuth: true
     }
