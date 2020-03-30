@@ -1,9 +1,11 @@
+import router from "@/router";
 import quizAPI from "../../services/quizService";
 import categoryAPI from "../../services/categoryService";
 
 const state = {
   quizzes: [],
-  categories: []
+  categories: [],
+  recentQuiz: {}
 };
 
 const getters = {
@@ -12,6 +14,9 @@ const getters = {
   },
   categories: state => {
     return state.categories;
+  },
+  recentQuiz: state => {
+    return state.recentQuiz;
   }
 };
 
@@ -25,11 +30,20 @@ const actions = {
     categoryAPI.getCategories().then(categories => {
       commit("setCategories", categories);
     });
+  },
+  getQuizWithQuestions({ dispatch, commit }, { id }) {
+    quizAPI.getQuizWithQuestions(id, state.accessToken).then(
+      quizData => {
+        commit("setQuizData", quizData);
+      },
+      error => {
+        commit("responseFailure", error);
+        dispatch("alert/error", error, { root: true });
+        router.push("/");
+      }
+    );
   }
-  //   getMessages({ commit }) {
-  // quizAPI.fetchMessages().then(messages => {
-  //   commit("setMessages", messages);
-  // });
+
   //   },
   //   addMessage({ commit }, message) {
   // quizAPI.postMessage(message).then(() => {
@@ -48,7 +62,14 @@ const mutations = {
   },
   setCategories(state, categories) {
     state.categories = categories;
+  },
+  setQuizData(state, quizData) {
+    state.recentQuiz = quizData;
+  },
+  responseFailure(state) {
+    state.recentQuiz = {};
   }
+
   // addMessage(state, message) {
   //   state.messages.push(message)
   // },
