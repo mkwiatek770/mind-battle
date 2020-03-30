@@ -7,7 +7,7 @@
       v-for="(answer, index) in question.answers"
       :key="answer.id"
       v-bind:class="[
-        answered ? (answer.is_correct ? 'good-answer' : 'bad-answer') : 'answer'
+        answered ? (answer.is_correct ? 'good-answer' : '') : 'answer'
       ]"
     >
       <label
