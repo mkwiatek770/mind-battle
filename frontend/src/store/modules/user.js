@@ -20,7 +20,6 @@ const actions = {
     userService.login(username, password).then(
       userData => {
         commit("loginSuccess", userData);
-        console.log("Przed puszem");
         router.push("/");
       },
       error => {
@@ -39,10 +38,7 @@ const actions = {
 
     userService.register(user).then(
       user => {
-        console.log(user);
         commit("registerSuccess", user);
-        // router.push("/start");
-        // location.reload();
         setTimeout(() => {
           dispatch("alert/success", "Registration successful", { root: true });
         });
