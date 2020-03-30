@@ -8,27 +8,42 @@ const routes = [
   {
     path: "/start",
     name: "StartPage",
-    component: () => import("../views/StartPage.vue")
+    component: () => import("../views/StartPage.vue"),
+    meta: {
+      guest: true
+    }
   },
   {
     path: "/",
     name: "Home",
-    component: Home
+    component: Home,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/quiz",
     name: "QuizDetail",
-    component: () => import("../views/QuizDetail.vue")
+    component: () => import("../views/QuizDetail.vue"),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/quiz/new",
     name: "QuizCreate",
-    component: () => import("../views/QuizCreate.vue")
+    component: () => import("../views/QuizCreate.vue"),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/quiz/edit",
     name: "QuizEdit",
-    component: () => import("../views/QuizEdit.vue")
+    component: () => import("../views/QuizEdit.vue"),
+    meta: {
+      requiresAuth: true
+    }
   },
 
   // otherwise redirect to home
@@ -40,19 +55,20 @@ const router = new VueRouter({
   mode: "history"
 });
 
-/*
 router.beforeEach((to, from, next) => {
-  // redirect to login page if not logged in and trying to access a restricted page
-  const publicPages = ['/login', '/register'];
-  const authRequired = !publicPages.includes(to.path);
-  const loggedIn = localStorage.getItem('user');
-
-  if (authRequired && !loggedIn) {
-    return next('/login');
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!JSON.parse(localStorage.vuex).user.accessToken) {
+      next({
+        path: "/start",
+        params: { nextUrl: to.fullPath }
+      });
+    } else {
+      next();
+    }
+  } else if (to.matched.some(record => record.meta.guest)) {
+    next();
   }
-
   next();
-})
-*/
+});
 
 export default router;

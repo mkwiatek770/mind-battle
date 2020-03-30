@@ -20,6 +20,7 @@ const actions = {
     userService.login(username, password).then(
       userData => {
         commit("loginSuccess", userData);
+        console.log("Przed puszem");
         router.push("/");
       },
       error => {
