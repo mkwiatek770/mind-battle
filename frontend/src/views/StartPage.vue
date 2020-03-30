@@ -1,7 +1,10 @@
 <template>
   <div id="start">
     <TheNavbar />
-    <RegisterForm v-if="isRegisterBtnClicked" />
+    <RegisterForm
+      v-if="isRegisterBtnClicked"
+      @registeredSuccessfuly="hideForm"
+    />
     <RegisterButton @clicked="isRegisterBtnClicked = true" />
   </div>
 </template>
@@ -22,8 +25,8 @@ export default {
     isRegisterBtnClicked: false
   }),
   methods: {
-    action() {
-      console.log("dupa");
+    hideForm() {
+      this.isRegisterBtnClicked = false;
     }
   }
 };

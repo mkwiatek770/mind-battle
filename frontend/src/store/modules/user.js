@@ -40,7 +40,8 @@ const actions = {
       user => {
         console.log(user);
         commit("registerSuccess", user);
-        router.push("/start");
+        // router.push("/start");
+        // location.reload();
         setTimeout(() => {
           dispatch("alert/success", "Registration successful", { root: true });
         });
@@ -80,10 +81,12 @@ const mutations = {
     state.status = { registering: true };
   },
   registerSuccess(state) {
-    state.status = {};
+    state.status = { registerSuccess: true };
+    console.log("sukces");
+    console.log(state.status);
   },
   registerFailure(state) {
-    state.status = {};
+    state.status = { registerFailed: true };
   }
 };
 

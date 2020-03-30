@@ -5,7 +5,9 @@
       <span
         >Logged in as <span class="font-weight-bold">{{ username }}</span></span
       >
-      <button class="btn btn-outline-danger ml-3">Logout</button>
+      <button class="btn btn-outline-danger ml-3" @click="logout">
+        Logout
+      </button>
     </div>
   </nav>
 </template>
