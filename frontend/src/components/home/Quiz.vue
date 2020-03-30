@@ -2,6 +2,7 @@
   <div
     class="quiz"
     v-bind:style="{ 'background-image': 'url(' + tempImg + ')' }"
+    @click="redirectToDetail(quiz.id)"
   >
     <div class="row bottom-bar">
       <div class="col">
@@ -34,6 +35,11 @@ export default {
       tempImg:
         "https://image.winudf.com/v2/image1/Y29tLmNhbmR5LnNvd2FyX0dpcmx5X3NjcmVlbl8wXzE1NTE2NDI5OTVfMDY3/screen-0.jpg?fakeurl=1&type=.jpg"
     };
+  },
+  methods: {
+    redirectToDetail(id) {
+      this.$router.push(`/quiz/${id}`);
+    }
   }
 };
 </script>
