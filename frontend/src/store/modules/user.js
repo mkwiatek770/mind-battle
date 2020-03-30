@@ -1,4 +1,4 @@
-import router from "vue-router";
+import router from "@/router";
 import userService from "../../services/userService";
 
 const state = {
@@ -10,13 +10,11 @@ const state = {
 
 const actions = {
   login({ dispatch, commit }, { username, password }) {
-    console.log(dispatch);
-    console.log(password);
     commit("loginRequest", { username });
     userService.login(username, password).then(
       userData => {
         commit("loginSuccess", userData);
-        // router.push("/");
+        router.push("/");
       },
       error => {
         commit("loginFailure", error);
