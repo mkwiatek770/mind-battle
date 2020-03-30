@@ -31,10 +31,10 @@ const actions = {
       commit("setCategories", categories);
     });
   },
-  getQuizWithQuestions({ dispatch, commit }, { id }) {
-    quizAPI.getQuizWithQuestions(id, state.accessToken).then(
-      quizData => {
-        commit("setQuizData", quizData);
+  getQuizWithQuestions({ dispatch, commit }, id) {
+    quizAPI.getQuestionsForQuiz(id).then(
+      questions => {
+        commit("setQuizData", questions);
       },
       error => {
         commit("responseFailure", error);
@@ -63,8 +63,8 @@ const mutations = {
   setCategories(state, categories) {
     state.categories = categories;
   },
-  setQuizData(state, quizData) {
-    state.recentQuiz = quizData;
+  setQuizData(state, questions) {
+    state.recentQuiz.questions = questions;
   },
   responseFailure(state) {
     state.recentQuiz = {};

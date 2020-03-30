@@ -20,7 +20,8 @@ export default {
     };
     return api(requestOptions).then(response => response.data);
   },
-  getQuizWithQuestions(id, accessToken) {
+  getQuestionsForQuiz(id) {
+    const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
     const requestOptions = {
       url: `/quizzes/${id}/questions`,
       method: "GET",

@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import { mapActions, mapState } from "vuex";
+
 import TheNavbar from "@/components/quiz-detail/TheNavbar.vue";
 import TheHeader from "@/components/quiz-detail/TheHeader.vue";
 import ProgressBar from "@/components/quiz-detail/ProgressBar.vue";
@@ -90,6 +92,16 @@ export default {
         }
       ]
     };
+  },
+  computed: {
+    ...mapState("quiz", ["recentQuiz"])
+  },
+  methods: {
+    ...mapActions("quiz", ["getQuizWithQuestions"])
+  },
+  created() {
+    const quizId = this.$route.params.id;
+    this.getQuizWithQuestions(quizId);
   }
 };
 </script>
