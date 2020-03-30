@@ -19,4 +19,4 @@ urlpatterns = [
     path('categories/', views.CategoryListView.as_view(), name='categories'),
 ]
 
-urlpatterns = format_suffix_patterns(urlpatterns)
+# urlpatterns = format_suffix_patterns(urlpatterns, allowed=["json", ])
