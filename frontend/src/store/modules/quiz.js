@@ -32,9 +32,16 @@ const actions = {
     });
   },
   getQuizWithQuestions({ dispatch, commit }, id) {
+    // get quiz detail
+    quizAPI.getQuizDetail(id).then(quizData => {
+      console.log(quizData);
+      commit("setQuizData", quizData);
+    });
+
+    // get questions for quiz
     quizAPI.getQuestionsForQuiz(id).then(
       questions => {
-        commit("setQuizData", questions);
+        commit("setQuizQuestions", questions);
       },
       error => {
         commit("responseFailure", error);
@@ -63,7 +70,10 @@ const mutations = {
   setCategories(state, categories) {
     state.categories = categories;
   },
-  setQuizData(state, questions) {
+  setQuizData(state, quizData) {
+    state.recentQuiz = quizData;
+  },
+  setQuizQuestions(state, questions) {
     state.recentQuiz.questions = questions;
   },
   responseFailure(state) {

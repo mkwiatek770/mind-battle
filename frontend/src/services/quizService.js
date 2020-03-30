@@ -9,9 +9,10 @@ export default {
         console.log(error);
       });
   },
-  getQuizDetail(id, accessToken) {
+  getQuizDetail(id) {
+    const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
     const requestOptions = {
-      url: `/quizzes/${id}`,
+      url: `/quizzes/${id}/`,
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -23,7 +24,7 @@ export default {
   getQuestionsForQuiz(id) {
     const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
     const requestOptions = {
-      url: `/quizzes/${id}/questions`,
+      url: `/quizzes/${id}/questions/`,
       method: "GET",
       headers: {
         "Content-Type": "application/json",
