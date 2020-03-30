@@ -74,7 +74,6 @@ class QuestionAnswerSerializer(serializers.ModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
 
-    quiz = QuizSerializer(read_only=True)
     answers = QuestionAnswerSerializer(many=True, required=False)
 
     def create(self, validated_data) -> Question:
@@ -103,9 +102,8 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('id', 'quiz', 'question', 'answers', 'explaination',
-                  'good_answers', 'bad_answers')
-        read_only_fields = ('id', 'quiz', 'answers', 'good_answers', 'bad_answers')
+        fields = ('id', 'question', 'answers', 'explaination',)
+        read_only_fields = ('id', 'answers')
 
 
 class ImageSerializer(serializers.Serializer):
