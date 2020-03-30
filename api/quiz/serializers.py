@@ -60,9 +60,9 @@ class QuizSerializer(serializers.ModelSerializer):
         model = Quiz
         fields = ('id', 'name', 'category', 'creator',
                   'date_created', 'date_published', 'date_modified',
-                  'category_name', 'publish')
+                  'category_name', 'publish', 'image')
         read_only_fields = ('id', 'category', 'creator', 'date_created',
-                            'date_published', 'date_modified')
+                            'date_published', 'date_modified', 'image')
 
 
 class QuestionAnswerSerializer(serializers.ModelSerializer):
