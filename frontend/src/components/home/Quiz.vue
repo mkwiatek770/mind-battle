@@ -1,7 +1,7 @@
 <template>
   <div
     class="quiz"
-    v-bind:style="{ 'background-image': 'url(' + tempImg + ')' }"
+    v-bind:style="{ 'background-image': 'url(' + quiz.image + ')' }"
     @click="redirectToDetail(quiz.id)"
   >
     <div class="row bottom-bar">
@@ -31,10 +31,7 @@ export default {
     quiz: Object
   },
   data() {
-    return {
-      tempImg:
-        "https://image.winudf.com/v2/image1/Y29tLmNhbmR5LnNvd2FyX0dpcmx5X3NjcmVlbl8wXzE1NTE2NDI5OTVfMDY3/screen-0.jpg?fakeurl=1&type=.jpg"
-    };
+    return {};
   },
   methods: {
     redirectToDetail(id) {
