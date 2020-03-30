@@ -1,19 +1,18 @@
 import router from "vue-router";
 import userService from "../../services/userService";
 
-const user = JSON.parse(localStorage.getItem("user"));
 const state = {
-  user: user
-    ? { status: { loggedIn: true }, user }
-    : { status: {}, user: null },
-  accessToken: "",
-  refreshToken: ""
+  status: localStorage.getItem("status") || "",
+  username: localStorage.getItem("username") || "",
+  accessToken: localStorage.getItem("accessToken") || "",
+  refreshToken: localStorage.getItem("refreshToken") || ""
 };
 
 const actions = {
   login({ dispatch, commit }, { username, password }) {
+    console.log(dispatch);
+    console.log(password);
     commit("loginRequest", { username });
-
     userService.login(username, password).then(
       userData => {
         commit("loginSuccess", userData);
@@ -51,23 +50,26 @@ const actions = {
 };
 
 const mutations = {
-  loginRequest(state, username) {
+  loginRequest(state, userData) {
     state.status = { loggingIn: true };
-    console.log(username);
-    // state.user.username = username;
+    state.username = userData.username;
   },
   loginSuccess(state, userData) {
     state.status = { loggedIn: true };
-    state.accessToken = userData.accessToken;
-    state.refreshToken = userData.refreshToken;
+    state.accessToken = userData.access;
+    state.refreshToken = userData.refresh;
   },
   loginFailure(state) {
     state.status = {};
-    state.user = null;
+    state.username = "";
+    state.accessToken = "";
+    state.refreshToken = "";
   },
   logout(state) {
     state.status = {};
-    state.user = null;
+    state.username = "";
+    state.accessToken = "";
+    state.refreshToken = "";
   },
   registerRequest(state) {
     state.status = { registering: true };

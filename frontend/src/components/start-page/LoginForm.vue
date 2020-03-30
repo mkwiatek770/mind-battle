@@ -34,7 +34,8 @@ export default {
   data() {
     return {
       username: "",
-      password: ""
+      password: "",
+      submitted: false
     };
   },
   computed: {
