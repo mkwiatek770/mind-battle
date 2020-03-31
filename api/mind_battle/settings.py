@@ -160,3 +160,4 @@ CORS_ORIGIN_WHITELIST = [
 # Celery to schedule long running tasks
 CELERY_BROKER_URL = f'redis://{env("REDIS_HOST")}:{env("REDIS_PORT")}/{env("REDIS_CELERY_DB")}'
 CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ALWAYS_EAGER = True
