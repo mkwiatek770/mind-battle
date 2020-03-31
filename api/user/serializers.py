@@ -54,12 +54,21 @@ class UserAnswersSerializer(serializers.Serializer):
 
     answers = serializers.ListField()
 
-    def create(self, validated_data):
+    def validate_answers(self, answers: list) -> list:
+        answers_obj = []
+        for answer in answers:
+            try:
+                answers_obj.append({
+                    'answer': QuestionAnswer.objects.get(id=answer['answer_id']),
+                    'question': Question.objects.get(id=answer['question_id'])
+                })
+            except (Question.DoesNotExist, QuestionAnswer.DoesNotExist):
+                raise serializers.ValidationError("Invalid ID passed.")
+        return answers_obj
 
+    def create(self, validated_data):
         user_answers = []
         for answer in validated_data['answers']:
-            question = Question.objects.get(id=answer['question_id'])
-            answer = QuestionAnswer.objects.get(id=answer['answer_id'])
-            user_answers.append(UserAnswer(question=question, answer=answer,
+            user_answers.append(UserAnswer(question=answer['question'], answer=answer['answer'],
                                            user=self.context['request'].user))
         return UserAnswer.objects.bulk_create(user_answers)

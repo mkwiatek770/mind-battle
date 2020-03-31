@@ -303,4 +303,31 @@ class TestUserAnswer(APITestCase):
 
     def test_answer_to_questions_invalid_answers(self):
         """Test 400 bad request is raised on invalid answer ids."""
-        pass
+        quiz = Quiz.objects.create(name='Quiz1')
+        quiz_user = UserQuiz.objects.create(quiz=quiz, user=self.user)
+        quiz.publish()
+        question_1 = Question.objects.create(question='q1', quiz=quiz, explanation='...')
+        question_2 = Question.objects.create(question='q2', quiz=quiz, explanation='...')
+        answer_1_1 = QuestionAnswer.objects.create(
+            question=question_1, content='Answer 1', is_correct=True)
+        answer_1_2 = QuestionAnswer.objects.create(
+            question=question_1, content='Answer 2', is_correct=False)
+        answer_2_1 = QuestionAnswer.objects.create(
+            question=question_2, content='Answer 3', is_correct=True)
+        answer_2_2 = QuestionAnswer.objects.create(
+            question=question_2, content='Answer 4', is_correct=False)
+
+        wrong_payload = {
+            'answers': [
+                {'answer_id': answer_1_1.id + 14, 'question_id': question_1.id},
+                {'answer_id': answer_2_2.id + 11, 'question_id': question_2.id}
+            ]
+        }
+
+        response = self.client.post(
+            reverse('user_answer', args=(quiz.id,)),
+            data=wrong_payload
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(UserAnswer.objects.count(), 0)
