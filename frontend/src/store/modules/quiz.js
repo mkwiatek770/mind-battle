@@ -5,7 +5,8 @@ import categoryAPI from "../../services/categoryService";
 const state = {
   quizzes: [],
   categories: [],
-  recentQuiz: {}
+  recentQuiz: {},
+  quizStarted: false
 };
 
 const getters = {
@@ -50,6 +51,14 @@ const actions = {
         router.push("/");
       }
     );
+  },
+  startQuizByUser({ commit }, id) {
+    console.log(id);
+    commit("startQuiz");
+    quizAPI.startQuiz(id);
+  },
+  finishQuizByUser(id) {
+    quizAPI.finishQuiz(id);
   }
 
   //   },
@@ -79,6 +88,9 @@ const mutations = {
   },
   responseFailure(state) {
     state.recentQuiz = {};
+  },
+  startQuiz(state) {
+    state.quizStarted = true;
   }
 
   // addMessage(state, message) {

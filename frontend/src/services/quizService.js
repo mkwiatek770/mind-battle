@@ -32,5 +32,11 @@ export default {
       }
     };
     return api(requestOptions).then(response => response.data);
+  },
+  startQuiz(id) {
+    return api.post(`/quizzes/${id}/start/`).then(response => response.data);
+  },
+  finishQuiz(id) {
+    return api.post(`/quizzes/${id}/finish/`).then(response => response.data);
   }
 };

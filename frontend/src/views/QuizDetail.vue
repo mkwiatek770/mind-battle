@@ -11,7 +11,10 @@
         height="400"
         width="100%"
       />
-      <router-link class="start-btn btn btn-success" to="/quiz/solve"
+      <router-link
+        @click.native="enterQuiz"
+        class="start-btn btn btn-success"
+        to="/quiz/solve"
         >Start Quiz</router-link
       >
     </div>
@@ -44,9 +47,14 @@ export default {
     ...mapState("quiz", ["recentQuiz"])
   },
   methods: {
-    ...mapActions("quiz", ["getQuizWithQuestions"]),
+    ...mapActions("quiz", ["getQuizWithQuestions", "startQuizByUser"]),
     getQuizId() {
       return this.$route.params.id;
+    },
+    enterQuiz() {
+      const quizId = this.$route.params.id;
+      console.log(quizId);
+      return this.startQuizByUser(quizId);
     }
   },
   created() {
