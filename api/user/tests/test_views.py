@@ -185,7 +185,32 @@ class TestUserAnswer(APITestCase):
 
     def test_answer_to_all_questions_by_authenticated(self):
         """Make sure authenticated user can answer to all questions."""
-        pass
+        quiz = Quiz.objects.create(name='Quiz1')
+        quiz_user = QuizUser.objects.create(quiz=quiz, user=self.user)
+        quiz.publish()
+        question_1 = Question.objects.create(question='q1', quiz=quiz, explanation='...')
+        question_2 = Question.objects.create(question='q2', quiz=quiz, explanation='...')
+        answer_1_1 = QuestionAnswer.objects.create(
+            question=question_1, content='Answer 1', is_correct=True)
+        answer_1_2 = QuestionAnswer.objects.create(
+            question=question_1, content='Answer 2', is_correct=False)
+        answer_2_1 = QuestionAnswer.objects.create(
+            question=question_2, content='Answer 3', is_correct=True)
+        answer_2_2 = QuestionAnswer.objects.create(
+            question=question_2, content='Answer 4', is_correct=False)
+
+        payload_data = {
+            'answers': [answer_1_1.id, answer_2_2.id]
+        }
+
+        response = self.client.post(
+            reverse('user_answer', args=(quiz.id,)),
+            data=payload_data
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(QuestionUser.objects.count(), 2)
+        self.assertEqual(quiz_user.good_answers, 1)
 
     def test_answer_to_all_questions_by_not_authenticated(self):
         """Make sure anonymous user can't answer to all questions."""
@@ -193,4 +218,8 @@ class TestUserAnswer(APITestCase):
 
     def test_answer_to_all_questions_quiz_not_started(self):
         """Assert user can't answer to questions for not started quiz."""
+        pass
+
+    def test_answer_to_questions_unpublished_quiz(self):
+        """Make sure user can't answer to questions if quiz is unpublished."""
         pass
