@@ -25,6 +25,8 @@ django-cors-headers = "==3.2.1"
 drf-yasg = "==1.17.1"
 redis = "==3.4.1"
 celery = "==4.4.2"
+django-celery-results = "*"
+flower = "*"
 
 [requires]
 python_version = "3.6"
