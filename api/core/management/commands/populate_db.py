@@ -95,7 +95,7 @@ class Command(BaseCommand):
             question_objs.append(Question(
                 quiz=quiz,
                 question=question,
-                explaination=self.faker.sentence()
+                explanation=self.faker.sentence()
             ))
         Question.objects.bulk_create(question_objs)
 

@@ -19,7 +19,7 @@
         />{{ answer.content }}</label
       >
     </div>
-    <div class="explaination mt-3 mb-3" v-if="answered">
+    <div class="explanation mt-3 mb-3" v-if="answered">
       <div id="accordion">
         <div class="card">
           <div class="card-header text-center">
@@ -28,12 +28,12 @@
                 href="#collapse1"
                 data-parent="#accordion"
                 data-toggle="collapse"
-                >Explaination</a
+                >explanation</a
               >
             </h5>
           </div>
           <div id="collapse1" class="collapse">
-            <div class="card-body">{{ question.explaination }}</div>
+            <div class="card-body">{{ question.explanation }}</div>
           </div>
         </div>
       </div>

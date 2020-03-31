@@ -90,7 +90,7 @@ class QuestionSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data) -> Question:
         """Update question instance."""
         instance.question = validated_data['question']
-        instance.explaination = validated_data['explaination']
+        instance.explanation = validated_data['explanation']
 
         if validated_data.get('answers'):
             instance.answers.filter().delete()
@@ -102,7 +102,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('id', 'question', 'answers', 'explaination',)
+        fields = ('id', 'question', 'answers', 'explanation',)
         read_only_fields = ('id', 'answers')
 
 

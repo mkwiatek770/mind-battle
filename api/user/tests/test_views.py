@@ -99,7 +99,7 @@ class TestUserAnswer(APITestCase):
         """Assert answering to one of quiz question that user started."""
         quiz = Quiz.objects.create(name='quiz')
         quiz.publish()
-        question = Question.objects.create(question='Lorem ...', quiz=quiz, explaination='...')
+        question = Question.objects.create(question='Lorem ...', quiz=quiz, explanation='...')
         answer_1 = QuestionAnswer.objects.create(
             question=question, content='Answer 1', is_correct=True)
         answer_2 = QuestionAnswer.objects.create(
@@ -122,7 +122,7 @@ class TestUserAnswer(APITestCase):
         """Forbid answering to not started quiz by user."""
         quiz = Quiz.objects.create(name='quiz')
         quiz.publish()
-        question = Question.objects.create(question='Lorem ...', quiz=quiz, explaination='...')
+        question = Question.objects.create(question='Lorem ...', quiz=quiz, explanation='...')
         answer_1 = QuestionAnswer.objects.create(
             question=question, content='Answer 1', is_correct=True)
         answer_2 = QuestionAnswer.objects.create(
@@ -142,7 +142,7 @@ class TestUserAnswer(APITestCase):
         """Forbid user to answer to finished quiz."""
         quiz = Quiz.objects.create(name='quiz')
         quiz.publish()
-        question = Question.objects.create(question='Lorem ...', quiz=quiz, explaination='...')
+        question = Question.objects.create(question='Lorem ...', quiz=quiz, explanation='...')
         answer_1 = QuestionAnswer.objects.create(
             question=question, content='Answer 1', is_correct=True)
         answer_2 = QuestionAnswer.objects.create(
@@ -164,7 +164,7 @@ class TestUserAnswer(APITestCase):
         """Forbid answering to question if user is not authenticated."""
         quiz = Quiz.objects.create(name='quiz')
         quiz.publish()
-        question = Question.objects.create(question='Lorem ...', quiz=quiz, explaination='...')
+        question = Question.objects.create(question='Lorem ...', quiz=quiz, explanation='...')
         answer_1 = QuestionAnswer.objects.create(
             question=question, content='Answer 1', is_correct=True)
         answer_2 = QuestionAnswer.objects.create(

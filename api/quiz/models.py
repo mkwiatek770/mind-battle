@@ -13,6 +13,7 @@ DEFAULT_IMG_URL = 'https://cdn.pixabay.com/photo/2015/02/24/15/41/dog-647528_960
 
 
 class Quiz(models.Model):
+
     name = models.CharField(max_length=200, unique=True)
     category = models.ForeignKey(
         'quiz.Category', related_name='quizzes', null=True, on_delete=models.SET_NULL)
@@ -79,7 +80,7 @@ class Question(models.Model):
     quiz = models.ForeignKey(
         'quiz.Quiz', on_delete=models.CASCADE, related_name="questions")
     question = models.TextField()
-    explaination = models.TextField()
+    explanation = models.TextField()
 
     class Meta:
         verbose_name = "Question"

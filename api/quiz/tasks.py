@@ -33,3 +33,4 @@ def resize_quiz_photo_command(quiz: int) -> None:
 
     default_storage.delete(old_image.name)
     quiz.image.save(old_image_name, ContentFile(memfile.getvalue()))
+    # default_storage.save(old_image_name, ContentFile(memfile.getvalue()))
