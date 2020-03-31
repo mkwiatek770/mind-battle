@@ -6,7 +6,6 @@ from quiz.tasks import resize_quiz_image, resize_quiz_photo_command
 
 @receiver(post_save, sender=Quiz)
 def resize_quiz_image_signal(sender, instance, created, **kwargs):
-    print("Im inside post_save signal")
     resize_quiz_image.apply_async((instance.pk,))
 
 
