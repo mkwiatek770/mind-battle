@@ -42,9 +42,9 @@ class LogoutView(APIView):
         # return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class QuizUserActionsMixin(APIView):
+class QuizUserActionsMixin:
     """
-    Base class of APIView to be subclassed by other ones.
+    Mixin that implements common method to be reused.
     """
     permission_classes = (IsQuizPublished, IsAuthenticated,)
 
@@ -54,7 +54,7 @@ class QuizUserActionsMixin(APIView):
         return quiz
 
 
-class QuizUserStartView(QuizUserActionsMixin):
+class QuizUserStartView(QuizUserActionsMixin, APIView):
     """
     Resource to start quiz by user.
     """
@@ -65,7 +65,7 @@ class QuizUserStartView(QuizUserActionsMixin):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class QuizUserFinishView(QuizUserActionsMixin):
+class QuizUserFinishView(QuizUserActionsMixin, APIView):
     """
     Resource to finish quiz by user.
     """
@@ -77,7 +77,7 @@ class QuizUserFinishView(QuizUserActionsMixin):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class QuestionUserAnswerView(QuizUserActionsMixin):
+class QuestionUserAnswerView(QuizUserActionsMixin, APIView):
     """
     Resource to answer to quiz question by user.
     """
@@ -89,3 +89,12 @@ class QuestionUserAnswerView(QuizUserActionsMixin):
         if question.answer(request.user, request.data['answer']):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class UserAnswer(QuizUserActionsMixin, APIView):
+    """
+    Resource to answer to all quiz questions.
+    """
+
+    def post(self, request, pk):
+        pass
