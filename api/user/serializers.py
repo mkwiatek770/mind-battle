@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.utils.text import gettext_lazy
-from user.models import User, QuestionUser
+from user.models import User, UserAnswer
 from quiz.models import QuestionAnswer, Question
 
 
@@ -60,6 +60,6 @@ class UserAnswersSerializer(serializers.Serializer):
         for answer in validated_data['answers']:
             question = Question.objects.get(id=answer['question_id'])
             answer = QuestionAnswer.objects.get(id=answer['answer_id'])
-            user_answers.append(QuestionUser(question=question, answer=answer,
-                                             user=self.context['request'].user))
-        return QuestionUser.objects.bulk_create(user_answers)
+            user_answers.append(UserAnswer(question=question, answer=answer,
+                                           user=self.context['request'].user))
+        return UserAnswer.objects.bulk_create(user_answers)

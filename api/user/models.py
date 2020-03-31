@@ -55,7 +55,7 @@ class QuizUser(models.Model):
             return 0
 
 
-class QuestionUser(models.Model):
+class UserAnswer(models.Model):
     """Model for question answered by user."""
     question = models.ForeignKey('quiz.Question', on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -65,8 +65,8 @@ class QuestionUser(models.Model):
         related_name='answers', null=True)
 
     class Meta:
-        verbose_name = "QuestionUser"
-        verbose_name_plural = "QuestionUsers"
+        verbose_name = "UserAnswer"
+        verbose_name_plural = "UserAnswers"
 
     def __str__(self) -> str:
         return f"{self.user.username}  --  {self.question}"

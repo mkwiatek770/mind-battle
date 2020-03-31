@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 from quiz.managers import QuizManager
 from mind_battle.helpers import get_quiz_image_location
-from user.models import QuizUser, QuestionUser
+from user.models import QuizUser, UserAnswer
 
 DEFAULT_IMG_URL = 'https://cdn.pixabay.com/photo/2015/02/24/15/41/dog-647528_960_720.jpg'
 
@@ -107,7 +107,7 @@ class Question(models.Model):
     def answer(self, user, answer_pk) -> bool:
         """Answer to quiz's question by specific user."""
         answer_obj = QuestionAnswer.objects.get(id=answer_pk)
-        question_obj = QuestionUser.objects.filter(user=user, question=self).first()
+        question_obj = UserAnswer.objects.filter(user=user, question=self).first()
 
         quiz_user_obj = QuizUser.objects.filter(user=user, quiz=self.quiz).first()
         if quiz_user_obj:
@@ -120,7 +120,7 @@ class Question(models.Model):
             question_obj.answer = answer_obj
             question_obj.save()
         else:
-            QuestionUser.objects.create(
+            UserAnswer.objects.create(
                 user=user,
                 question=self,
                 answer=answer_obj

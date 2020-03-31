@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from quiz.models import Quiz, Question, QuestionAnswer
-from user.models import QuizUser, QuestionUser
+from user.models import QuizUser, UserAnswer
 
 
 class TestUserQuiz(APITestCase):
@@ -115,8 +115,8 @@ class TestUserAnswer(APITestCase):
             data=payload_data)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(QuestionUser.objects.count(), 1)
-        self.assertTrue(QuestionUser.objects.first().is_correct)
+        self.assertEqual(UserAnswer.objects.count(), 1)
+        self.assertTrue(UserAnswer.objects.first().is_correct)
 
     def test_answer_to_question_not_started_quiz(self):
         """Forbid answering to not started quiz by user."""
@@ -136,7 +136,7 @@ class TestUserAnswer(APITestCase):
             data=payload_data)
 
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        self.assertEqual(QuestionUser.objects.count(), 0)
+        self.assertEqual(UserAnswer.objects.count(), 0)
 
     def test_answer_to_question_for_finished_quiz(self):
         """Forbid user to answer to finished quiz."""
@@ -158,7 +158,7 @@ class TestUserAnswer(APITestCase):
             data=payload_data)
 
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        self.assertEqual(QuestionUser.objects.count(), 0)
+        self.assertEqual(UserAnswer.objects.count(), 0)
 
     def test_answer_to_question_by_unauthenticated(self):
         """Forbid answering to question if user is not authenticated."""
@@ -181,7 +181,7 @@ class TestUserAnswer(APITestCase):
             data=payload_data)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(QuestionUser.objects.count(), 0)
+        self.assertEqual(UserAnswer.objects.count(), 0)
 
     def test_answer_to_all_questions_by_authenticated(self):
         """Make sure authenticated user can answer to all questions."""
@@ -212,7 +212,7 @@ class TestUserAnswer(APITestCase):
         )
 
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(QuestionUser.objects.count(), 2)
+        self.assertEqual(UserAnswer.objects.count(), 2)
 
     def test_answer_to_all_questions_by_not_authenticated(self):
         """Make sure anonymous user can't answer to all questions."""
