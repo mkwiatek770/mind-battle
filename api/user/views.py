@@ -7,6 +7,7 @@ from django.contrib.auth import login
 from django.shortcuts import get_object_or_404
 from quiz.models import Quiz, Question
 from quiz.permissions import IsQuizPublished
+from user.permissions import IsQuizActiveForUser
 from user.serializers import UserSerializer, RefreshTokenSerializer, UserAnswersSerializer
 
 
@@ -50,6 +51,7 @@ class UserQuizActionsMixin:
 
     def get_object(self, pk):
         quiz = get_object_or_404(Quiz, pk=pk)
+        self.check_object_permissions(self.request, quiz)
         return quiz
 
 
@@ -95,9 +97,10 @@ class UserAnswer(UserQuizActionsMixin, APIView):
     Resource to answer to all quiz questions.
     """
 
-    # permission_classes = (IsQuizPublished, IsAuthenticated, IsQuizStarted)
+    permission_classes = (IsQuizPublished, IsAuthenticated, IsQuizActiveForUser,)
 
     def post(self, request, pk):
+        self.get_object(pk)
         serializer = UserAnswersSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
