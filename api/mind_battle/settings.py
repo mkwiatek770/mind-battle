@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework.authtoken',
     'rest_framework_simplejwt.token_blacklist',
+    'django_celery_results',
     # django built-in apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -156,4 +157,6 @@ CORS_ORIGIN_WHITELIST = [
     "http://0.0.0.0:8000",
 ]
 
+# Celery to schedule long running tasks
 CELERY_BROKER_URL = f'redis://{env("REDIS_HOST")}:{env("REDIS_PORT")}/{env("REDIS_CELERY_DB")}'
+CELERY_RESULT_BACKEND = 'django-db'
