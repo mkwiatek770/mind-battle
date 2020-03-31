@@ -14,7 +14,11 @@ def resize_quiz_image(quiz_id: int) -> None:
 
 def resize_quiz_photo_command(quiz: int) -> None:
     """Resize image of single quiz object."""
+    # Don't do anything if it's default image.
     if quiz.image.name == 'default_quiz.jpeg':
+        return
+
+    if quiz.image.width == 400:
         return
 
     memfile = io.BytesIO()
