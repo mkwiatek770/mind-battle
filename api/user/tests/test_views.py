@@ -182,3 +182,15 @@ class TestUserAnswer(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(QuestionUser.objects.count(), 0)
+
+    def test_answer_to_all_questions_by_authenticated(self):
+        """Make sure authenticated user can answer to all questions."""
+        pass
+
+    def test_answer_to_all_questions_by_not_authenticated(self):
+        """Make sure anonymous user can't answer to all questions."""
+        pass
+
+    def test_answer_to_all_questions_quiz_not_started(self):
+        """Assert user can't answer to questions for not started quiz."""
+        pass
