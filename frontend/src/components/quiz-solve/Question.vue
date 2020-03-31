@@ -46,6 +46,14 @@
     >
       Answer
     </button>
+    <button
+      class="question-btn btn btn-danger"
+      v-else-if="lastQuestion"
+      @click="finishQuiz"
+      :disabled="!choice"
+    >
+      Finish quiz
+    </button>
     <button class="question-btn btn btn-danger" v-else @click="nextQuestion">
       Next Question
     </button>
@@ -55,7 +63,7 @@
 <script>
 export default {
   name: "Question",
-  props: { question: Object },
+  props: { question: Object, lastQuestion: Boolean },
   data() {
     return {
       answered: false,
@@ -83,6 +91,9 @@ export default {
       this.answered = false;
       this.choice = null;
       this.correct = null;
+    },
+    finishQuiz() {
+      console.log("pass");
     }
   }
 };

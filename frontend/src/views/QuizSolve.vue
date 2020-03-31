@@ -14,6 +14,7 @@
         />
         <Question
           :question="recentQuiz.questions[currentQuestionIndex]"
+          :lastQuestion="lastQuestion"
           @answered="userAnswer"
           @nextQuestion="userNextQuestionOrFinish"
         />
@@ -47,7 +48,10 @@ export default {
     };
   },
   computed: {
-    ...mapState("quiz", ["recentQuiz"])
+    ...mapState("quiz", ["recentQuiz"]),
+    lastQuestion() {
+      return this.currentQuestionIndex == this.recentQuiz.questions.length - 1;
+    }
   },
   methods: {
     userAnswer(answerId, correct) {
