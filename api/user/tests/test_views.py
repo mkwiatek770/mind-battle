@@ -200,7 +200,10 @@ class TestUserAnswer(APITestCase):
             question=question_2, content='Answer 4', is_correct=False)
 
         payload_data = {
-            'answers': [answer_1_1.id, answer_2_2.id]
+            'answers': [
+                {'answer_id': answer_1_1.id, 'question_id': question_1.id},
+                {'answer_id': answer_2_2.id, 'question_id': question_2.id}
+            ]
         }
 
         response = self.client.post(
@@ -208,9 +211,8 @@ class TestUserAnswer(APITestCase):
             data=payload_data
         )
 
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(QuestionUser.objects.count(), 2)
-        self.assertEqual(quiz_user.good_answers, 1)
 
     def test_answer_to_all_questions_by_not_authenticated(self):
         """Make sure anonymous user can't answer to all questions."""
@@ -222,4 +224,8 @@ class TestUserAnswer(APITestCase):
 
     def test_answer_to_questions_unpublished_quiz(self):
         """Make sure user can't answer to questions if quiz is unpublished."""
+        pass
+
+    def test_answer_to_questions_invalid_answers(self):
+        """Test 400 bad request is raised on invalid answer ids."""
         pass

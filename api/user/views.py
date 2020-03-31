@@ -7,7 +7,7 @@ from django.contrib.auth import login
 from django.shortcuts import get_object_or_404
 from quiz.models import Quiz, Question
 from quiz.permissions import IsQuizPublished
-from user.serializers import UserSerializer, RefreshTokenSerializer
+from user.serializers import UserSerializer, RefreshTokenSerializer, UserAnswersSerializer
 
 
 class RegisterView(APIView):
@@ -97,4 +97,8 @@ class UserAnswer(QuizUserActionsMixin, APIView):
     """
 
     def post(self, request, pk):
-        pass
+        serializer = UserAnswersSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
