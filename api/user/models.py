@@ -23,7 +23,7 @@ class User(AbstractUser):
         ]
 
 
-class QuizUser(models.Model):
+class UserQuiz(models.Model):
     """Model for quiz solved by user."""
     quiz = models.ForeignKey(
         'quiz.Quiz', on_delete=models.CASCADE, related_name='attempts')
@@ -36,8 +36,8 @@ class QuizUser(models.Model):
     bad_answers = models.PositiveIntegerField(default=0)
 
     class Meta:
-        verbose_name = "QuizUser"
-        verbose_name_plural = "QuizUsers"
+        verbose_name = "UserQuiz"
+        verbose_name_plural = "UserQuizs"
 
     def __str__(self) -> str:
         return f"{self.user.username}  --  {self.quiz}"

@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 from quiz.managers import QuizManager
 from mind_battle.helpers import get_quiz_image_location
-from user.models import QuizUser, UserAnswer
+from user.models import UserQuiz, UserAnswer
 
 DEFAULT_IMG_URL = 'https://cdn.pixabay.com/photo/2015/02/24/15/41/dog-647528_960_720.jpg'
 
@@ -58,14 +58,14 @@ class Quiz(models.Model):
 
     def start_quiz(self, user) -> None:
         """Start quiz by user."""
-        obj = QuizUser.objects.filter(user=user, quiz=self).first()
+        obj = UserQuiz.objects.filter(user=user, quiz=self).first()
         if obj:
             obj.delete()
-        QuizUser.objects.create(user=user, quiz=self)
+        UserQuiz.objects.create(user=user, quiz=self)
 
     def finish_quiz(self, user) -> bool:
         """Finish quiz by user. Quiz must be started to finish it."""
-        obj = QuizUser.objects.filter(user=user, quiz=self).first()
+        obj = UserQuiz.objects.filter(user=user, quiz=self).first()
         if obj:
             obj.date_finished = timezone.now()
             obj.save()
@@ -109,7 +109,7 @@ class Question(models.Model):
         answer_obj = QuestionAnswer.objects.get(id=answer_pk)
         question_obj = UserAnswer.objects.filter(user=user, question=self).first()
 
-        quiz_user_obj = QuizUser.objects.filter(user=user, quiz=self.quiz).first()
+        quiz_user_obj = UserQuiz.objects.filter(user=user, quiz=self.quiz).first()
         if quiz_user_obj:
             if quiz_user_obj.date_finished:
                 return False

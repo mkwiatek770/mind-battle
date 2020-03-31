@@ -42,7 +42,7 @@ class LogoutView(APIView):
         # return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class QuizUserActionsMixin:
+class UserQuizActionsMixin:
     """
     Mixin that implements common method to be reused.
     """
@@ -54,7 +54,7 @@ class QuizUserActionsMixin:
         return quiz
 
 
-class QuizUserStartView(QuizUserActionsMixin, APIView):
+class UserQuizStartView(UserQuizActionsMixin, APIView):
     """
     Resource to start quiz by user.
     """
@@ -65,7 +65,7 @@ class QuizUserStartView(QuizUserActionsMixin, APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class QuizUserFinishView(QuizUserActionsMixin, APIView):
+class UserQuizFinishView(UserQuizActionsMixin, APIView):
     """
     Resource to finish quiz by user.
     """
@@ -77,7 +77,7 @@ class QuizUserFinishView(QuizUserActionsMixin, APIView):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class UserAnswerAnswerView(QuizUserActionsMixin, APIView):
+class UserAnswerAnswerView(UserQuizActionsMixin, APIView):
     """
     Resource to answer to quiz question by user.
     """
@@ -91,7 +91,7 @@ class UserAnswerAnswerView(QuizUserActionsMixin, APIView):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-class UserAnswer(QuizUserActionsMixin, APIView):
+class UserAnswer(UserQuizActionsMixin, APIView):
     """
     Resource to answer to all quiz questions.
     """

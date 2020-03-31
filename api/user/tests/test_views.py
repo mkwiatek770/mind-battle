@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from quiz.models import Quiz, Question, QuestionAnswer
-from user.models import QuizUser, UserAnswer
+from user.models import UserQuiz, UserAnswer
 
 
 class TestUserQuiz(APITestCase):
@@ -28,20 +28,20 @@ class TestUserQuiz(APITestCase):
         response = self.client.post(reverse('quiz_start', args=(quiz.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(QuizUser.objects.count(), 1)
+        self.assertEqual(UserQuiz.objects.count(), 1)
 
     def test_start_quiz_again(self):
         """Make sure user can start quiz again."""
         quiz = Quiz.objects.create(name='quiz')
         quiz.publish()
-        quiz_user = QuizUser.objects.create(quiz=quiz, user=self.user)
+        quiz_user = UserQuiz.objects.create(quiz=quiz, user=self.user)
 
         date_started_before = quiz_user.date_started
         response = self.client.post(reverse('quiz_start', args=(quiz.id,)))
-        modified_object = QuizUser.objects.last()
+        modified_object = UserQuiz.objects.last()
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(QuizUser.objects.count(), 1)
+        self.assertEqual(UserQuiz.objects.count(), 1)
         self.assertGreater(modified_object.date_started, date_started_before)
         self.assertIsNone(modified_object.date_finished)
 
@@ -52,16 +52,16 @@ class TestUserQuiz(APITestCase):
         response = self.client.post(reverse('quiz_start', args=(not_published_quiz.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(QuizUser.objects.count(), 0)
+        self.assertEqual(UserQuiz.objects.count(), 0)
 
     def test_finish_quiz_by_authenticated(self):
         """Make sure authenticated user can finish some quiz."""
         quiz = Quiz.objects.create(name='quiz')
         quiz.publish()
-        QuizUser.objects.create(quiz=quiz, user=self.user)
+        UserQuiz.objects.create(quiz=quiz, user=self.user)
 
         response = self.client.post(reverse('quiz_finish', args=(quiz.id,)))
-        modified_object = QuizUser.objects.get(id=quiz.id)
+        modified_object = UserQuiz.objects.get(id=quiz.id)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertIsNotNone(modified_object.date_finished)
@@ -186,7 +186,7 @@ class TestUserAnswer(APITestCase):
     def test_answer_to_all_questions_by_authenticated(self):
         """Make sure authenticated user can answer to all questions."""
         quiz = Quiz.objects.create(name='Quiz1')
-        quiz_user = QuizUser.objects.create(quiz=quiz, user=self.user)
+        quiz_user = UserQuiz.objects.create(quiz=quiz, user=self.user)
         quiz.publish()
         question_1 = Question.objects.create(question='q1', quiz=quiz, explanation='...')
         question_2 = Question.objects.create(question='q2', quiz=quiz, explanation='...')
