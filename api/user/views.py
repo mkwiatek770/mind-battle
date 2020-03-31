@@ -50,7 +50,6 @@ class UserQuizActionsMixin:
 
     def get_object(self, pk):
         quiz = get_object_or_404(Quiz, pk=pk)
-        self.check_object_permissions(self.request, quiz)
         return quiz
 
 
@@ -95,6 +94,8 @@ class UserAnswer(UserQuizActionsMixin, APIView):
     """
     Resource to answer to all quiz questions.
     """
+
+    # permission_classes = (IsQuizPublished, IsAuthenticated, IsQuizStarted)
 
     def post(self, request, pk):
         serializer = UserAnswersSerializer(data=request.data, context={'request': request})
