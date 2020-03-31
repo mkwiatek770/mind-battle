@@ -49,7 +49,10 @@ class QuizUser(models.Model):
     def score(self) -> float:
         """Evaluate user result."""
         all_answers = self.good_answers + self.bad_answers
-        return self.good_answers / all_answers
+        try:
+            return self.good_answers / all_answers
+        except ZeroDivisionError:
+            return 0
 
 
 class QuestionUser(models.Model):
