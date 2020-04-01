@@ -33,10 +33,6 @@ services:
       - ./api:/api
     links:
       - redis
-    command: >
-      sh -c "python api/manage.py wait_for_db && 
-             python api/manage.py migrate &&
-             python api/manage.py runserver 0.0.0.0:8000"
     networks:
       - djangonetwork
   db:
