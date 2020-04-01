@@ -6,14 +6,14 @@ volumes:
 
 services:
   nginx:
-    image: ngnix:alpine
+    image: nginx:alpine
     container_name: ng01
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./api:/api
-      - ./config/nginx:/etc/nging/conf.d
+      - ./config/nginx:/etc/nginx/conf.d
     depends_on:
       - api
     networks:
