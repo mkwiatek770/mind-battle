@@ -1,14 +1,64 @@
 version: "3"
 
+volumes:
+  local_postgres_data: {}
+  local_postgres_data_backups: {}
+
 services:
-  app:
+  nginx:
+    image: ngnix:alpine
+    container_name: ng01
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8000:8000"
+      - "8080:8080"
+    volumes:
+      - ./api:/api
+      - ./config/nginx:/etc/nging/conf.d
+    depends_on:
+      - api
+    networks:
+      - djangonetwork
+  api:
     build:
       context: .
-    ports:
-      - "8000:8000"
+      dockerfile: compose/django/Dockerfile
+    container_name: api01
+    depends_on:
+      - db
+    expose:
+      - "8000"
     volumes:
-      - ./api/db.sqlite3:/api/db.sqlite3
+      - ./api:/api
+    links:
+      - redis
     command: >
       sh -c "python api/manage.py wait_for_db && 
              python api/manage.py migrate &&
              python api/manage.py runserver 0.0.0.0:8000"
+    networks:
+      - djangonetwork
+  db:
+    build:
+      context: .
+      dockerfile: compose/postgres/Dockerfile
+    container_name: psql01
+    env_file:
+      - ./.envs/.postgres
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data
+      - local_postgres_data_backups:/backups
+    networks:
+      - djangonetwork
+  redis:
+    image: redis:alpine
+    container_name: redis01
+    ports:
+      - "6379:6379"
+    networks:
+      - djangonetwork
+
+networks:
+  djangonetwork:
+    driver: bridge
