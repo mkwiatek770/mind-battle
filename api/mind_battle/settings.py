@@ -144,7 +144,7 @@ REST_FRAMEWORK = {
 
 if env('ENVIRONMENT') != 'production':
     SIMPLE_JWT = {
-        'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30)        
+        'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30)
     }
 
 AUTH_USER_MODEL = 'user.User'
@@ -177,7 +177,8 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 # Celery to schedule long running tasks
-CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_BROKER_URL = 'redis://localhost:6379'
+# CELERY_BROKER_URL = 'redis://redis:6379/0'
 # CELERY_BROKER_URL = f'redis://{env("REDIS_HOST")}:{env("REDIS_PORT")}/{env("REDIS_CELERY_DB")}'
-CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ALWAYS_EAGER = True
