@@ -46,6 +46,14 @@ const routes = [
     }
   },
   {
+    path: "/quiz/summary",
+    name: "QuizSummary",
+    component: () => import("../views/QuizSummary.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: "/quiz/:id",
     name: "QuizDetail",
     component: () => import("../views/QuizDetail.vue"),
