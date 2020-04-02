@@ -82,6 +82,16 @@ const mutations = {
   },
   registerFailure(state) {
     state.status = { registerFailed: true };
+  },
+  resetQuizPoints(state) {
+    state.quiz.correctAnswers = 0;
+    state.quiz.questionNumber = 0;
+  },
+  incrementCorrectAnswers(state) {
+    state.quiz.correctAnswers++;
+  },
+  incrementQuestionNumber(state) {
+    state.quiz.questionNumber++;
   }
 };
 

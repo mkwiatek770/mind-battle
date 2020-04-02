@@ -23,8 +23,8 @@ export default {
       if (this.quiz.questionNumber == 0) {
         return 0;
       }
-      return (
-        Math.floor(this.quiz.correctAnswers / this.quiz.questionNumber) * 100
+      return Math.floor(
+        (this.quiz.correctAnswers / this.quiz.questionNumber) * 100
       );
     }
   }

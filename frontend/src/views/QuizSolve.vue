@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 
 import TheNavbar from "@/components/base/TheNavbar.vue";
 import TheHeader from "@/components/quiz-solve/TheHeader.vue";
@@ -48,17 +48,24 @@ export default {
     };
   },
   computed: {
-    ...mapState("quiz", ["recentQuiz"]),
+    ...mapState("quiz", ["recentQuiz", "quiz"]),
     lastQuestion() {
       return this.currentQuestionIndex == this.recentQuiz.questions.length - 1;
     }
   },
   methods: {
+    ...mapMutations("user", [
+      "resetQuizPoints",
+      "incrementCorrectAnswers",
+      "incrementQuestionNumber"
+    ]),
     userAnswer(answerId, correct) {
       this.userAnswers.push(answerId);
       this.questionsDone += 1;
+      this.incrementQuestionNumber();
       if (correct) {
         this.correctAnswers += 1;
+        this.incrementCorrectAnswers();
       }
     },
     userNextQuestionOrFinish() {
@@ -68,6 +75,9 @@ export default {
         this.$router.push("/quiz/summary");
       }
     }
+  },
+  created() {
+    this.resetQuizPoints();
   }
 };
 </script>
