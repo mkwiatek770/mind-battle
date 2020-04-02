@@ -58,10 +58,9 @@ class TestUserQuiz(APITestCase):
         """Make sure authenticated user can finish some quiz."""
         quiz = Quiz.objects.create(name='quiz')
         quiz.publish()
-        UserQuiz.objects.create(quiz=quiz, user=self.user)
-
+        user_quiz = UserQuiz.objects.create(quiz=quiz, user=self.user)
         response = self.client.post(reverse('quiz_finish', args=(quiz.id,)))
-        modified_object = UserQuiz.objects.get(id=quiz.id)
+        modified_object = UserQuiz.objects.get(id=user_quiz.id)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertIsNotNone(modified_object.date_finished)
