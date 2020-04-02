@@ -6,7 +6,7 @@ const state = {
   username: localStorage.getItem("username") || "",
   accessToken: localStorage.getItem("accessToken") || "",
   refreshToken: localStorage.getItem("refreshToken") || "",
-  quiz: { correctAnswers: 0, QuestionNumber: 0 }
+  quiz: { correctAnswers: 0, questionNumber: 0 }
 };
 
 const getters = {
