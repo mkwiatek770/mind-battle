@@ -1,6 +1,6 @@
 <template>
   <nav id="home-nav" class="navbar justify-content-between">
-    <a class="navbar-brand">Mind Battle</a>
+    <router-link to="/" class="navbar-brand">Mind Battle</router-link>
     <div>
       <span
         >Logged in as <span class="font-weight-bold">{{ username }}</span></span
