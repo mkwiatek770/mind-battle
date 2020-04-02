@@ -24,7 +24,7 @@
 <script>
 import { mapActions, mapState } from "vuex";
 
-import TheNavbar from "@/components/quiz-detail/TheNavbar.vue";
+import TheNavbar from "@/components/base/TheNavbar.vue";
 
 export default {
   name: "QuizDetail",

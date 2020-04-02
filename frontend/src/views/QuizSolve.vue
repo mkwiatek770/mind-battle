@@ -26,7 +26,7 @@
 <script>
 import { mapState } from "vuex";
 
-import TheNavbar from "@/components/quiz-solve/TheNavbar.vue";
+import TheNavbar from "@/components/base/TheNavbar.vue";
 import TheHeader from "@/components/quiz-solve/TheHeader.vue";
 import ProgressBar from "@/components/quiz-solve/ProgressBar.vue";
 import Question from "@/components/quiz-solve/Question.vue";
