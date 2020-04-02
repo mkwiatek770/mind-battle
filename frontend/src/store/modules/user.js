@@ -5,7 +5,8 @@ const state = {
   status: localStorage.getItem("status") || "",
   username: localStorage.getItem("username") || "",
   accessToken: localStorage.getItem("accessToken") || "",
-  refreshToken: localStorage.getItem("refreshToken") || ""
+  refreshToken: localStorage.getItem("refreshToken") || "",
+  quiz: { correctAnswers: 0, QuestionNumber: 0 }
 };
 
 const getters = {
