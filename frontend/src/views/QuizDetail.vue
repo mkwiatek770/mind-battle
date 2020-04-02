@@ -11,12 +11,13 @@
         height="400"
         width="100%"
       />
-      <router-link
-        @click.native="enterQuiz"
+      <button
+        type="button"
         class="start-btn btn btn-success"
-        to="/quiz/solve"
-        >Start Quiz</router-link
+        @click="enterQuiz"
       >
+        Start Quiz
+      </button>
     </div>
   </div>
 </template>
@@ -52,16 +53,15 @@ export default {
       return this.$route.params.id;
     },
     enterQuiz() {
-      const quizId = this.$route.params.id;
-      console.log(quizId);
-      return this.startQuizByUser(quizId);
+      const quizId = this.getQuizId();
+      this.startQuizByUser(quizId).then(() => {
+        this.$router.push("/quiz/solve/");
+      });
     }
   },
   created() {
     const quizId = this.$route.params.id;
-    // if (this.quiz.id != quizId) {
     this.getQuizWithQuestions(quizId);
-    // }
   }
 };
 </script>
