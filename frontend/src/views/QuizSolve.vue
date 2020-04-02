@@ -17,6 +17,7 @@
           :lastQuestion="lastQuestion"
           @answered="userAnswer"
           @nextQuestion="userNextQuestionOrFinish"
+          @finishQuiz="finishQuiz"
         />
       </div>
     </div>
@@ -24,7 +25,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 
 import TheNavbar from "@/components/base/TheNavbar.vue";
 import TheHeader from "@/components/quiz-solve/TheHeader.vue";
@@ -59,6 +60,7 @@ export default {
       "incrementCorrectAnswers",
       "incrementQuestionNumber"
     ]),
+    ...mapActions("quiz", ["finishQuizByUser"]),
     userAnswer(answerId, correct) {
       this.userAnswers.push(answerId);
       this.questionsDone += 1;
@@ -74,6 +76,10 @@ export default {
       } else {
         this.$router.push("/quiz/summary");
       }
+    },
+    finishQuiz() {
+      this.finishQuizByUser(this.recentQuiz.id);
+      this.$router.push("/quiz/summary");
     }
   },
   created() {

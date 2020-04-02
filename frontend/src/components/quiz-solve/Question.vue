@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "Question",
   props: { question: Object, lastQuestion: Boolean },
@@ -70,6 +72,9 @@ export default {
       choice: null,
       correct: null
     };
+  },
+  computed: {
+    ...mapActions("quiz", ["finishQuizByUser"])
   },
   methods: {
     selectElement(index, answerId) {
@@ -93,7 +98,7 @@ export default {
       this.correct = null;
     },
     finishQuiz() {
-      console.log("pass");
+      this.$emit("finishQuiz");
     }
   }
 };
