@@ -1,5 +1,6 @@
 import os
 import environ
+from datetime import timedelta
 
 env = environ.Env(
     # set casting, default value
@@ -140,6 +141,11 @@ REST_FRAMEWORK = {
     ],
 
 }
+
+if env('ENVIRONMENT') != 'production':
+    SIMPLE_JWT = {
+        'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30)        
+    }
 
 AUTH_USER_MODEL = 'user.User'
 
