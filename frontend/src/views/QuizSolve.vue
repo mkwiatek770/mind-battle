@@ -61,8 +61,8 @@ export default {
       "incrementQuestionNumber"
     ]),
     ...mapActions("quiz", ["finishQuizByUser"]),
-    userAnswer(answerId, correct) {
-      this.userAnswers.push(answerId);
+    userAnswer(answerId, questionId, correct) {
+      this.userAnswers.push({ question_id: questionId, answer_id: answerId });
       this.questionsDone += 1;
       this.incrementQuestionNumber();
       if (correct) {
@@ -78,8 +78,8 @@ export default {
       }
     },
     finishQuiz() {
-      this.finishQuizByUser(this.recentQuiz.id);
-      this.$router.push("/quiz/summary");
+      const payload = { id: this.recentQuiz.id, answers: this.userAnswers };
+      this.finishQuizByUser(payload);
     }
   },
   created() {

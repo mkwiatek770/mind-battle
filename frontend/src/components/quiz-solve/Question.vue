@@ -89,7 +89,7 @@ export default {
     },
     submitAnswer() {
       this.answered = true;
-      this.$emit("answered", this.choice, this.correct);
+      this.$emit("answered", this.choice, this.question.id, this.correct);
     },
     nextQuestion() {
       this.$emit("nextQuestion");

@@ -57,7 +57,7 @@ export default {
     };
     return api(requestOptions).then(response => response.data);
   },
-  answerToAllQuizQuestions(id, data) {
+  answerToAllQuizQuestions(id, answers) {
     const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
     const requestOptions = {
       url: `/quizzes/${id}/answer/`,
@@ -66,7 +66,7 @@ export default {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`
       },
-      data: data
+      data: { answers: answers }
     };
     return api(requestOptions).then(response => response.data);
   }

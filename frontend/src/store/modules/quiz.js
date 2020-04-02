@@ -55,20 +55,14 @@ const actions = {
     commit("startQuiz");
     quizAPI.startQuiz(id);
   },
-  finishQuizByUser(id) {
-    quizAPI.finishQuiz(id);
+  finishQuizByUser({ commit }, data) {
+    quizAPI.answerToAllQuizQuestions(data.id, data.answers).then(() => {
+      quizAPI.finishQuiz(data.id).then(() => {
+        commit("finishQuiz");
+        router.push("/quiz/summary");
+      });
+    });
   }
-
-  //   },
-  //   addMessage({ commit }, message) {
-  // quizAPI.postMessage(message).then(() => {
-  //   commit("addMessage", message);
-  // });
-  //   },
-  //   deleteMessage({ commit }, msgId) {
-  // quizAPI.deleteMessage(msgId);
-  // commit("deleteMessage", msgId);
-  //   }
 };
 
 const mutations = {
@@ -89,14 +83,10 @@ const mutations = {
   },
   startQuiz(state) {
     state.quizStarted = true;
+  },
+  finishQuiz(state) {
+    state.quizStarted = false;
   }
-
-  // addMessage(state, message) {
-  //   state.messages.push(message)
-  // },
-  // deleteMessage(state, msgId) {
-  //   state.messages = state.messages.filter(obj => obj.pk !== msgId)
-  // }
 };
 
 export default {
