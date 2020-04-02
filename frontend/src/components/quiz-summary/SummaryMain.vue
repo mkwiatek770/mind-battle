@@ -6,7 +6,9 @@
       You completed "Quiz name" with {{ quiz.correctAnswers }} correct answers
       out of {{ quiz.questionNumber }} questions
     </p>
-    <button class="btn btn-success mt-3">Go to home page</button>
+    <router-link to="/" class="btn btn-success mt-3"
+      >Go to home page</router-link
+    >
   </div>
 </template>
 
