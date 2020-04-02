@@ -46,6 +46,28 @@ export default {
     return api(requestOptions).then(response => response.data);
   },
   finishQuiz(id) {
-    return api.post(`/quizzes/${id}/finish/`).then(response => response.data);
+    const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
+    const requestOptions = {
+      url: `/quizzes/${id}/finish/`,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+    return api(requestOptions).then(response => response.data);
+  },
+  answerToAllQuizQuestions(id, data) {
+    const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
+    const requestOptions = {
+      url: `/quizzes/${id}/answer/`,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      },
+      data: data
+    };
+    return api(requestOptions).then(response => response.data);
   }
 };
