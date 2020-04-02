@@ -99,12 +99,9 @@ export default {
   },
   watch: {
     status(value) {
-      console.log(value);
       if (value.registerSuccess) {
         this.$emit("registeredSuccessfuly");
         this.$store.status = {};
-      } else if (value.registerFailed) {
-        console.log("Handle failure");
       }
     }
   }

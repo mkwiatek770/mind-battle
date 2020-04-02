@@ -96,7 +96,6 @@ export default {
   methods: {
     addAnswer() {
       this.question.answers.push({ content: "", is_correct: false });
-      console.log(this.question);
     },
     removeAnswer() {
       this.question.answers.pop();
@@ -108,8 +107,6 @@ export default {
           this.question.answers[i].is_correct = false;
         }
       }
-
-      console.log(this.question.answers);
     }
   }
 };

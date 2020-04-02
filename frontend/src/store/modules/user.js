@@ -44,7 +44,6 @@ const actions = {
         });
       },
       error => {
-        console.log(error);
         commit("registerFailure", error);
         dispatch("alert/error", error, { root: true });
       }
@@ -79,8 +78,6 @@ const mutations = {
   },
   registerSuccess(state) {
     state.status = { registerSuccess: true };
-    console.log("sukces");
-    console.log(state.status);
   },
   registerFailure(state) {
     state.status = { registerFailed: true };

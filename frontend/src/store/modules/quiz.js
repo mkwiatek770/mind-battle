@@ -35,7 +35,6 @@ const actions = {
   getQuizWithQuestions({ dispatch, commit }, id) {
     // get quiz detail
     quizAPI.getQuizDetail(id).then(quizData => {
-      console.log(quizData);
       commit("setQuizData", quizData);
     });
 
@@ -53,7 +52,6 @@ const actions = {
     );
   },
   startQuizByUser({ commit }, id) {
-    console.log(id);
     commit("startQuiz");
     quizAPI.startQuiz(id);
   },
