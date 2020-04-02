@@ -34,7 +34,16 @@ export default {
     return api(requestOptions).then(response => response.data);
   },
   startQuiz(id) {
-    return api.post(`/quizzes/${id}/start/`).then(response => response.data);
+    const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
+    const requestOptions = {
+      url: `/quizzes/${id}/start/`,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+    return api(requestOptions).then(response => response.data);
   },
   finishQuiz(id) {
     return api.post(`/quizzes/${id}/finish/`).then(response => response.data);
