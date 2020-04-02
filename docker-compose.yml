@@ -9,7 +9,7 @@ services:
     image: nginx:alpine
     container_name: ng01
     ports:
-      - "80:80"
+      - "8001:80"
       - "443:443"
     volumes:
       - ./api:/api
@@ -27,6 +27,8 @@ services:
       - db
     expose:
       - "8000"
+    env_file:
+      - ./.envs/.django
     volumes:
       - ./api:/api
     links:
