@@ -23,7 +23,7 @@
 
       <div class="form-group mb-3">
         <label for="quiz-image">Image</label>
-        <input type="file" name="image" id="quiz-image" />
+        <input type="file" name="image" id="quiz-image" @change="uploadImage" />
       </div>
 
       <h2 class="font-weight-bold">Questions</h2>
@@ -79,7 +79,7 @@ export default {
     return {
       questionCounter: 0,
       name: "",
-      image: "",
+      image: null,
       category_name: "",
       publish: false,
       categories: [
@@ -110,11 +110,15 @@ export default {
       }
       this.createQuiz({
         quiz: quizObj,
-        questions: questions
+        questions: questions,
+        image: this.image
       });
     },
     anyQuestion() {
       return Object.prototype.hasOwnProperty.call(this.$refs, "questions");
+    },
+    uploadImage(e) {
+      this.image = e.target.files[0];
     }
   }
 };
