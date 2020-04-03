@@ -95,5 +95,18 @@ export default {
       data: questions
     };
     return api(requestOptions).then(response => response.data);
+  },
+  addImageToQuiz(quiz_id, image) {
+    const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
+    const requestOptions = {
+      url: `/quizzes/${quiz_id}/image/`,
+      method: "PUT",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${accessToken}`
+      },
+      data: { image: image }
+    };
+    return api(requestOptions).then(response => response.data);
   }
 };
