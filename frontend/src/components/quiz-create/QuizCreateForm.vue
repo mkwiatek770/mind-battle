@@ -98,12 +98,12 @@ export default {
       var quizObj = {
         name: this.name,
         category_name: this.category_name,
-        publish: this.publish,
-        questions: []
+        publish: this.publish
       };
+      let questions = [];
       if (this.anyQuestion()) {
         for (var i = 0; i < this.$refs.questions.length; i++) {
-          quizObj.questions.push(this.$refs.questions[i].question);
+          questions.push(this.$refs.questions[i].question);
         }
       }
       console.log(quizObj);
