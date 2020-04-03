@@ -140,7 +140,7 @@ class QuestionsListView(APIView):
         """Create new question."""
         quiz = self.get_object(pk)
         serializer = QuestionSerializer(
-            data=request.data, context={'request': request, 'quiz_pk': quiz.pk})
+            data=request.data, context={'request': request, 'quiz_pk': quiz.pk}, many=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -149,7 +149,7 @@ class QuestionsListView(APIView):
 
 class QuestionDetailView(APIView):
     """
-    Detail view of specific quiz's instance.
+    Detail view of specific question's instance.
 
     Available methods: [GET, PUT, DELETE].
     """
