@@ -69,5 +69,31 @@ export default {
       data: { answers: answers }
     };
     return api(requestOptions).then(response => response.data);
+  },
+  createQuiz(quizData) {
+    const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
+    const requestOptions = {
+      url: `/quizzes/`,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      },
+      data: quizData
+    };
+    return api(requestOptions).then(response => response.data);
+  },
+  addQuestionsToQuiz(quiz_id, questions) {
+    const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
+    const requestOptions = {
+      url: `/quizzes/${quiz_id}/questions/`,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      },
+      data: questions
+    };
+    return api(requestOptions).then(response => response.data);
   }
 };
