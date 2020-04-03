@@ -62,6 +62,13 @@ const actions = {
         router.push("/quiz/summary");
       });
     });
+  },
+  createQuiz({ dispatch }, { quiz, questions }) {
+    // quizAPI.createQuiz(quizData.quiz).then(response => {
+    //   quizAPI.addQuestionsToQuiz(response.id, quizData.questions).then(() => {
+    //     this.router.push("/");
+    //   });
+    // });
   }
 };
 

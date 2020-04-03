@@ -58,7 +58,7 @@
       <button
         type="button"
         class="btn btn-success create-btn mt-2"
-        @click="createQuiz"
+        @click="createClick"
       >
         Create Quiz
       </button>
@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import Question from "./Question.vue";
 
 export default {
@@ -94,7 +95,8 @@ export default {
     };
   },
   methods: {
-    createQuiz() {
+    ...mapActions("quiz", ["createQuiz"]),
+    createClick() {
       var quizObj = {
         name: this.name,
         category_name: this.category_name,
@@ -106,7 +108,10 @@ export default {
           questions.push(this.$refs.questions[i].question);
         }
       }
-      console.log(quizObj);
+      this.createQuiz({
+        quiz: quizObj,
+        questions: questions
+      });
     },
     anyQuestion() {
       return Object.prototype.hasOwnProperty.call(this.$refs, "questions");
