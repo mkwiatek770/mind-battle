@@ -63,12 +63,19 @@ const actions = {
       });
     });
   },
-  createQuiz({ dispatch }, { quiz, questions }) {
-    // quizAPI.createQuiz(quizData.quiz).then(response => {
-    //   quizAPI.addQuestionsToQuiz(response.id, quizData.questions).then(() => {
-    //     this.router.push("/");
-    //   });
-    // });
+  createQuiz({ dispatch }, { quiz, questions, image }) {
+    quizAPI
+      .createQuiz(quiz)
+      .then(response => {
+        quizAPI.addImageToQuiz(response.id, image);
+
+        quizAPI.addQuestionsToQuiz(response.id, questions).then(() => {
+          router.push("/");
+        });
+      })
+      .catch(error => {
+        dispatch("alert/error", error, { root: true });
+      });
   }
 };
 
