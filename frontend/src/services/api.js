@@ -9,3 +9,9 @@ export default axios.create({
     "X-CSRFToken": Cookies.get("csrftoken")
   }
 });
+
+// export const authenticationHeader = () => {
+//   return {
+//     Authorization: `Bearer ${Auth.getAccessToken()}`
+//   };
+// };

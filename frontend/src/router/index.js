@@ -1,6 +1,9 @@
+// import axios from "axios";
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+// import { Store } from "vuex";
+// import store from "store";
 
 Vue.use(VueRouter);
 
@@ -65,6 +68,38 @@ const routes = [
   // otherwise redirect to home
   { path: "*", redirect: "/" }
 ];
+
+// let isRefreshing = false;
+
+// axios.interceptors.response.use(
+//   response => {
+//     return response;
+//   },
+//   error => {
+//     const {
+//       config,
+//       response: { status, data }
+//     } = error;
+
+//     const originalRequest = config;
+
+//     if (status === 401 && data.message == "Token is invalid or expired") {
+//       if (!isRefreshing) {
+//         isRefreshing = true;
+//         store
+//           .dispatch("refreshToken")
+//           .then(({ status }) => {
+//             if (status === 200 || status === 204) {
+//               isRefreshing = false;
+//             }
+//           })
+//           .catch(error => {
+//             console.error(error);
+//           });
+//       }
+//     }
+//   }
+// );
 
 const router = new VueRouter({
   routes,

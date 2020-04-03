@@ -49,6 +49,16 @@ const actions = {
         dispatch("alert/error", error, { root: true });
       }
     );
+  },
+  refreshToken({ dispatch, commit }, refresh) {
+    userService.refreshToken(refresh).then(
+      data => {
+        commit("refreshToken", data);
+      },
+      error => {
+        dispatch("alert/error", error, { root: true });
+      }
+    );
   }
 };
 

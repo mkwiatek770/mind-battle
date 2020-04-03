@@ -106,6 +106,7 @@ export default {
           quizObj.questions.push(this.$refs.questions[i].question);
         }
       }
+      console.log(quizObj);
     },
     anyQuestion() {
       return Object.prototype.hasOwnProperty.call(this.$refs, "questions");
