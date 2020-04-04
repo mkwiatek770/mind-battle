@@ -149,7 +149,7 @@ REST_FRAMEWORK = {
 
 if env('ENVIRONMENT') != 'production':
     SIMPLE_JWT = {
-        'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30)
+        'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5)
     }
 
 AUTH_USER_MODEL = 'user.User'
