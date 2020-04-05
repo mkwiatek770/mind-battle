@@ -8,7 +8,6 @@ from rest_framework.authtoken.models import Token
 from rest_framework.test import force_authenticate
 
 from django.utils import timezone
-from django.contrib.auth import get_user_model
 from django.core.files.base import File
 from django.urls import reverse
 
@@ -31,11 +30,6 @@ class TestQuizUnauthenticated(APITestCase):
     """Test for quiz related endpoints for unathenticated user."""
 
     def setUp(self):
-        # self.user = get_user_model().objects.create(
-        #     username='user1',
-        #     password='password',
-        #     email='email@gmail.com'
-        # )
         self.user = create_user("user1", "password", "email@gmail.com")
 
     def test_get_all_published_quizzes(self):
@@ -74,11 +68,7 @@ class TestQuizAuthenticated(APITestCase):
     """Test suite for authenticated user."""
 
     def setUp(self):
-        self.user = get_user_model().objects.create(
-            username="user",
-            password="password",
-            email='email@gmail.com'
-        )
+        self.user = create_user("user", "password", "email@gmail.com")
         self.client.force_authenticate(user=self.user)
 
     def test_get_quiz_detail(self):
@@ -160,16 +150,8 @@ class TestQuizCreator(APITestCase):
     """Test suite for quiz creator."""
 
     def setUp(self):
-        self.user_1 = get_user_model().objects.create(
-            username='user1',
-            password='password',
-            email='email@gmail.com'
-        )
-        self.user_2 = get_user_model().objects.create(
-            username='user2',
-            password='password',
-            email='email2@gmail.com'
-        )
+        self.user_1 = create_user(username='user1', password='password', email='email@gmail.com')
+        self.user_2 = create_user(username='user2', password='password', email='email2@gmail.com')
         self.client.force_authenticate(user=self.user_1)
 
     def test_get_draft_quizzes_for_user(self):
@@ -394,16 +376,8 @@ class TestQuestionDetail(APITestCase):
     """Test suit for question specific operations."""
 
     def setUp(self):
-        self.user = get_user_model().objects.create(
-            username='user',
-            password='password',
-            email='email@gmail.com'
-        )
-        self.user_2 = get_user_model().objects.create(
-            username='user2',
-            password='password',
-            email='email2@gmail.com'
-        )
+        self.user = create_user(username='user', password='password', email='email@gmail.com')
+        self.user_2 = create_user(username='user2', password='password', email='email2@gmail.com')
         self.client.force_authenticate(user=self.user)
 
     def test_get_question_for_creator(self):
@@ -556,16 +530,8 @@ class TestQuizAvatar(APITestCase):
     """Test suite for avatar related actions for quiz."""
 
     def setUp(self):
-        self.user = get_user_model().objects.create(
-            username='user',
-            password='password',
-            email='email1@gmail.com'
-        )
-        self.user_2 = get_user_model().objects.create(
-            username='user2',
-            password='password',
-            email='email2@gmail.com'
-        )
+        self.user = create_user(username='user', password='password', email='email1@gmail.com')
+        self.user_2 = create_user(username='user2', password='password', email='email2@gmail.com')
         self.client.force_authenticate(self.user)
 
     def get_image_file(self, name, ext='png', size=(50, 50), color=(256, 0, 0)):
@@ -660,11 +626,7 @@ class TestCategory(APITestCase):
     """Test suite for Category model related actions."""
 
     def setUp(self):
-        self.user = get_user_model().objects.create_user(
-            username='user',
-            password='password',
-            email='email@gmail.com'
-        )
+        self.user = create_user(username='user', password='password', email='email@gmail.com')
 
     def create_category(self, name: str) -> Category:
         return Category.objects.create(name=name)
