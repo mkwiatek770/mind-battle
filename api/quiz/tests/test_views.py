@@ -72,12 +72,34 @@ class TestQuizAuthenticated(APITestCase):
         self.user = create_user("user", "password", "email@gmail.com")
         self.client.force_authenticate(user=self.user)
 
+        self.quiz_unpublished = create_quiz(name="quiz 2")
+        self.quiz_published = create_quiz(name="quiz 1", date_published=timezone.now())
+
+        self.question_1 = create_question(
+            quiz=self.quiz_published,
+            question="What is your favourite color?",
+            explanation="Some explanation")
+        self.question_2 = create_question(
+            quiz=self.quiz_published,
+            question="What is your name?",
+            explanation="Some explanation")
+
+        self.answer_1 = create_question_answer(
+            question=self.question_1,
+            content='Answer 1',
+            is_correct=False
+        )
+        self.answer_2 = create_question_answer(
+            question=self.question_1,
+            content='Answer 2',
+            is_correct=True
+        )
+
     def test_get_quiz_detail(self):
         """Receive detail info about specific quiz."""
-        quiz = create_quiz(name='name', date_published=timezone.now())
-        serialized_data = QuizSerializer(quiz).data
+        serialized_data = QuizSerializer(self.quiz_published).data
 
-        response = self.client.get(reverse('quiz_detail', args=(quiz.id,)))
+        response = self.client.get(reverse('quiz_detail', args=(self.quiz_published.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serialized_data)
@@ -92,58 +114,29 @@ class TestQuizAuthenticated(APITestCase):
         """
         403 not found status code is returned if is not published yet.
         """
-        quiz = create_quiz(name='quiz 1')
+        response = self.client.get(reverse('quiz_detail', args=(self.quiz_unpublished.id,)))
 
-        response = self.client.get(reverse('quiz_detail', args=(quiz.id,)))
-
-        self.assertFalse(quiz.is_published)
+        self.assertFalse(self.quiz_unpublished.is_published)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_all_quiz_questions(self):
         """Receive list of questions for specific quiz."""
-        quiz = create_quiz(name='name', creator=self.user)
-        question_1 = create_question(
-            quiz=quiz,
-            question="What is your favourite color?",
-            explanation="Some explanation")
-        question_2 = create_question(
-            quiz=quiz,
-            question="What is your name?",
-            explanation="Some explanation")
-
         serialized_data = QuestionSerializer(
-            Question.objects.filter(quiz=quiz), many=True).data
+            Question.objects.filter(quiz=self.quiz_published), many=True).data
 
-        response = self.client.get(reverse('question_list', args=(quiz.id,)))
+        response = self.client.get(reverse('question_list', args=(self.quiz_published.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serialized_data)
 
     def test_question_returns_all_answers(self):
         """Check if answers to question are returned."""
-        quiz = create_quiz(name='quiz', date_published=timezone.now())
-
-        question = create_question(
-            quiz=quiz,
-            question="What is your favourite color?",
-            explanation="Some explanation")
-        answer_1 = create_question_answer(
-            question=question,
-            content='Answer 1',
-            is_correct=False
-        )
-        answer_2 = create_question_answer(
-            question=question,
-            content='Answer 2',
-            is_correct=True
-        )
-
-        response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
-
+        response = self.client.get(reverse('question_detail',
+                                           args=(self.quiz_published.id, self.question_1.id)))
         answers = response.data['answers']
 
-        self.assertIn(QuestionAnswerSerializer(answer_1).data, answers)
-        self.assertIn(QuestionAnswerSerializer(answer_2).data, answers)
+        self.assertIn(QuestionAnswerSerializer(self.answer_1).data, answers)
+        self.assertIn(QuestionAnswerSerializer(self.answer_2).data, answers)
 
 
 class TestQuizCreator(APITestCase):
