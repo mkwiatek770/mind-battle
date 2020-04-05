@@ -13,3 +13,7 @@ def create_user(username: str, password: str, email: str) -> settings.AUTH_USER_
 
 def create_quiz(**kwargs):
     return Quiz.objects.create(**kwargs)
+
+
+def create_question(**kwargs):
+    return Question.objects.create(**kwargs)
