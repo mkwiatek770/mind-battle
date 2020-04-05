@@ -1,3 +1,4 @@
+from typing import List
 from rest_framework import serializers
 from quiz.models import (
     Quiz,
@@ -99,6 +100,21 @@ class QuestionSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+    # def update(self, quiz_istance, validated_data) -> Question:
+    #     """Update question instance for specific quiz."""
+    #     answers = validated_data.pop('answers')
+    #     question = Question.objects.create(
+    #         quiz=quiz_istance,
+    #         **validated_data
+    #     )
+    #     for answer in answers:
+    #         question.answers.filter().delete()
+    #         QuestionAnswer.objects.bulk_create(
+    #             [QuestionAnswer(**answer, question=instance)
+    #              for answer in validated_data['answers']]
+    #         )
+    #     return question
 
     class Meta:
         model = Question

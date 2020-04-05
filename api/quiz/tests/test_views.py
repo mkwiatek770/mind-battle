@@ -283,25 +283,6 @@ class TestQuizCreator(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertIn(self.quiz_published_user_1, Quiz.objects.all())
 
-    def test_add_new_question_to_quiz(self):
-        """Test add new question to existing quiz."""
-
-        payload_data = {
-            'question': 'What is your name?',
-            'explanation': 'Lorem ipsum ...',
-            'answers': [
-                dict(content='answer1', is_correct=False),
-                dict(content='answer2', is_correct=True)
-            ]
-        }
-        response = self.client.post(reverse('question_list', args=(self.quiz_published_user_1.id,)),
-                                    data=payload_data)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Question.objects.get(
-            question='What is your name?').quiz, self.quiz_published_user_1)
-        self.assertEqual(QuestionAnswer.objects.count(), 2)
-
     def test_add_new_question_to_quiz_for_not_creator(self):
         """Test non creator, can't add new question for quiz."""
 

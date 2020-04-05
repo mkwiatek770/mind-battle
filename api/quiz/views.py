@@ -146,6 +146,16 @@ class QuestionsListView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    # def put(self, request, pk, format=None):
+    #     """Update quiz questions."""
+    #     quiz = self.get_object(pk)
+    #     serializer = QuestionSerializer(quiz, data=request.data, many=True)
+    #     if serializer.is_valid():
+    #         quiz.questions.all().delete()
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class QuestionDetailView(APIView):
     """
