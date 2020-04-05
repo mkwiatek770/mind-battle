@@ -24,10 +24,11 @@ from quiz.serializers import (
     CategorySerializer
 )
 from quiz.tests.helpers import (
+    create_category,
     create_user,
     create_quiz,
     create_question,
-    create_category
+    create_question_answer,
 )
 
 
@@ -128,12 +129,12 @@ class TestQuizAuthenticated(APITestCase):
             quiz=quiz,
             question="What is your favourite color?",
             explanation="Some explanation")
-        answer_1 = QuestionAnswer.objects.create(
+        answer_1 = create_question_answer(
             question=question,
             content='Answer 1',
             is_correct=False
         )
-        answer_2 = QuestionAnswer.objects.create(
+        answer_2 = create_question_answer(
             question=question,
             content='Answer 2',
             is_correct=True
@@ -470,7 +471,7 @@ class TestQuestionDetail(APITestCase):
         """
         quiz = create_quiz(name='quiz', creator=self.user)
         question = create_question(quiz=quiz, question='...', explanation='...')
-        old_answer = QuestionAnswer.objects.create(
+        old_answer = create_question_answer(
             question=question, content='...', is_correct=True)
 
         payload_data = {
