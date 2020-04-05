@@ -23,7 +23,7 @@ from quiz.serializers import (
     QuestionAnswerSerializer,
     CategorySerializer
 )
-from quiz.tests.helpers import create_user, create_quiz
+from quiz.tests.helpers import create_user, create_quiz, create_question
 
 
 class TestQuizUnauthenticated(APITestCase):
@@ -98,11 +98,11 @@ class TestQuizAuthenticated(APITestCase):
     def test_get_all_quiz_questions(self):
         """Receive list of questions for specific quiz."""
         quiz = create_quiz(name='name', creator=self.user)
-        question_1 = Question.objects.create(
+        question_1 = create_question(
             quiz=quiz,
             question="What is your favourite color?",
             explanation="Some explanation")
-        question_2 = Question.objects.create(
+        question_2 = create_question(
             quiz=quiz,
             question="What is your name?",
             explanation="Some explanation")
@@ -119,7 +119,7 @@ class TestQuizAuthenticated(APITestCase):
         """Check if answers to question are returned."""
         quiz = create_quiz(name='quiz', date_published=timezone.now())
 
-        question = Question.objects.create(
+        question = create_question(
             quiz=quiz,
             question="What is your favourite color?",
             explanation="Some explanation")
@@ -377,7 +377,7 @@ class TestQuestionDetail(APITestCase):
     def test_get_question_for_creator(self):
         """Test question detail is returned for creator."""
         quiz = create_quiz(name='name', creator=self.user)
-        question = Question.objects.create(quiz=quiz, question='...', explanation='...')
+        question = create_question(quiz=quiz, question='...', explanation='...')
 
         response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
 
@@ -387,7 +387,7 @@ class TestQuestionDetail(APITestCase):
     def test_get_question_for_not_authenticated(self):
         """Make sure not authenticated user can't  access this endpoint."""
         quiz = create_quiz(name='name', creator=self.user)
-        question = Question.objects.create(quiz=quiz, question='...', explanation='...')
+        question = create_question(quiz=quiz, question='...', explanation='...')
 
         self.client.logout()
         response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
@@ -398,7 +398,7 @@ class TestQuestionDetail(APITestCase):
         """Assure questions detail is returned for not author."""
         quiz = create_quiz(name='name', creator=self.user_2, date_published=timezone.now())
 
-        question = Question.objects.create(quiz=quiz, question='...', explanation='...')
+        question = create_question(quiz=quiz, question='...', explanation='...')
 
         response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
 
@@ -408,7 +408,7 @@ class TestQuestionDetail(APITestCase):
     def test_update_question_by_author(self):
         """Assure author of quiz can update one of its questions."""
         quiz = create_quiz(name='name', creator=self.user)
-        question = Question.objects.create(quiz=quiz, question='...', explanation='...')
+        question = create_question(quiz=quiz, question='...', explanation='...')
 
         payload_data = {
             'question': 'New one ...',
@@ -426,7 +426,7 @@ class TestQuestionDetail(APITestCase):
     def test_update_question_not_author(self):
         """Assure only author can update question."""
         quiz = create_quiz(name='name', creator=self.user_2)
-        question = Question.objects.create(quiz=quiz, question='...', explanation='...')
+        question = create_question(quiz=quiz, question='...', explanation='...')
 
         payload_data = {
             'question': 'New one ...',
@@ -443,7 +443,7 @@ class TestQuestionDetail(APITestCase):
     def test_update_question_not_authenticated(self):
         """Make sure not authenticated user can't access this endpoint."""
         quiz = create_quiz(name='name', creator=self.user)
-        question = Question.objects.create(quiz=quiz, question='...', explanation='...')
+        question = create_question(quiz=quiz, question='...', explanation='...')
 
         payload_data = {
             'question': 'New one ...',
@@ -464,7 +464,7 @@ class TestQuestionDetail(APITestCase):
         old ones are destroyed.
         """
         quiz = create_quiz(name='quiz', creator=self.user)
-        question = Question.objects.create(quiz=quiz, question='...', explanation='...')
+        question = create_question(quiz=quiz, question='...', explanation='...')
         old_answer = QuestionAnswer.objects.create(
             question=question, content='...', is_correct=True)
 
@@ -491,7 +491,7 @@ class TestQuestionDetail(APITestCase):
     def test_delete_question_by_author(self):
         """Make sure user can delete question of his own quiz."""
         quiz = create_quiz(name='name', creator=self.user)
-        question = Question.objects.create(quiz=quiz, question='...', explanation='...')
+        question = create_question(quiz=quiz, question='...', explanation='...')
 
         response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
 
@@ -501,7 +501,7 @@ class TestQuestionDetail(APITestCase):
     def test_delete_question_by_non_creator(self):
         """Don't allow not quiz creator to delete question."""
         quiz = create_quiz(name='name', creator=self.user_2)
-        question = Question.objects.create(quiz=quiz, question='...', explanation='...')
+        question = create_question(quiz=quiz, question='...', explanation='...')
 
         response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
 
@@ -511,7 +511,7 @@ class TestQuestionDetail(APITestCase):
     def test_delete_question_by_not_authenticated(self):
         """Make sure not authenticated user can't access this endpoint."""
         quiz = create_quiz(name='name', creator=self.user)
-        question = Question.objects.create(quiz=quiz, question='...', explanation='...')
+        question = create_question(quiz=quiz, question='...', explanation='...')
 
         self.client.logout()
         response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
