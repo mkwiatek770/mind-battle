@@ -51,10 +51,8 @@ class TestQuizUnauthenticated(APITestCase):
         """Receive all quizzes filtered by given category."""
         category_1 = Category.objects.create(name='python')
         category_2 = Category.objects.create(name='javascript')
-        quiz_1 = create_quiz(name='quiz 1', category=category_1)
-        quiz_2 = create_quiz(name='quiz 2', category=category_2)
-        quiz_1.publish()
-        quiz_2.publish()
+        quiz_1 = create_quiz(name='quiz 1', category=category_1, date_published=timezone.now())
+        quiz_2 = create_quiz(name='quiz 2', category=category_2, date_published=timezone.now())
 
         response = self.client.get(reverse("quiz_list"), {'category': 'python'})
 
@@ -72,8 +70,7 @@ class TestQuizAuthenticated(APITestCase):
 
     def test_get_quiz_detail(self):
         """Receive detail info about specific quiz."""
-        quiz = create_quiz(name='name')
-        quiz.publish()
+        quiz = create_quiz(name='name', date_published=timezone.now())
         serialized_data = QuizSerializer(quiz).data
 
         response = self.client.get(reverse('quiz_detail', args=(quiz.id,)))
@@ -120,8 +117,8 @@ class TestQuizAuthenticated(APITestCase):
 
     def test_question_returns_all_answers(self):
         """Check if answers to question are returned."""
-        quiz = create_quiz(name='quiz')
-        quiz.publish()
+        quiz = create_quiz(name='quiz', date_published=timezone.now())
+
         question = Question.objects.create(
             quiz=quiz,
             question="What is your favourite color?",
@@ -157,8 +154,8 @@ class TestQuizCreator(APITestCase):
         """Test getting all drafted quizzes for creator."""
         quiz_unpublished_user_1 = create_quiz(name='quiz1', creator=self.user_1)
         quiz_unpublished_user_2 = create_quiz(name='quiz2', creator=self.user_2)
-        quiz_published_user_1 = create_quiz(name='quiz1published', creator=self.user_1)
-        quiz_published_user_1.publish()
+        quiz_published_user_1 = create_quiz(
+            name='quiz1published', creator=self.user_1, date_published=timezone.now())
 
         response = self.client.get(reverse('quiz_drafts'))
 
@@ -351,8 +348,7 @@ class TestQuizCreator(APITestCase):
 
     def test_unpublish_quiz_by_creator(self):
         """Assure quiz is unpublished"""
-        quiz = create_quiz(name="Quiz 1", creator=self.user_1)
-        quiz.publish()
+        quiz = create_quiz(name="Quiz 1", creator=self.user_1, date_published=timezone.now())
 
         response = self.client.post(reverse('quiz_unpublish', args=(quiz.id,)))
 
@@ -361,8 +357,7 @@ class TestQuizCreator(APITestCase):
 
     def test_unpublish_quiz_by_non_creator(self):
         """Assure unpublishing quiz by non creator is not possible."""
-        quiz = create_quiz(name="Quiz 2", creator=self.user_2)
-        quiz.publish()
+        quiz = create_quiz(name="Quiz 2", creator=self.user_2, date_published=timezone.now())
 
         response = self.client.post(reverse('quiz_unpublish', args=(quiz.id,)))
         quiz_obj = Quiz.objects.get(pk=quiz.id)
@@ -401,8 +396,8 @@ class TestQuestionDetail(APITestCase):
 
     def test_get_question_detail_for_not_author(self):
         """Assure questions detail is returned for not author."""
-        quiz = create_quiz(name='name', creator=self.user_2)
-        quiz.publish()
+        quiz = create_quiz(name='name', creator=self.user_2, date_published=timezone.now())
+
         question = Question.objects.create(quiz=quiz, question='...', explanation='...')
 
         response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
