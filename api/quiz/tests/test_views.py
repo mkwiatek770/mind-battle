@@ -37,34 +37,32 @@ class TestQuizUnauthenticated(APITestCase):
 
     def setUp(self):
         self.user = create_user("user1", "password", "email@gmail.com")
+        category_1 = create_category(name='python')
+        category_2 = create_category(name='javascript')
+        self.quiz_published_1 = create_quiz(
+            name='quiz 1', category=category_1, date_published=timezone.now())
+        self.quiz_published_2 = create_quiz(
+            name='quiz 2', category=category_2, date_published=timezone.now())
+        self.quiz_not_published = create_quiz(name="quiz 3")
 
     def test_get_all_published_quizzes(self):
         """Get all quizzes that was already published"""
-        quiz_published = create_quiz(name="quiz 1", date_published=timezone.now())
-        quiz_not_published = create_quiz(name="quiz 2")
-
         response = self.client.get(reverse("quiz_list"))
-        serialized_data = QuizSerializer(
-            Quiz.objects.published(), many=True).data
+        serialized_data = QuizSerializer(Quiz.objects.published(), many=True).data
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serialized_data)
-        self.assertIn(QuizSerializer(quiz_published).data, response.data)
-        self.assertNotIn(QuizSerializer(
-            quiz_not_published).data, response.data)
+        self.assertIn(QuizSerializer(self.quiz_published_1).data, response.data)
+        self.assertIn(QuizSerializer(self.quiz_published_2).data, response.data)
+        self.assertNotIn(QuizSerializer(self.quiz_not_published).data, response.data)
 
     def test_get_quizes_filtered_by_category(self):
         """Receive all quizzes filtered by given category."""
-        category_1 = create_category(name='python')
-        category_2 = create_category(name='javascript')
-        quiz_1 = create_quiz(name='quiz 1', category=category_1, date_published=timezone.now())
-        quiz_2 = create_quiz(name='quiz 2', category=category_2, date_published=timezone.now())
-
         response = self.client.get(reverse("quiz_list"), {'category': 'python'})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn(QuizSerializer(quiz_1).data, response.data)
-        self.assertNotIn(QuizSerializer(quiz_2).data, response.data)
+        self.assertIn(QuizSerializer(self.quiz_published_1).data, response.data)
+        self.assertNotIn(QuizSerializer(self.quiz_published_2).data, response.data)
 
 
 class TestQuizAuthenticated(APITestCase):
