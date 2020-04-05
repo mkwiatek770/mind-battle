@@ -9,3 +9,7 @@ def create_user(username: str, password: str, email: str) -> settings.AUTH_USER_
         email=email,
         password=password
     )
+
+
+def create_quiz(**kwargs):
+    return Quiz.objects.create(**kwargs)
