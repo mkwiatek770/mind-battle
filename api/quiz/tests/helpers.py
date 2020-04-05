@@ -21,3 +21,7 @@ def create_question(**kwargs):
 
 def create_category(**kwargs):
     return Category.objects.create(**kwargs)
+
+
+def create_question_answer(**kwargs):
+    return QuestionAnswer.objects.create(**kwargs)
