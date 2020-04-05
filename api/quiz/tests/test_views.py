@@ -147,19 +147,19 @@ class TestQuizCreator(APITestCase):
         self.user_2 = create_user(username='user2', password='password', email='email2@gmail.com')
         self.client.force_authenticate(user=self.user_1)
 
-    def test_get_draft_quizzes_for_user(self):
-        """Test getting all drafted quizzes for creator."""
-        quiz_unpublished_user_1 = create_quiz(name='quiz1', creator=self.user_1)
-        quiz_unpublished_user_2 = create_quiz(name='quiz2', creator=self.user_2)
-        quiz_published_user_1 = create_quiz(
+        self.quiz_unpublished_user_1 = create_quiz(name='quiz1', creator=self.user_1)
+        self.quiz_unpublished_user_2 = create_quiz(name='quiz2', creator=self.user_2)
+        self.quiz_published_user_1 = create_quiz(
             name='quiz1published', creator=self.user_1, date_published=timezone.now())
 
+    def test_get_draft_quizzes_for_user(self):
+        """Test getting all drafted quizzes for creator."""
         response = self.client.get(reverse('quiz_drafts'))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn(QuizSerializer(quiz_unpublished_user_1).data, response.data)
-        self.assertNotIn(QuizSerializer(quiz_unpublished_user_2).data, response.data)
-        self.assertNotIn(QuizSerializer(quiz_published_user_1).data, response.data)
+        self.assertIn(QuizSerializer(self.quiz_unpublished_user_1).data, response.data)
+        self.assertNotIn(QuizSerializer(self.quiz_unpublished_user_2).data, response.data)
+        self.assertNotIn(QuizSerializer(self.quiz_published_user_1).data, response.data)
 
     def test_get_draft_quizzes_for_not_authenticated(self):
         """Test http 403 status code is returned for annonymous user."""
@@ -272,7 +272,7 @@ class TestQuizCreator(APITestCase):
         response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Quiz.objects.count(), 0)
+        self.assertNotIn(quiz, Quiz.objects.all())
 
     def test_delete_quiz_by_non_authenticated(self):
         """Assure non authenticated user can't delete quiz."""
@@ -282,7 +282,7 @@ class TestQuizCreator(APITestCase):
         response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(Quiz.objects.count(), 1)
+        self.assertIn(quiz, Quiz.objects.all())
 
     def test_delete_quiz_by_non_creator(self):
         """Assure non creator can't remove quiz from db."""
@@ -291,7 +291,7 @@ class TestQuizCreator(APITestCase):
         response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(Quiz.objects.count(), 1)
+        self.assertIn(quiz, Quiz.objects.all())
 
     def test_add_new_question_to_quiz(self):
         """Test add new question to existing quiz."""
@@ -322,7 +322,7 @@ class TestQuizCreator(APITestCase):
         response = self.client.post(reverse('question_list', args=(quiz.id,)), data=payload_data)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(Question.objects.count(), 0)
+        self.assertFalse(Question.objects.filter(question="What is your name?").exists())
 
     def test_publish_quiz_by_creator(self):
         """Assure quiz is published."""
