@@ -24,17 +24,19 @@ from quiz.serializers import (
     QuestionAnswerSerializer,
     CategorySerializer
 )
+from quiz.tests.helpers import create_user
 
 
 class TestQuizUnauthenticated(APITestCase):
     """Test for quiz related endpoints for unathenticated user."""
 
     def setUp(self):
-        self.user = get_user_model().objects.create(
-            username='user1',
-            password='password',
-            email='email@gmail.com'
-        )
+        # self.user = get_user_model().objects.create(
+        #     username='user1',
+        #     password='password',
+        #     email='email@gmail.com'
+        # )
+        self.user = create_user("user1", "password", "email@gmail.com")
 
     def test_get_all_published_quizzes(self):
         """Get all quizzes that was already published"""
