@@ -23,7 +23,12 @@ from quiz.serializers import (
     QuestionAnswerSerializer,
     CategorySerializer
 )
-from quiz.tests.helpers import create_user, create_quiz, create_question
+from quiz.tests.helpers import (
+    create_user,
+    create_quiz,
+    create_question,
+    create_category
+)
 
 
 class TestQuizUnauthenticated(APITestCase):
@@ -49,8 +54,8 @@ class TestQuizUnauthenticated(APITestCase):
 
     def test_get_quizes_filtered_by_category(self):
         """Receive all quizzes filtered by given category."""
-        category_1 = Category.objects.create(name='python')
-        category_2 = Category.objects.create(name='javascript')
+        category_1 = create_category(name='python')
+        category_2 = create_category(name='javascript')
         quiz_1 = create_quiz(name='quiz 1', category=category_1, date_published=timezone.now())
         quiz_2 = create_quiz(name='quiz 2', category=category_2, date_published=timezone.now())
 
@@ -175,7 +180,7 @@ class TestQuizCreator(APITestCase):
 
     def test_create_and_publish_new_quiz(self):
         """Assure new quiz is created and published."""
-        category = Category.objects.create(name='python')
+        category = create_category(name='python')
         payload_data = {
             'name': 'Quiz 1',
             'category_name': 'python',
@@ -190,7 +195,7 @@ class TestQuizCreator(APITestCase):
 
     def test_create_without_publish_new_quiz(self):
         """Test quiz is created but not published."""
-        category = Category.objects.create(name='python')
+        category = create_category(name='python')
         payload_data = {
             'name': 'Quiz 1',
             'category_name': 'python',
@@ -205,7 +210,7 @@ class TestQuizCreator(APITestCase):
 
     def test_create_new_quiz_for_not_authenticated(self):
         """Assure non authenticated user can't access this endpoint."""
-        category = Category.objects.create(name='python')
+        category = create_category(name='python')
         payload_data = {
             'name': 'Quiz 1',
             'category_name': 'python',
@@ -220,8 +225,8 @@ class TestQuizCreator(APITestCase):
 
     def test_update_quiz(self):
         """Assure existing quiz is updated."""
-        category = Category.objects.create(name="python")
-        category_2 = Category.objects.create(name="javascript")
+        category = create_category(name="python")
+        category_2 = create_category(name="javascript")
         quiz = create_quiz(name="quiz v1", category=category, creator=self.user_1)
 
         payload_data = {
@@ -238,7 +243,7 @@ class TestQuizCreator(APITestCase):
 
     def test_update_quiz_by_non_creator(self):
         """Test non creat can't update someone else's quiz."""
-        category = Category.objects.create(name='python')
+        category = create_category(name='python')
         quiz = create_quiz(name="quiz v1", creator=self.user_2)
 
         payload_data = {
@@ -622,9 +627,6 @@ class TestCategory(APITestCase):
     def setUp(self):
         self.user = create_user(username='user', password='password', email='email@gmail.com')
 
-    def create_category(self, name: str) -> Category:
-        return Category.objects.create(name=name)
-
     def test_create_new_category_by_authenticated(self):
         """Make sure authenticated user can create new category."""
         self.client.force_authenticate(self.user)
@@ -642,8 +644,8 @@ class TestCategory(APITestCase):
 
     def test_retrieve_category_list(self):
         """List of all cattegories is retrieved."""
-        category_1 = self.create_category("first")
-        category_2 = self.create_category("second")
+        category_1 = create_category(name="first")
+        category_2 = create_category(name="second")
 
         response = self.client.get(reverse('categories'))
         serialized_categories = CategorySerializer(Category.objects.all(), many=True)
