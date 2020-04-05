@@ -23,7 +23,7 @@ from quiz.serializers import (
     QuestionAnswerSerializer,
     CategorySerializer
 )
-from quiz.tests.helpers import create_user
+from quiz.tests.helpers import create_user, create_quiz
 
 
 class TestQuizUnauthenticated(APITestCase):
@@ -34,9 +34,8 @@ class TestQuizUnauthenticated(APITestCase):
 
     def test_get_all_published_quizzes(self):
         """Get all quizzes that was already published"""
-        quiz_published = Quiz.objects.create(name="quiz 1")
-        quiz_published.publish()
-        quiz_not_published = Quiz.objects.create(name="quiz 2")
+        quiz_published = create_quiz(name="quiz 1", date_published=timezone.now())
+        quiz_not_published = create_quiz(name="quiz 2")
 
         response = self.client.get(reverse("quiz_list"))
         serialized_data = QuizSerializer(
@@ -52,8 +51,8 @@ class TestQuizUnauthenticated(APITestCase):
         """Receive all quizzes filtered by given category."""
         category_1 = Category.objects.create(name='python')
         category_2 = Category.objects.create(name='javascript')
-        quiz_1 = Quiz.objects.create(name='quiz 1', category=category_1)
-        quiz_2 = Quiz.objects.create(name='quiz 2', category=category_2)
+        quiz_1 = create_quiz(name='quiz 1', category=category_1)
+        quiz_2 = create_quiz(name='quiz 2', category=category_2)
         quiz_1.publish()
         quiz_2.publish()
 
@@ -73,7 +72,7 @@ class TestQuizAuthenticated(APITestCase):
 
     def test_get_quiz_detail(self):
         """Receive detail info about specific quiz."""
-        quiz = Quiz.objects.create(name='name')
+        quiz = create_quiz(name='name')
         quiz.publish()
         serialized_data = QuizSerializer(quiz).data
 
@@ -92,7 +91,7 @@ class TestQuizAuthenticated(APITestCase):
         """
         403 not found status code is returned if is not published yet.
         """
-        quiz = Quiz.objects.create(name='quiz 1')
+        quiz = create_quiz(name='quiz 1')
 
         response = self.client.get(reverse('quiz_detail', args=(quiz.id,)))
 
@@ -101,7 +100,7 @@ class TestQuizAuthenticated(APITestCase):
 
     def test_get_all_quiz_questions(self):
         """Receive list of questions for specific quiz."""
-        quiz = Quiz.objects.create(name='name', creator=self.user)
+        quiz = create_quiz(name='name', creator=self.user)
         question_1 = Question.objects.create(
             quiz=quiz,
             question="What is your favourite color?",
@@ -121,7 +120,7 @@ class TestQuizAuthenticated(APITestCase):
 
     def test_question_returns_all_answers(self):
         """Check if answers to question are returned."""
-        quiz = Quiz.objects.create(name='quiz')
+        quiz = create_quiz(name='quiz')
         quiz.publish()
         question = Question.objects.create(
             quiz=quiz,
@@ -156,9 +155,9 @@ class TestQuizCreator(APITestCase):
 
     def test_get_draft_quizzes_for_user(self):
         """Test getting all drafted quizzes for creator."""
-        quiz_unpublished_user_1 = Quiz.objects.create(name='quiz1', creator=self.user_1)
-        quiz_unpublished_user_2 = Quiz.objects.create(name='quiz2', creator=self.user_2)
-        quiz_published_user_1 = Quiz.objects.create(name='quiz1published', creator=self.user_1)
+        quiz_unpublished_user_1 = create_quiz(name='quiz1', creator=self.user_1)
+        quiz_unpublished_user_2 = create_quiz(name='quiz2', creator=self.user_2)
+        quiz_published_user_1 = create_quiz(name='quiz1published', creator=self.user_1)
         quiz_published_user_1.publish()
 
         response = self.client.get(reverse('quiz_drafts'))
@@ -170,7 +169,7 @@ class TestQuizCreator(APITestCase):
 
     def test_get_draft_quizzes_for_not_authenticated(self):
         """Test http 403 status code is returned for annonymous user."""
-        Quiz.objects.create(name='quiz')
+        create_quiz(name='quiz')
 
         self.client.logout()
         response = self.client.get(reverse('quiz_drafts'))
@@ -226,7 +225,7 @@ class TestQuizCreator(APITestCase):
         """Assure existing quiz is updated."""
         category = Category.objects.create(name="python")
         category_2 = Category.objects.create(name="javascript")
-        quiz = Quiz.objects.create(name="quiz v1", category=category, creator=self.user_1)
+        quiz = create_quiz(name="quiz v1", category=category, creator=self.user_1)
 
         payload_data = {
             'name': 'quiz v2',
@@ -243,7 +242,7 @@ class TestQuizCreator(APITestCase):
     def test_update_quiz_by_non_creator(self):
         """Test non creat can't update someone else's quiz."""
         category = Category.objects.create(name='python')
-        quiz = Quiz.objects.create(name="quiz v1", creator=self.user_2)
+        quiz = create_quiz(name="quiz v1", creator=self.user_2)
 
         payload_data = {
             'name': 'quiz v2',
@@ -258,7 +257,7 @@ class TestQuizCreator(APITestCase):
 
     def test_update_quiz_by_non_authenticated(self):
         """Test not logged in user can't update quiz."""
-        quiz = Quiz.objects.create(name="quiz v1", creator=self.user_2)
+        quiz = create_quiz(name="quiz v1", creator=self.user_2)
 
         payload_data = {
             'name': 'quiz v2',
@@ -274,7 +273,7 @@ class TestQuizCreator(APITestCase):
 
     def test_delete_quiz(self):
         """Assure specific quiz is removed."""
-        quiz = Quiz.objects.create(name="quiz 1", creator=self.user_1)
+        quiz = create_quiz(name="quiz 1", creator=self.user_1)
 
         response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
 
@@ -283,7 +282,7 @@ class TestQuizCreator(APITestCase):
 
     def test_delete_quiz_by_non_authenticated(self):
         """Assure non authenticated user can't delete quiz."""
-        quiz = Quiz.objects.create(name="quiz 1", creator=self.user_1)
+        quiz = create_quiz(name="quiz 1", creator=self.user_1)
 
         self.client.logout()
         response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
@@ -293,7 +292,7 @@ class TestQuizCreator(APITestCase):
 
     def test_delete_quiz_by_non_creator(self):
         """Assure non creator can't remove quiz from db."""
-        quiz = Quiz.objects.create(name="quiz 1", creator=self.user_2)
+        quiz = create_quiz(name="quiz 1", creator=self.user_2)
 
         response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
 
@@ -302,7 +301,7 @@ class TestQuizCreator(APITestCase):
 
     def test_add_new_question_to_quiz(self):
         """Test add new question to existing quiz."""
-        quiz = Quiz.objects.create(name="quiz 1", creator=self.user_1)
+        quiz = create_quiz(name="quiz 1", creator=self.user_1)
 
         payload_data = {
             'question': 'What is your name?',
@@ -320,7 +319,7 @@ class TestQuizCreator(APITestCase):
 
     def test_add_new_question_to_quiz_for_not_creator(self):
         """Test non creator, can't add new question for quiz."""
-        quiz = Quiz.objects.create(name="quiz 1", creator=self.user_2)
+        quiz = create_quiz(name="quiz 1", creator=self.user_2)
 
         payload_data = {
             'question': 'What is your name?',
@@ -333,7 +332,7 @@ class TestQuizCreator(APITestCase):
 
     def test_publish_quiz_by_creator(self):
         """Assure quiz is published."""
-        quiz = Quiz.objects.create(name="Quiz 1", creator=self.user_1)
+        quiz = create_quiz(name="Quiz 1", creator=self.user_1)
 
         response = self.client.post(reverse('quiz_publish', args=(quiz.id,)))
 
@@ -342,7 +341,7 @@ class TestQuizCreator(APITestCase):
 
     def test_publish_quiz_by_non_creator(self):
         """Assure publishing quiz by non creator is forbiden."""
-        quiz = Quiz.objects.create(name="Quiz 2", creator=self.user_2)
+        quiz = create_quiz(name="Quiz 2", creator=self.user_2)
 
         response = self.client.post(reverse('quiz_publish', args=(quiz.id,)))
         quiz_obj = Quiz.objects.get(pk=quiz.id)
@@ -352,7 +351,7 @@ class TestQuizCreator(APITestCase):
 
     def test_unpublish_quiz_by_creator(self):
         """Assure quiz is unpublished"""
-        quiz = Quiz.objects.create(name="Quiz 1", creator=self.user_1)
+        quiz = create_quiz(name="Quiz 1", creator=self.user_1)
         quiz.publish()
 
         response = self.client.post(reverse('quiz_unpublish', args=(quiz.id,)))
@@ -362,7 +361,7 @@ class TestQuizCreator(APITestCase):
 
     def test_unpublish_quiz_by_non_creator(self):
         """Assure unpublishing quiz by non creator is not possible."""
-        quiz = Quiz.objects.create(name="Quiz 2", creator=self.user_2)
+        quiz = create_quiz(name="Quiz 2", creator=self.user_2)
         quiz.publish()
 
         response = self.client.post(reverse('quiz_unpublish', args=(quiz.id,)))
@@ -382,7 +381,7 @@ class TestQuestionDetail(APITestCase):
 
     def test_get_question_for_creator(self):
         """Test question detail is returned for creator."""
-        quiz = Quiz.objects.create(name='name', creator=self.user)
+        quiz = create_quiz(name='name', creator=self.user)
         question = Question.objects.create(quiz=quiz, question='...', explanation='...')
 
         response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
@@ -392,7 +391,7 @@ class TestQuestionDetail(APITestCase):
 
     def test_get_question_for_not_authenticated(self):
         """Make sure not authenticated user can't  access this endpoint."""
-        quiz = Quiz.objects.create(name='name', creator=self.user)
+        quiz = create_quiz(name='name', creator=self.user)
         question = Question.objects.create(quiz=quiz, question='...', explanation='...')
 
         self.client.logout()
@@ -402,7 +401,7 @@ class TestQuestionDetail(APITestCase):
 
     def test_get_question_detail_for_not_author(self):
         """Assure questions detail is returned for not author."""
-        quiz = Quiz.objects.create(name='name', creator=self.user_2)
+        quiz = create_quiz(name='name', creator=self.user_2)
         quiz.publish()
         question = Question.objects.create(quiz=quiz, question='...', explanation='...')
 
@@ -413,7 +412,7 @@ class TestQuestionDetail(APITestCase):
 
     def test_update_question_by_author(self):
         """Assure author of quiz can update one of its questions."""
-        quiz = Quiz.objects.create(name='name', creator=self.user)
+        quiz = create_quiz(name='name', creator=self.user)
         question = Question.objects.create(quiz=quiz, question='...', explanation='...')
 
         payload_data = {
@@ -431,7 +430,7 @@ class TestQuestionDetail(APITestCase):
 
     def test_update_question_not_author(self):
         """Assure only author can update question."""
-        quiz = Quiz.objects.create(name='name', creator=self.user_2)
+        quiz = create_quiz(name='name', creator=self.user_2)
         question = Question.objects.create(quiz=quiz, question='...', explanation='...')
 
         payload_data = {
@@ -448,7 +447,7 @@ class TestQuestionDetail(APITestCase):
 
     def test_update_question_not_authenticated(self):
         """Make sure not authenticated user can't access this endpoint."""
-        quiz = Quiz.objects.create(name='name', creator=self.user)
+        quiz = create_quiz(name='name', creator=self.user)
         question = Question.objects.create(quiz=quiz, question='...', explanation='...')
 
         payload_data = {
@@ -469,7 +468,7 @@ class TestQuestionDetail(APITestCase):
         Make sure question is updated, and new answers are added,
         old ones are destroyed.
         """
-        quiz = Quiz.objects.create(name='quiz', creator=self.user)
+        quiz = create_quiz(name='quiz', creator=self.user)
         question = Question.objects.create(quiz=quiz, question='...', explanation='...')
         old_answer = QuestionAnswer.objects.create(
             question=question, content='...', is_correct=True)
@@ -496,7 +495,7 @@ class TestQuestionDetail(APITestCase):
 
     def test_delete_question_by_author(self):
         """Make sure user can delete question of his own quiz."""
-        quiz = Quiz.objects.create(name='name', creator=self.user)
+        quiz = create_quiz(name='name', creator=self.user)
         question = Question.objects.create(quiz=quiz, question='...', explanation='...')
 
         response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
@@ -506,7 +505,7 @@ class TestQuestionDetail(APITestCase):
 
     def test_delete_question_by_non_creator(self):
         """Don't allow not quiz creator to delete question."""
-        quiz = Quiz.objects.create(name='name', creator=self.user_2)
+        quiz = create_quiz(name='name', creator=self.user_2)
         question = Question.objects.create(quiz=quiz, question='...', explanation='...')
 
         response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
@@ -516,7 +515,7 @@ class TestQuestionDetail(APITestCase):
 
     def test_delete_question_by_not_authenticated(self):
         """Make sure not authenticated user can't access this endpoint."""
-        quiz = Quiz.objects.create(name='name', creator=self.user)
+        quiz = create_quiz(name='name', creator=self.user)
         question = Question.objects.create(quiz=quiz, question='...', explanation='...')
 
         self.client.logout()
@@ -546,7 +545,7 @@ class TestQuizAvatar(APITestCase):
         """Assert any authenticated user can access quiz image."""
         mock_storage.return_value = 'image.png'
         image = self.get_image_file("image.png")
-        quiz = Quiz.objects.create(
+        quiz = create_quiz(
             name='Quiz 1',
             creator=self.user,
             image=image
@@ -561,7 +560,7 @@ class TestQuizAvatar(APITestCase):
     def test_uploading_image_by_creator(self, mock_storage):
         """Assert quiz image is uploaded by creator."""
         mock_storage.return_value = 'test.png'
-        quiz = Quiz.objects.create(name='test', creator=self.user)
+        quiz = create_quiz(name='test', creator=self.user)
         image_to_upload = self.get_image_file("test.png")
 
         response = self.client.put(
@@ -575,7 +574,7 @@ class TestQuizAvatar(APITestCase):
 
     def test_changing_image_by_not_creator(self):
         """Assert quiz image is not changed if not creator requested it."""
-        quiz = Quiz.objects.create(name='test', creator=self.user_2)
+        quiz = create_quiz(name='test', creator=self.user_2)
         image_to_upload = self.get_image_file("sample.png")
 
         response = self.client.put(
@@ -592,7 +591,7 @@ class TestQuizAvatar(APITestCase):
         """Assert quiz image is removed if author requested it."""
         mock_storage.return_value = 'quiz-1.png'
         image = self.get_image_file("image.png")
-        quiz = Quiz.objects.create(
+        quiz = create_quiz(
             name='Quiz 1',
             creator=self.user,
             image=image
@@ -609,7 +608,7 @@ class TestQuizAvatar(APITestCase):
         """Make sure removing quiz image by non creator is not possible."""
         mock_storage.return_value = 'quiz-1.png'
         image = self.get_image_file("image.png")
-        quiz = Quiz.objects.create(
+        quiz = create_quiz(
             name='Quiz 1',
             creator=self.user_2,
             image=image
