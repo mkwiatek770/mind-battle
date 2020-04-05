@@ -4,7 +4,7 @@ from quiz.models import Quiz, Question, QuestionAnswer
 
 
 def create_user(username: str, password: str, email: str) -> settings.AUTH_USER_MODEL:
-    return get_user_model().objects.create_user(
+    return get_user_model().objects.create(
         username=username,
         email=email,
         password=password
