@@ -11,17 +11,17 @@ def create_user(username: str, password: str, email: str) -> settings.AUTH_USER_
     )
 
 
-def create_quiz(**kwargs):
+def create_quiz(**kwargs) -> Quiz:
     return Quiz.objects.create(**kwargs)
 
 
-def create_question(**kwargs):
+def create_question(**kwargs) -> Question:
     return Question.objects.create(**kwargs)
 
 
-def create_category(**kwargs):
+def create_category(**kwargs) -> Category:
     return Category.objects.create(**kwargs)
 
 
-def create_question_answer(**kwargs):
+def create_question_answer(**kwargs) -> QuestionAnswer:
     return QuestionAnswer.objects.create(**kwargs)
