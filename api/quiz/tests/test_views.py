@@ -154,6 +154,9 @@ class TestQuizCreator(APITestCase):
         self.quiz_published_user_1 = create_quiz(
             name='quiz1published', creator=self.user_1,
             date_published=timezone.now(), category=category_python)
+        self.quiz_published_user_2 = create_quiz(
+            name='quiz2published', creator=self.user_2,
+            date_published=timezone.now(), category=category_javascript)
 
     def test_get_draft_quizzes_for_user(self):
         """Test getting all drafted quizzes for creator."""
@@ -259,35 +262,29 @@ class TestQuizCreator(APITestCase):
 
     def test_delete_quiz(self):
         """Assure specific quiz is removed."""
-        quiz = create_quiz(name="quiz 1", creator=self.user_1)
-
-        response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
+        response = self.client.delete(reverse('quiz_detail', args=(self.quiz_published_user_1.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertNotIn(quiz, Quiz.objects.all())
+        self.assertNotIn(self.quiz_published_user_1, Quiz.objects.all())
 
     def test_delete_quiz_by_non_authenticated(self):
         """Assure non authenticated user can't delete quiz."""
-        quiz = create_quiz(name="quiz 1", creator=self.user_1)
-
         self.client.logout()
-        response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
+        response = self.client.delete(reverse('quiz_detail', args=(self.quiz_published_user_1.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertIn(quiz, Quiz.objects.all())
+        self.assertIn(self.quiz_published_user_1, Quiz.objects.all())
 
     def test_delete_quiz_by_non_creator(self):
         """Assure non creator can't remove quiz from db."""
-        quiz = create_quiz(name="quiz 1", creator=self.user_2)
-
-        response = self.client.delete(reverse('quiz_detail', args=(quiz.id,)))
+        response = self.client.delete(
+            reverse('quiz_detail', args=(self.quiz_unpublished_user_2.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertIn(quiz, Quiz.objects.all())
+        self.assertIn(self.quiz_published_user_1, Quiz.objects.all())
 
     def test_add_new_question_to_quiz(self):
         """Test add new question to existing quiz."""
-        quiz = create_quiz(name="quiz 1", creator=self.user_1)
 
         payload_data = {
             'question': 'What is your name?',
@@ -297,59 +294,61 @@ class TestQuizCreator(APITestCase):
                 dict(content='answer2', is_correct=True)
             ]
         }
-        response = self.client.post(reverse('question_list', args=(quiz.id,)), data=payload_data)
+        response = self.client.post(reverse('question_list', args=(self.quiz_published_user_1.id,)),
+                                    data=payload_data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Question.objects.get(question='What is your name?').quiz, quiz)
+        self.assertEqual(Question.objects.get(
+            question='What is your name?').quiz, self.quiz_published_user_1)
         self.assertEqual(QuestionAnswer.objects.count(), 2)
 
     def test_add_new_question_to_quiz_for_not_creator(self):
         """Test non creator, can't add new question for quiz."""
-        quiz = create_quiz(name="quiz 1", creator=self.user_2)
 
         payload_data = {
             'question': 'What is your name?',
             'explanation': 'Lorem ipsum ...'
         }
-        response = self.client.post(reverse('question_list', args=(quiz.id,)), data=payload_data)
+        response = self.client.post(reverse('question_list', args=(self.quiz_unpublished_user_2.id,)),
+                                    data=payload_data)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(Question.objects.filter(question="What is your name?").exists())
 
     def test_publish_quiz_by_creator(self):
         """Assure quiz is published."""
-        quiz = create_quiz(name="Quiz 1", creator=self.user_1)
-
-        response = self.client.post(reverse('quiz_publish', args=(quiz.id,)))
+        response = self.client.post(
+            reverse('quiz_publish', args=(self.quiz_unpublished_user_1.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsNotNone(response.data['date_published'])
 
     def test_publish_quiz_by_non_creator(self):
-        """Assure publishing quiz by non creator is forbiden."""
-        quiz = create_quiz(name="Quiz 2", creator=self.user_2)
-
-        response = self.client.post(reverse('quiz_publish', args=(quiz.id,)))
-        quiz_obj = Quiz.objects.get(pk=quiz.id)
+        """
+        Assure publishing quiz by non creator is forbiden.
+        """
+        response = self.client.post(
+            reverse('quiz_publish', args=(self.quiz_unpublished_user_2.id,)))
+        quiz_obj = Quiz.objects.get(pk=self.quiz_unpublished_user_2.id)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertIsNone(quiz_obj.date_published)
 
     def test_unpublish_quiz_by_creator(self):
         """Assure quiz is unpublished"""
-        quiz = create_quiz(name="Quiz 1", creator=self.user_1, date_published=timezone.now())
-
-        response = self.client.post(reverse('quiz_unpublish', args=(quiz.id,)))
+        response = self.client.post(
+            reverse('quiz_unpublish', args=(self.quiz_published_user_1.id,)))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsNone(response.data['date_published'])
 
     def test_unpublish_quiz_by_non_creator(self):
-        """Assure unpublishing quiz by non creator is not possible."""
-        quiz = create_quiz(name="Quiz 2", creator=self.user_2, date_published=timezone.now())
-
-        response = self.client.post(reverse('quiz_unpublish', args=(quiz.id,)))
-        quiz_obj = Quiz.objects.get(pk=quiz.id)
+        """
+        Assure unpublishing quiz by non creator is not possible.
+        """
+        response = self.client.post(
+            reverse('quiz_unpublish', args=(self.quiz_published_user_2.id,)))
+        quiz_obj = Quiz.objects.get(pk=self.quiz_published_user_2.id)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertIsNotNone(quiz_obj.date_published)
@@ -363,23 +362,27 @@ class TestQuestionDetail(APITestCase):
         self.user_2 = create_user(username='user2', password='password', email='email2@gmail.com')
         self.client.force_authenticate(user=self.user)
 
-    def test_get_question_for_creator(self):
-        """Test question detail is returned for creator."""
-        quiz = create_quiz(name='name', creator=self.user)
-        question = create_question(quiz=quiz, question='...', explanation='...')
+        self.quiz = create_quiz(name='Quiz 1', creator=self.user)
+        self.question = create_question(quiz=self.quiz, question='...', explanation='...')
+        self.answer = create_question_answer(question=self.question, content='...', is_correct=True)
 
-        response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
+    def test_get_question_for_creator(self):
+        """
+        Test question detail is returned for creator.
+        """
+        response = self.client.get(
+            reverse('question_detail', args=(self.quiz.id, self.question.id)))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['question'], '...')
 
     def test_get_question_for_not_authenticated(self):
-        """Make sure not authenticated user can't  access this endpoint."""
-        quiz = create_quiz(name='name', creator=self.user)
-        question = create_question(quiz=quiz, question='...', explanation='...')
-
+        """
+        Make sure not authenticated user can't  access this endpoint.
+        """
         self.client.logout()
-        response = self.client.get(reverse('question_detail', args=(quiz.id, question.id)))
+        response = self.client.get(
+            reverse('question_detail', args=(self.quiz.id, self.question.id)))
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -430,19 +433,18 @@ class TestQuestionDetail(APITestCase):
         self.assertEqual(question_obj.question, "...")
 
     def test_update_question_not_authenticated(self):
-        """Make sure not authenticated user can't access this endpoint."""
-        quiz = create_quiz(name='name', creator=self.user)
-        question = create_question(quiz=quiz, question='...', explanation='...')
-
+        """
+        Make sure not authenticated user can't access this endpoint.
+        """
         payload_data = {
             'question': 'New one ...',
             'explanation': 'changed explanation'
         }
         self.client.logout()
         response = self.client.put(
-            reverse('question_detail', args=(quiz.id, question.id)),
+            reverse('question_detail', args=(self.quiz.id, self.question.id)),
             data=payload_data)
-        question_obj = Question.objects.get(pk=question.id)
+        question_obj = Question.objects.get(pk=self.question.id)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(question_obj.question, "...")
@@ -452,11 +454,6 @@ class TestQuestionDetail(APITestCase):
         Make sure question is updated, and new answers are added,
         old ones are destroyed.
         """
-        quiz = create_quiz(name='quiz', creator=self.user)
-        question = create_question(quiz=quiz, question='...', explanation='...')
-        old_answer = create_question_answer(
-            question=question, content='...', is_correct=True)
-
         payload_data = {
             'question': 'What is your name?',
             'explanation': 'Lorem ipsum ...',
@@ -467,10 +464,10 @@ class TestQuestionDetail(APITestCase):
         }
 
         response = self.client.put(
-            reverse('question_detail', args=(quiz.id, question.id)),
+            reverse('question_detail', args=(self.quiz.id, self.question.id)),
             data=payload_data
         )
-        updated_obj = Question.objects.get(id=question.id)
+        updated_obj = Question.objects.get(id=self.question.id)
 
         self.assertEqual(updated_obj.question, 'What is your name?')
         self.assertEqual(response.data, QuestionSerializer(updated_obj).data)
@@ -479,31 +476,28 @@ class TestQuestionDetail(APITestCase):
 
     def test_delete_question_by_author(self):
         """Make sure user can delete question of his own quiz."""
-        quiz = create_quiz(name='name', creator=self.user)
-        question = create_question(quiz=quiz, question='...', explanation='...')
-
-        response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
+        response = self.client.delete(
+            reverse('question_detail', args=(self.quiz.id, self.question.id)))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Question.objects.count(), 0)
 
     def test_delete_question_by_non_creator(self):
         """Don't allow not quiz creator to delete question."""
-        quiz = create_quiz(name='name', creator=self.user_2)
-        question = create_question(quiz=quiz, question='...', explanation='...')
+        user_2 = create_user(username="someuser", password="pass", email="e@gmail.com")
+        self.client.force_authenticate(user_2)
 
-        response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
+        response = self.client.delete(
+            reverse('question_detail', args=(self.quiz.id, self.question.id)))
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Question.objects.count(), 1)
 
     def test_delete_question_by_not_authenticated(self):
         """Make sure not authenticated user can't access this endpoint."""
-        quiz = create_quiz(name='name', creator=self.user)
-        question = create_question(quiz=quiz, question='...', explanation='...')
-
         self.client.logout()
-        response = self.client.delete(reverse('question_detail', args=(quiz.id, question.id)))
+        response = self.client.delete(
+            reverse('question_detail', args=(self.quiz.id, self.question.id)))
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(Question.objects.count(), 1)
