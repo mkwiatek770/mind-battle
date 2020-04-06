@@ -10,9 +10,23 @@
         <li v-else class="page-item">
           <a class="page-link disabled">Previous</a>
         </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
+
+        <li class="page-item" v-for="index in quizzes.pages" :key="index">
+          <a
+            v-if="quizzes.current == index"
+            class="active page-link"
+            style="background-color: lightblue;"
+            >{{ quizzes.current }}</a
+          >
+          <a
+            v-else
+            @click.prevent="getPage(index)"
+            class="page-link"
+            href="#"
+            >{{ index }}</a
+          >
+        </li>
+
         <li v-if="quizzes.links.next" class="page-item">
           <a class="page-link" href="#" @click.prevent="getNextPage">Next</a>
         </li>
