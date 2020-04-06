@@ -39,12 +39,28 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "ThePagination",
   computed: {
     ...mapState("quiz", ["quizzes"]),
+  },
+  methods: {
+    ...mapActions("quiz", ["getQuizzes"]),
+    getPage(number) {
+      this.getQuizzes(number);
+    },
+    getPreviousPage() {
+      if (this.quizzes.current >= 2) {
+        this.getQuizzes(this.quizzes.current - 1);
+      }
+    },
+    getNextPage() {
+      if (this.quizzes.current < this.quizzes.pages) {
+        this.getQuizzes(this.quizzes.current + 1);
+      }
+    },
   },
 };
 </script>
