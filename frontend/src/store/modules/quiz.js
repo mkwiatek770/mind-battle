@@ -3,48 +3,48 @@ import quizAPI from "../../services/quizService";
 import categoryAPI from "../../services/categoryService";
 
 const state = {
-  quizzes: [],
+  quizzes: {},
   categories: [],
   recentQuiz: {},
-  quizStarted: false
+  quizStarted: false,
 };
 
 const getters = {
-  quizzes: state => {
+  quizzes: (state) => {
     return state.quizzes;
   },
-  categories: state => {
+  categories: (state) => {
     return state.categories;
   },
-  recentQuiz: state => {
+  recentQuiz: (state) => {
     return state.recentQuiz;
-  }
+  },
 };
 
 const actions = {
   getQuizzes({ commit }) {
-    quizAPI.getQuizzes().then(quizzes => {
+    quizAPI.getQuizzes().then((quizzes) => {
       commit("setQuizzes", quizzes);
     });
   },
   getCategories({ commit }) {
-    categoryAPI.getCategories().then(categories => {
+    categoryAPI.getCategories().then((categories) => {
       commit("setCategories", categories);
     });
   },
   getQuizWithQuestions({ dispatch, commit }, id) {
     // get quiz detail
-    quizAPI.getQuizDetail(id).then(quizData => {
+    quizAPI.getQuizDetail(id).then((quizData) => {
       commit("setQuizData", quizData);
     });
 
     // get questions for quiz
     quizAPI.getQuestionsForQuiz(id).then(
-      questions => {
+      (questions) => {
         commit("setQuizQuestions", questions);
         router.push(`/quiz/${id}`);
       },
-      error => {
+      (error) => {
         commit("responseFailure", error);
         dispatch("alert/error", error, { root: true });
         router.push("/");
@@ -66,17 +66,17 @@ const actions = {
   createQuiz({ dispatch }, { quiz, questions, image }) {
     quizAPI
       .createQuiz(quiz)
-      .then(response => {
+      .then((response) => {
         quizAPI.addImageToQuiz(response.id, image);
 
         quizAPI.addQuestionsToQuiz(response.id, questions).then(() => {
           router.push("/");
         });
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch("alert/error", error, { root: true });
       });
-  }
+  },
 };
 
 const mutations = {
@@ -100,7 +100,7 @@ const mutations = {
   },
   finishQuiz(state) {
     state.quizStarted = false;
-  }
+  },
 };
 
 export default {
@@ -108,5 +108,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

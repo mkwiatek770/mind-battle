@@ -9,6 +9,9 @@
         <TheSidebar />
       </div>
     </div>
+    <div class="row">
+      <ThePagination />
+    </div>
   </div>
 </template>
 
@@ -17,14 +20,16 @@
 import TheNavbar from "@/components/base/TheNavbar.vue";
 import TheMain from "@/components/home/TheMain.vue";
 import TheSidebar from "@/components/home/TheSidebar.vue";
+import ThePagination from "@/components/home/ThePagination.vue";
 
 export default {
   name: "Home",
   components: {
     TheNavbar,
     TheMain,
-    TheSidebar
-  }
+    TheSidebar,
+    ThePagination,
+  },
 };
 </script>
 
