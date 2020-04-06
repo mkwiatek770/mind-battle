@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -13,33 +14,20 @@ from quiz.serializers import QuizSerializer, QuestionSerializer, ImageSerializer
 from quiz.permissions import IsQuizCreatorOrReadOnly
 
 
-class QuizListView(APIView):
+class QuizListView(ListCreateAPIView):
     """
     List of published quizzes.
     """
-    permission_classes = (IsAuthenticatedOrReadOnly, )
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    serializer_class = QuizSerializer
+    model = Quiz
 
-    def get(self, request, format=None):
-        quizzes = Quiz.objects.published()
-        category = request.query_params.get('category')
+    def get_queryset(self):
+        queryset = Quiz.objects.published()
+        category = self.request.query_params.get('category')
         if category:
-            quizzes = quizzes.filter(category__name=category)
-
-        # pagination
-        page_number = self.request.query_params.get('page', 1)
-        page_size = 1
-
-        paginator = Paginator(quizzes, page_size)
-
-        serializer = QuizSerializer(paginator.page(page_number), many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request, format=None):
-        serializer = QuizSerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            queryset = queryset.filter(category__name=category)
+        return queryset
 
 
 class QuizDraftsView(APIView):
