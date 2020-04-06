@@ -22,8 +22,8 @@ const getters = {
 };
 
 const actions = {
-  getQuizzes({ commit }) {
-    quizAPI.getQuizzes().then((quizzes) => {
+  getQuizzes({ commit }, pageNumber = 1) {
+    quizAPI.getQuizzes(pageNumber).then((quizzes) => {
       commit("setQuizzes", quizzes);
     });
   },

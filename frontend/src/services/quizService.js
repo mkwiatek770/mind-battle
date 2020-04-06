@@ -1,11 +1,11 @@
 import api from "@/services/api";
 
 export default {
-  getQuizzes() {
+  getQuizzes(pageNumber) {
     return api
-      .get(`/quizzes`)
-      .then(response => response.data)
-      .catch(error => {
+      .get(`/quizzes?page=${pageNumber}`)
+      .then((response) => response.data)
+      .catch((error) => {
         console.log(error);
       });
   },
@@ -16,10 +16,10 @@ export default {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
-      }
+        Authorization: `Bearer ${accessToken}`,
+      },
     };
-    return api(requestOptions).then(response => response.data);
+    return api(requestOptions).then((response) => response.data);
   },
   getQuestionsForQuiz(id) {
     const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
@@ -28,10 +28,10 @@ export default {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
-      }
+        Authorization: `Bearer ${accessToken}`,
+      },
     };
-    return api(requestOptions).then(response => response.data);
+    return api(requestOptions).then((response) => response.data);
   },
   startQuiz(id) {
     const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
@@ -40,10 +40,10 @@ export default {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
-      }
+        Authorization: `Bearer ${accessToken}`,
+      },
     };
-    return api(requestOptions).then(response => response.data);
+    return api(requestOptions).then((response) => response.data);
   },
   finishQuiz(id) {
     const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
@@ -52,10 +52,10 @@ export default {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
-      }
+        Authorization: `Bearer ${accessToken}`,
+      },
     };
-    return api(requestOptions).then(response => response.data);
+    return api(requestOptions).then((response) => response.data);
   },
   answerToAllQuizQuestions(id, answers) {
     const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
@@ -64,11 +64,11 @@ export default {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
+        Authorization: `Bearer ${accessToken}`,
       },
-      data: { answers: answers }
+      data: { answers: answers },
     };
-    return api(requestOptions).then(response => response.data);
+    return api(requestOptions).then((response) => response.data);
   },
   createQuiz(quizData) {
     const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
@@ -77,11 +77,11 @@ export default {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
+        Authorization: `Bearer ${accessToken}`,
       },
-      data: quizData
+      data: quizData,
     };
-    return api(requestOptions).then(response => response.data);
+    return api(requestOptions).then((response) => response.data);
   },
   addQuestionsToQuiz(quiz_id, questions) {
     const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
@@ -90,11 +90,11 @@ export default {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
+        Authorization: `Bearer ${accessToken}`,
       },
-      data: questions
+      data: questions,
     };
-    return api(requestOptions).then(response => response.data);
+    return api(requestOptions).then((response) => response.data);
   },
   addImageToQuiz(quiz_id, image) {
     const accessToken = JSON.parse(localStorage.vuex).user.accessToken;
@@ -103,10 +103,10 @@ export default {
       method: "PUT",
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${accessToken}`
+        Authorization: `Bearer ${accessToken}`,
       },
-      data: { image: image }
+      data: { image: image },
     };
-    return api(requestOptions).then(response => response.data);
-  }
+    return api(requestOptions).then((response) => response.data);
+  },
 };
