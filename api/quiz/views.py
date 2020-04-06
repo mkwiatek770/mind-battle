@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.response import Response
 
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator
 
 from quiz.models import Quiz, Question, Category
 from quiz.serializers import QuizSerializer, QuestionSerializer, ImageSerializer, CategorySerializer
@@ -24,7 +25,13 @@ class QuizListView(APIView):
         if category:
             quizzes = quizzes.filter(category__name=category)
 
-        serializer = QuizSerializer(quizzes, many=True)
+        # pagination
+        page_number = self.request.query_params.get('page', 1)
+        page_size = 1
+
+        paginator = Paginator(quizzes, page_size)
+
+        serializer = QuizSerializer(paginator.page(page_number), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
