@@ -6,6 +6,7 @@ class CustomPageNumberPagination(pagination.PageNumberPagination):
     def get_paginated_response(self, data):
         return Response({
             'current': self.page.number,
+            'pages': self.page.paginator.num_pages,
             'links': {
                 'next': self.get_next_link(),
                 'previous': self.get_previous_link()
