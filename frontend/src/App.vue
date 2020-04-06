@@ -12,20 +12,20 @@ export default {
   name: "app",
   computed: {
     ...mapState({
-      alert: state => state.alert
-    })
+      alert: (state) => state.alert,
+    }),
   },
   methods: {
     ...mapActions({
-      clearAlert: "alert/clear"
-    })
+      clearAlert: "alert/clear",
+    }),
   },
   watch: {
     $route() {
       // clear alert on location change
       this.clearAlert();
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -45,7 +45,7 @@ export default {
   left: 0;
   bottom: 0;
   right: 0;
-  position: absolute;
+  position: fixed;
   z-index: -1;
 }
 
