@@ -13,18 +13,18 @@ import Quiz from "./Quiz.vue";
 export default {
   name: "TheMain",
   components: {
-    Quiz
+    Quiz,
   },
   data() {
     return {};
   },
   computed: mapState({
-    quizzes: state => state.quiz.quizzes
+    quizzes: (state) => state.quiz.quizzes.results,
   }),
   methods: mapActions("quizzes", ["getQuizzes"]),
   created() {
     this.$store.dispatch("quiz/getQuizzes");
-  }
+  },
 };
 </script>
 
