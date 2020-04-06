@@ -1,6 +1,6 @@
 <template>
   <div id="home-pagination">
-    <nav aria-label="Page navigation example">
+    <nav aria-label="nav navigation" class="mx-auto">
       <ul class="pagination">
         <li v-if="quizzes.links.previous" class="page-item">
           <a class="page-link" href="#" @click.prevent="getPreviousPage"
@@ -36,6 +36,14 @@ export default {
 </script>
 
 <style scoped>
+#home-pagination {
+  width: 100%;
+}
+
+nav {
+  width: 40%;
+}
+
 a.disabled {
   /* Make the disabled links grayish*/
   color: gray;
