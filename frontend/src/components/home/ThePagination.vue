@@ -68,6 +68,7 @@ export default {
 <style scoped>
 #home-pagination {
   width: 100%;
+  padding-bottom: 20px;
 }
 
 nav {
