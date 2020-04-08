@@ -6,24 +6,27 @@ const state = {
   username: localStorage.getItem("username") || "",
   accessToken: localStorage.getItem("accessToken") || "",
   refreshToken: localStorage.getItem("refreshToken") || "",
-  quiz: { correctAnswers: 0, questionNumber: 0 }
+  quiz: { correctAnswers: 0, questionNumber: 0 },
 };
 
 const getters = {
-  username: state => {
+  username: (state) => {
     return state.username;
-  }
+  },
+  refreshToken: (state) => {
+    return state.refreshToken;
+  },
 };
 
 const actions = {
   login({ dispatch, commit }, { username, password }) {
     commit("loginRequest", { username });
     userService.login(username, password).then(
-      userData => {
+      (userData) => {
         commit("loginSuccess", userData);
         router.push("/");
       },
-      error => {
+      (error) => {
         commit("loginFailure", error);
         dispatch("alert/error", error, { root: true });
       }
@@ -38,28 +41,28 @@ const actions = {
     commit("registerRequest");
 
     userService.register(user).then(
-      user => {
+      (user) => {
         commit("registerSuccess", user);
         setTimeout(() => {
           dispatch("alert/success", "Registration successful", { root: true });
         });
       },
-      error => {
+      (error) => {
         commit("registerFailure", error);
         dispatch("alert/error", error, { root: true });
       }
     );
   },
-  refreshToken({ dispatch, commit }, refresh) {
+  refreshToken({ dispatch }, refresh) {
     userService.refreshToken(refresh).then(
-      data => {
-        commit("refreshToken", data);
+      () => {
+        return localStorage.getItem("refreshToken");
       },
-      error => {
+      (error) => {
         dispatch("alert/error", error, { root: true });
       }
     );
-  }
+  },
 };
 
 const mutations = {
@@ -102,7 +105,7 @@ const mutations = {
   },
   incrementQuestionNumber(state) {
     state.quiz.questionNumber++;
-  }
+  },
 };
 
 export default {
@@ -110,5 +113,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

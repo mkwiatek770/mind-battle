@@ -4,7 +4,7 @@ export default {
   login,
   logout,
   register,
-  refreshToken
+  refreshToken,
 };
 
 function login(username, password) {
@@ -12,12 +12,12 @@ function login(username, password) {
     url: `/auth/login/`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    data: { username, password }
+    data: { username, password },
   };
 
   return api(requestOptions)
     .then(handleResponse)
-    .then(tokens => {
+    .then((tokens) => {
       // login successful if there's a jwt token in the response
       return tokens;
     });
@@ -33,7 +33,7 @@ function register(user) {
     url: `/auth/create-account/`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    data: user
+    data: user,
   };
 
   return api(requestOptions).then(handleResponse);
@@ -44,15 +44,19 @@ function refreshToken(refresh) {
     url: `/auth/token/refresh/`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    data: { refresh: refresh }
+    data: { refresh: refresh },
   };
 
   return api(requestOptions)
     .then(handleResponse)
-    .then(tokens => {
+    .then((tokens) => {
       if (tokens.access) {
         localStorage.setItem("accessToken", JSON.stringify(tokens.access));
       }
+    })
+    .catch((error) => {
+      console.log("error");
+      console.log(error);
     });
 }
 
