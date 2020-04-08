@@ -71,20 +71,20 @@ const router = new VueRouter({
   mode: "history",
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!JSON.parse(localStorage.vuex).user.accessToken) {
-      next({
-        path: "/start",
-        params: { nextUrl: to.fullPath },
-      });
-    } else {
-      next();
-    }
-  } else if (to.matched.some((record) => record.meta.guest)) {
-    next();
-  }
-  next();
-});
+// router.beforeEach((to, from, next) => {
+//   if (to.matched.some((record) => record.meta.requiresAuth)) {
+//     if (!JSON.parse(localStorage.vuex).user.accessToken) {
+//       next({
+//         path: "/start",
+//         params: { nextUrl: to.fullPath },
+//       });
+//     } else {
+//       next();
+//     }
+//   } else if (to.matched.some((record) => record.meta.guest)) {
+//     next();
+//   }
+//   next();
+// });
 
 export default router;
