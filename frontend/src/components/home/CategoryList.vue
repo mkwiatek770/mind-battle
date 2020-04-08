@@ -23,11 +23,11 @@ export default {
     return {};
   },
   computed: mapState({
-    categories: state => state.quiz.categories
+    categories: (state) => state.quiz.categories,
   }),
   methods: mapActions("categories", ["getCategories"]),
   created() {
     this.$store.dispatch("quiz/getCategories");
-  }
+  },
 };
 </script>
