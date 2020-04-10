@@ -1,6 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import store from "@/store";
+import router from "@/router";
 
 const api = axios.create({
   baseURL: "http://localhost:8000/api/v1",
@@ -37,7 +38,9 @@ api.interceptors.response.use(
         .then(() => {
           // new request with new token
           const config = error.config;
-          const token = localStorage.getItem("refreshToken");
+          const token = store.getters["user/accessToken"];
+          console.log(error.config.url);
+          console.log(token);
           config.headers["Authorization"] = `Bearer ${token}`;
 
           return new Promise((resolve, reject) => {
@@ -54,12 +57,15 @@ api.interceptors.response.use(
         .catch(error => {
           return new Promise((resolve, reject) => {
             reject(error);
+            // logout, go to start page
           });
         });
     } else {
-      return new Promise((resolve, reject) => {
-        reject(error);
-      });
+      // return new Promise((resolve, reject) => {
+      //   reject(error);
+      //   // logout, go to start page
+      // });
+      router.push("/start");
     }
   }
 );
