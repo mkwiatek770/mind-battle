@@ -7,8 +7,8 @@ const api = axios.create({
   timeout: 5000,
   headers: {
     "Content-Type": "application/json",
-    "X-CSRFToken": Cookies.get("csrftoken"),
-  },
+    "X-CSRFToken": Cookies.get("csrftoken")
+  }
 });
 
 api.interceptors.response.use(
@@ -23,7 +23,7 @@ api.interceptors.response.use(
     }
 
     // Logout user if token refresh didn't work
-    if (error.config.url == "/auth/token/refresh") {
+    if (error.config.url === "/auth/token/refresh/") {
       localStorage.removeItem("user");
       return new Promise((resolve, reject) => {
         reject(error);
@@ -43,15 +43,15 @@ api.interceptors.response.use(
           return new Promise((resolve, reject) => {
             axios
               .request(config)
-              .then((response) => {
+              .then(response => {
                 resolve(response);
               })
-              .catch((error) => {
+              .catch(error => {
                 reject(error);
               });
           });
         })
-        .catch((error) => {
+        .catch(error => {
           return new Promise((resolve, reject) => {
             reject(error);
           });
